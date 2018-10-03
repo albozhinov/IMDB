@@ -12,7 +12,7 @@
 RapGeneral
 
 ### Project Purpose
-We aim to create a movie database 
+We are aiming to create a movie database 
 
 ### Features 
 - <b>User system</b>
