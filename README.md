@@ -34,5 +34,7 @@ We aim to create a movie database
     Every user can search for movies via name, score or genre.
     
 ### Repository [repo]
+### Trello [trello]
 
 [repo]: https://gitlab.com/RapGeneral/nazovenoimdb.git
+[trello]: https://trello.com/invite/b/x9KipY89/51d2f7e9640728ecb123e38f528811d2/imdb
