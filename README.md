@@ -8,11 +8,11 @@
 - Alexander Bozhinov
 - Shabanali Isa
 
-#### Team leader - RapGeneral
+#### Team leader
+RapGeneral
 
 ### Project Purpose
-
-##### We aim to create a movie database 
+We aim to create a movie database 
 
 ### Features 
 - <b>User system</b>
