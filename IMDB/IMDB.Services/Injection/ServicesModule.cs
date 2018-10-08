@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using IMDB.Services.Contracts;
 using System.Reflection;
 
 namespace IMDB.Services.Injection
@@ -11,6 +12,11 @@ namespace IMDB.Services.Injection
 				.AsImplementedInterfaces();
 
 			base.Load(builder);
+		}
+
+		private void RegisterServices(ContainerBuilder builder)
+		{
+			builder.RegisterType<UserServices>().As<IUserServices>().SingleInstance();
 		}
 	}
 }
