@@ -1,11 +1,10 @@
 ﻿using Autofac;
-using IMDB.Core;
 using IMDB.Core.Contracts;
 using IMDB.Core.Injection;
 
 namespace IMDB.CLI
 {
-	class Program
+	public sealed class StartUp
 	{
 		static void Main(string[] args)
 		{
