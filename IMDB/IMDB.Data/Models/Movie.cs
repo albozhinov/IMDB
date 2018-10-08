@@ -12,5 +12,6 @@ namespace IMDB.Data.Models
         public String Genre { get; set; }
         public String Producer { get; set; }
         public ICollection<Review> Reviews { get; set; }
+        public ICollection<Score> Scores { get; set; }
     }
 }

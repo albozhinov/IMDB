@@ -4,7 +4,8 @@ using System.Text;
 
 namespace IMDB.Data.Models
 {
-    class Genre
+    public class Genre
     {
+        public String GenreType { get; set; }
     }
 }
