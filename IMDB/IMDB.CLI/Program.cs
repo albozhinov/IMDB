@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using IMDB.Core;
+using IMDB.Core.Contracts;
 using IMDB.Core.Injection;
 
 namespace IMDB.CLI
@@ -11,7 +12,7 @@ namespace IMDB.CLI
 			var containerConfig = new AutofacConfig();
 			var container = containerConfig.Build();
 
-			var engine = container.Resolve<Engine>();
+			var engine = container.Resolve<IEngine>();
 			engine.Start();
 		}
 	}

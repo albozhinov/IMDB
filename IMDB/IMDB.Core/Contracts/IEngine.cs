@@ -1,6 +1,6 @@
 ﻿namespace IMDB.Core.Contracts
 {
-	interface IEngine
+	public interface IEngine
 	{
 		void Start();
 	}
