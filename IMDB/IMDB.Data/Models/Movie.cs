@@ -13,6 +13,6 @@ namespace IMDB.Data.Models
 		public String Producer { get; set; }
 		public bool IsDeleted { get; set; }
 		public ICollection<Review> Reviews { get; set; }
-		public ICollection<Score> Scores { get; set; }
-	}
+        public ICollection<MovieGenre> movieGenres { get; set; }
+    }
 }
