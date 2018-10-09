@@ -25,7 +25,8 @@ namespace IMDB.Data.Context
         {
             modelBuilder.Entity<MovieGenre>()
                 .HasKey(m => new { m.GenreID, m.MovieID });
-            
+            modelBuilder.Entity<ScoresUserMovie>()
+                .HasKey(s => new { s.MovieId, s.UserId });
 
             base.OnModelCreating(modelBuilder);
         }

@@ -3,14 +3,16 @@ using IMDB.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IMDB.Data.Migrations
 {
     [DbContext(typeof(IMDBContext))]
-    partial class IMDBContextModelSnapshot : ModelSnapshot
+    [Migration("20181009181039_AddedScoresUseMovie_Table")]
+    partial class AddedScoresUseMovie_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

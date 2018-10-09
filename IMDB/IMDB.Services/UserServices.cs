@@ -27,12 +27,12 @@ namespace IMDB.Services
 		}
 		public void Login(string userName, string password)
 		{
-			var user = userRepo.LoginUser(userName, password);
+			/*var user = userRepo.LoginUser(userName, password);
 			if (user is null) throw new LoginFailedException();
-
+            
 			this.loginSession.LoggedUserPermissions = GetPermissions(user.Name);
 			this.loginSession.LoggedUserRole = user.Role;
-			this.loginSession.LoggedUserRank = user.Rank;
+			this.loginSession.LoggedUserRank = user.Rank;*/
 		}
 
 		public void Logout()
@@ -43,9 +43,9 @@ namespace IMDB.Services
 
 		public void Register(string userName, string password)
 		{
-			if (this.userRepo.Exists(userName)) throw new RegisterFailedException();
+			/*if (this.userRepo.Exists(userName)) throw new RegisterFailedException();
 
-			this.userRepo.AddUser(userName, password);
+			this.userRepo.AddUser(userName, password);*/
 		}
 	}
 }

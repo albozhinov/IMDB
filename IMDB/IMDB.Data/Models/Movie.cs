@@ -14,5 +14,6 @@ namespace IMDB.Data.Models
 		public bool IsDeleted { get; set; }
 		public ICollection<Review> Reviews { get; set; }
         public ICollection<MovieGenre> movieGenres { get; set; }
+        public ICollection<ScoresUserMovie> scoresUserMovies { get; set; }
     }
 }

@@ -69,7 +69,7 @@ namespace IMDB.Services
 			var reviewToAdd = new Review()
 			{
 				MovieID = movieID,
-				Score = rating,
+				//Score = rating,
 				Text = reviewText
 			};
 			foundMovie.Reviews.Add(reviewToAdd);
