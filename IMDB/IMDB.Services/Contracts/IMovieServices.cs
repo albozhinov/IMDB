@@ -9,6 +9,10 @@
 		/// <param name="genre"></param>
 		/// <param name="producer"></param>
 		void CreateMovie(string name, string genre, string producer);
-		void DeleteMovie();
+		/// <summary>
+		/// Deletes movie via its ID
+		/// </summary>
+		/// <param name="movieID"></param>
+		void DeleteMovie(int movieID);
 	}
 }

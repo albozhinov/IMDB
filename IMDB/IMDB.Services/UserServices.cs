@@ -19,7 +19,7 @@ namespace IMDB.Services
 		public void Login(string userName, string password)
 		{
 			var user = userRepo.LoginUser(userName, password);
-			if (user is null) throw new LoginFailedException("Incorrect username or password");
+			if (user is null) throw new LoginFailedException();
 
 			this.loginSession.LoggedUserPermissions = userRepo.GetPermissions(user.Name);
 			this.loginSession.LoggedUserRole = user.Role;
@@ -33,7 +33,7 @@ namespace IMDB.Services
 
 		public void Register(string userName, string password)
 		{
-			if (this.userRepo.Exists(userName)) throw new RegisterFailedException("User already exists!");
+			if (this.userRepo.Exists(userName)) throw new RegisterFailedException();
 
 			this.userRepo.AddUser(userName, password);
 		}
