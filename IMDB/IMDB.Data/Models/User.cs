@@ -12,6 +12,5 @@ namespace IMDB.Data.Models
         public String Role { get; set; }
         public int Rank { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        public ICollection<ScoresUserMovie> scoresUserMovies {get; set;}
     }
 }
