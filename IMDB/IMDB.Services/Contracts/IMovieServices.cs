@@ -1,4 +1,6 @@
-﻿namespace IMDB.Services.Contracts
+﻿using IMDB.Data.Models;
+
+namespace IMDB.Services.Contracts
 {
 	public interface IMovieServices
 	{
@@ -14,5 +16,7 @@
 		/// </summary>
 		/// <param name="movieID"></param>
 		void DeleteMovie(int movieID);
+		void RateMovie(int movieID, double rating, string reviewText);
+		Movie Check(int movieID);
 	}
 }

@@ -10,6 +10,7 @@ namespace IMDB.Data.Injection
 			builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
 				.AsImplementedInterfaces();
 
+
 			base.Load(builder);
 		}
 	}
