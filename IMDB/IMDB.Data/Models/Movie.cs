@@ -8,7 +8,7 @@ namespace IMDB.Data.Models
 	{
 		public int ID { get; set; }
 		public String Name { get; set; }
-		public double Score { get; set; }
+		public double MovieScore { get; set; }
 		public String Genre { get; set; }
 		public String Producer { get; set; }
 		public bool IsDeleted { get; set; }

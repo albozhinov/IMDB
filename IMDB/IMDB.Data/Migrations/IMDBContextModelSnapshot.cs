@@ -41,11 +41,11 @@ namespace IMDB.Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<double>("MovieScore");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("Producer");
-
-                    b.Property<double>("Score");
 
                     b.HasKey("ID");
 
@@ -88,7 +88,9 @@ namespace IMDB.Data.Migrations
 
                     b.Property<int>("MovieID");
 
-                    b.Property<int>("Score");
+                    b.Property<int>("MovieRating");
+
+                    b.Property<int>("ReviewScore");
 
                     b.Property<string>("Text");
 
@@ -101,6 +103,21 @@ namespace IMDB.Data.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("IMDB.Data.Models.ReviewRatings", b =>
+                {
+                    b.Property<int>("UserId");
+
+                    b.Property<int>("ReviewId");
+
+                    b.Property<double>("ReviewRating");
+
+                    b.HasKey("UserId", "ReviewId");
+
+                    b.HasIndex("ReviewId");
+
+                    b.ToTable("ReviewRatings");
                 });
 
             modelBuilder.Entity("IMDB.Data.Models.User", b =>
@@ -145,6 +162,19 @@ namespace IMDB.Data.Migrations
                     b.HasOne("IMDB.Data.Models.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IMDB.Data.Models.ReviewRatings", b =>
+                {
+                    b.HasOne("IMDB.Data.Models.Review", "Review")
+                        .WithMany("ReviewRatings")
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("IMDB.Data.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

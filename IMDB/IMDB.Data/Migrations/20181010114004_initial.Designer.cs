@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMDB.Data.Migrations
 {
     [DbContext(typeof(IMDBContext))]
-    [Migration("20181009181039_AddedScoresUseMovie_Table")]
-    partial class AddedScoresUseMovie_Table
+    [Migration("20181010114004_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,11 +43,11 @@ namespace IMDB.Data.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<double>("MovieScore");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("Producer");
-
-                    b.Property<double>("Score");
 
                     b.HasKey("ID");
 
@@ -90,6 +90,10 @@ namespace IMDB.Data.Migrations
 
                     b.Property<int>("MovieID");
 
+                    b.Property<int>("MovieRating");
+
+                    b.Property<int>("ReviewScore");
+
                     b.Property<string>("Text");
 
                     b.Property<int>("UserID");
@@ -103,19 +107,25 @@ namespace IMDB.Data.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("IMDB.Data.Models.ScoresUserMovie", b =>
+            modelBuilder.Entity("IMDB.Data.Models.ReviewRatings", b =>
                 {
-                    b.Property<int>("MovieId");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ReviewId");
+
+                    b.Property<double>("ReviewRating");
 
                     b.Property<int>("UserId");
 
-                    b.Property<int>("Score");
+                    b.HasKey("ID");
 
-                    b.HasKey("MovieId", "UserId");
+                    b.HasIndex("ReviewId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ScoresUserMovie");
+                    b.ToTable("ReviewRatings");
                 });
 
             modelBuilder.Entity("IMDB.Data.Models.User", b =>
@@ -163,15 +173,15 @@ namespace IMDB.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("IMDB.Data.Models.ScoresUserMovie", b =>
+            modelBuilder.Entity("IMDB.Data.Models.ReviewRatings", b =>
                 {
-                    b.HasOne("IMDB.Data.Models.Movie", "Movie")
-                        .WithMany("scoresUserMovies")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("IMDB.Data.Models.Review", "Review")
+                        .WithMany("ReviewRatings")
+                        .HasForeignKey("ReviewId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IMDB.Data.Models.User", "User")
-                        .WithMany("scoresUserMovies")
+                        .WithMany("ReviewRatings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

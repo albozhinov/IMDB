@@ -27,7 +27,7 @@ namespace IMDB.Data.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
-                    Score = table.Column<double>(nullable: false),
+                    MovieScore = table.Column<double>(nullable: false),
                     Genre = table.Column<string>(nullable: true),
                     Producer = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false)
@@ -99,6 +99,8 @@ namespace IMDB.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     MovieID = table.Column<int>(nullable: false),
                     UserID = table.Column<int>(nullable: false),
+                    MovieRating = table.Column<int>(nullable: false),
+                    ReviewScore = table.Column<int>(nullable: false),
                     Text = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -118,10 +120,47 @@ namespace IMDB.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ReviewRatings",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<int>(nullable: false),
+                    ReviewId = table.Column<int>(nullable: false),
+                    ReviewRating = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReviewRatings", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ReviewRatings_Reviews_ReviewId",
+                        column: x => x.ReviewId,
+                        principalTable: "Reviews",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReviewRatings_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_MovieGenres_MovieID",
                 table: "MovieGenres",
                 column: "MovieID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReviewRatings_ReviewId",
+                table: "ReviewRatings",
+                column: "ReviewId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReviewRatings_UserId",
+                table: "ReviewRatings",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_MovieID",
@@ -143,10 +182,13 @@ namespace IMDB.Data.Migrations
                 name: "Permitions");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "ReviewRatings");
 
             migrationBuilder.DropTable(
                 name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "Movies");

@@ -12,6 +12,7 @@ namespace IMDB.Data.Context
         public DbSet<Permition> Permitions { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<ReviewRatings> ReviewRatings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -25,7 +26,6 @@ namespace IMDB.Data.Context
         {
             modelBuilder.Entity<MovieGenre>()
                 .HasKey(m => new { m.GenreID, m.MovieID });
-
             base.OnModelCreating(modelBuilder);
         }
 
