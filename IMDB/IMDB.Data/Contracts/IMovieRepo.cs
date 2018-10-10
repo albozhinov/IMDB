@@ -10,5 +10,6 @@ namespace IMDB.Data.Contracts
 		Movie GetMovie(int movieID);
 		void UnDeleteMovie(int movieID);
 		void DeleteMovie(int movieID);
+        ICollection<Review> GetReviews(int movieID);
 	}
 }
