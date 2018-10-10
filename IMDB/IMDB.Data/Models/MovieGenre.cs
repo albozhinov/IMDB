@@ -8,7 +8,7 @@ namespace IMDB.Data.Models
     {
         public int MovieID { get; set; }
         public int GenreID { get; set; }
-        public Movie movie { get; set; }
-        public Genre genre { get; set; }
+        public Movie Movie { get; set; }
+        public Genre Genre { get; set; }
     }
 }

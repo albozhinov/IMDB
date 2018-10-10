@@ -18,7 +18,7 @@ namespace IMDB.Data.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-4T206OM;Database=IMBD;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=ALEX-PC;Database=IMBD;Trusted_Connection=True;");
             }
         }
 

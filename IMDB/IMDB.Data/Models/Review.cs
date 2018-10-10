@@ -9,8 +9,8 @@ namespace IMDB.Data.Models
         public int ID { get; set; }
         public int MovieID { get; set; }
         public int UserID { get; set; }
-        public int MovieRating { get; set; }
-        public int ReviewScore { get; set; }
+        public double MovieRating { get; set; }
+        public double ReviewScore { get; set; }
         public String Text { get; set; }
         public Movie Movie { get; set; }
         public User User { get; set; }

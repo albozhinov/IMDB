@@ -99,8 +99,8 @@ namespace IMDB.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     MovieID = table.Column<int>(nullable: false),
                     UserID = table.Column<int>(nullable: false),
-                    MovieRating = table.Column<int>(nullable: false),
-                    ReviewScore = table.Column<int>(nullable: false),
+                    MovieRating = table.Column<double>(nullable: false),
+                    ReviewScore = table.Column<double>(nullable: false),
                     Text = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -126,7 +126,7 @@ namespace IMDB.Data.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true),
                     ReviewId = table.Column<int>(nullable: false),
                     ReviewRating = table.Column<double>(nullable: false)
                 },
@@ -144,7 +144,7 @@ namespace IMDB.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
