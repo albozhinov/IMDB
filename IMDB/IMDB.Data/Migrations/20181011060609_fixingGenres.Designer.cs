@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMDB.Data.Migrations
 {
     [DbContext(typeof(IMDBContext))]
-    [Migration("20181010194010_initial")]
-    partial class initial
+    [Migration("20181011060609_fixingGenres")]
+    partial class fixingGenres
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,9 +40,9 @@ namespace IMDB.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Genre");
-
                     b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("MovieGenreID");
 
                     b.Property<double>("MovieScore");
 
@@ -135,13 +135,13 @@ namespace IMDB.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Age");
-
-                    b.Property<string>("Name");
+                    b.Property<string>("Password");
 
                     b.Property<int>("Rank");
 
                     b.Property<string>("Role");
+
+                    b.Property<string>("UserName");
 
                     b.HasKey("ID");
 
@@ -151,7 +151,7 @@ namespace IMDB.Data.Migrations
             modelBuilder.Entity("IMDB.Data.Models.MovieGenre", b =>
                 {
                     b.HasOne("IMDB.Data.Models.Genre", "Genre")
-                        .WithMany("movieGenres")
+                        .WithMany("MovieGenres")
                         .HasForeignKey("GenreID")
                         .OnDelete(DeleteBehavior.Cascade);
 

@@ -8,27 +8,14 @@ namespace IMDB.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Genres",
-                columns: table => new
-                {
-                    ID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    GenreType = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Genres", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Movies",
                 columns: table => new
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    GenreID = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     MovieScore = table.Column<double>(nullable: false),
-                    Genre = table.Column<string>(nullable: true),
                     Producer = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
@@ -57,8 +44,8 @@ namespace IMDB.Data.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Age = table.Column<string>(nullable: true),
+                    UserName = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
                     Role = table.Column<string>(nullable: true),
                     Rank = table.Column<int>(nullable: false)
                 },
@@ -68,27 +55,23 @@ namespace IMDB.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MovieGenres",
+                name: "Genres",
                 columns: table => new
                 {
-                    MovieID = table.Column<int>(nullable: false),
-                    GenreID = table.Column<int>(nullable: false)
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    GenreType = table.Column<string>(nullable: true),
+                    MovieID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MovieGenres", x => new { x.GenreID, x.MovieID });
+                    table.PrimaryKey("PK_Genres", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_MovieGenres_Genres_GenreID",
-                        column: x => x.GenreID,
-                        principalTable: "Genres",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MovieGenres_Movies_MovieID",
+                        name: "FK_Genres_Movies_MovieID",
                         column: x => x.MovieID,
                         principalTable: "Movies",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,8 +131,8 @@ namespace IMDB.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MovieGenres_MovieID",
-                table: "MovieGenres",
+                name: "IX_Genres_MovieID",
+                table: "Genres",
                 column: "MovieID");
 
             migrationBuilder.CreateIndex(
@@ -176,16 +159,13 @@ namespace IMDB.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MovieGenres");
+                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Permitions");
 
             migrationBuilder.DropTable(
                 name: "ReviewRatings");
-
-            migrationBuilder.DropTable(
-                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

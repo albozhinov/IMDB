@@ -56,7 +56,7 @@ namespace IMDB.Services
 
             // Обсъди с Генерала дали може loginSession.LoggedUser 
             //да е от тип User. ПРоверката да е по userID, а не по name!!!
-            if (findReview.User.Name == loginSession.LoggedUser || loginSession.LoggedUserRole.ToLower() == "admin") 
+            if (findReview.User.UserName == loginSession.LoggedUser || loginSession.LoggedUserRole.ToLower() == "admin") 
             {
                 reviewRepo.Delete(findReview);
             }

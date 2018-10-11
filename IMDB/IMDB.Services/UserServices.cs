@@ -11,41 +11,61 @@ namespace IMDB.Services
 	{
 		private IRepository<User> userRepo;
 		private ILoginSession loginSession;
+		private const string DEFAULT_USER_REGISTER_ROLE = "user";
+		private const int DEFAULT_USER_REGISTER_RANK = 1;
 
 		public UserServices(IRepository<User> userRepo, ILoginSession loginSession)
 		{
 			this.userRepo = userRepo;
 			this.loginSession = loginSession;
 
-			this.loginSession.LoggedUserPermissions = GetPermissions(null);
+			this.loginSession.LoggedUserPermissions = GetPermissions(-1);
+			this.loginSession.LoggedUserID = -1;
+			this.loginSession.LoggedUserRank = 0;
 		}
 
-		private ICollection<string> GetPermissions(string userName)
+		private ICollection<string> GetPermissions(int userID)
 		{
-			//TODO fix and add null thingy
-			return this.userRepo.All().Where(u => u.Rank <= loginSession.LoggedUserRank).Select(u => userName).ToList();
+			//gets the permissions of guest
+			if(userID == -1)
+				return this.userRepo.All().Where(u => u.Rank <= loginSession.LoggedUserRank).Select(u => u.UserName).ToList();
+			//gets the permissions of a user
+			return this.userRepo.All().Where(u => u.Rank <= loginSession.LoggedUserRank).Select(u => u.UserName).ToList();
 		}
 		public void Login(string userName, string password)
 		{
-			/*var user = userRepo.LoginUser(userName, password);
-			if (user is null) throw new LoginFailedException();
+			//TODO validate userName, password for null
+			var user = userRepo.All().FirstOrDefault(u => u.UserName == userName && u.Password == password);
+			if (user is null) throw new LoginFailedException("User not found or wrong password!");
             
-			this.loginSession.LoggedUserPermissions = GetPermissions(user.Name);
+			this.loginSession.LoggedUserPermissions = GetPermissions(user.ID);
 			this.loginSession.LoggedUserRole = user.Role;
-			this.loginSession.LoggedUserRank = user.Rank;*/
+			this.loginSession.LoggedUserRank = user.Rank;
+			this.loginSession.LoggedUserID = user.ID;
 		}
 
 		public void Logout()
 		{
-			this.loginSession.LoggedUserPermissions = GetPermissions(null);
+			this.loginSession.LoggedUserPermissions = GetPermissions(-1);
 			this.loginSession.LoggedUserRole = null;
+			this.loginSession.LoggedUserID = -1;
+			//This is guest login ID ^
+			this.loginSession.LoggedUserRank = 0;
 		}
 
 		public void Register(string userName, string password)
 		{
-			/*if (this.userRepo.Exists(userName)) throw new RegisterFailedException();
+			//TODO validate username, password for registration format
+			if (this.userRepo.All().Any(u => u.UserName == userName)) throw new RegisterFailedException("Username already exists!");
 
-			this.userRepo.AddUser(userName, password);*/
+			var userToAdd = new User
+			{
+				UserName = userName,
+				Password = password,
+				Rank = DEFAULT_USER_REGISTER_RANK,
+				Role = DEFAULT_USER_REGISTER_ROLE
+			};
+			this.userRepo.Add(userToAdd);
 		}
 	}
 }

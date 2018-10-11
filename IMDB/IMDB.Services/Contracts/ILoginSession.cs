@@ -7,6 +7,7 @@ namespace IMDB.Services.Contracts
 		string LoggedUser { get; set; }
 		string LoggedUserRole { get; set; }
 		int LoggedUserRank { get; set; }
+		int LoggedUserID { get; set; }
 		ICollection<string> LoggedUserPermissions { get; set; }
 	}
 }

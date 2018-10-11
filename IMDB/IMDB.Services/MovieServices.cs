@@ -15,10 +15,12 @@ namespace IMDB.Services
 		{
 			this.movieRepo = movieRepo;
 			this.loginSession = loginSession;
-			//TODO add permissions
+			//TODO add permissions for all services if the user is authorizied
 		}
 		public void CreateMovie(string name, string genre, string producer)
 		{
+			//Validate name, genre and producer for format
+			//if genre doesnt exists add it.
 			var findIfExists = movieRepo.All()
 				.FirstOrDefault(mov => mov.Producer.ToLower() == producer.ToLower() && mov.Name.ToLower() == name.ToLower());
 				
@@ -27,7 +29,7 @@ namespace IMDB.Services
 				var movieToAdd = new Movie()
 				{
 					Name = name,
-					Genre = genre,
+					//Genre = genre,
 					Producer = producer
 				};
 				this.movieRepo.Add(movieToAdd);
@@ -47,6 +49,7 @@ namespace IMDB.Services
 
 		public void DeleteMovie(int movieID)
 		{
+			//Validate movie ID
 			var movieToDelete = this.movieRepo.All().FirstOrDefault(mov => mov.ID == movieID);
 			if (movieToDelete is null)
 				throw new MovieNotFoundException();
@@ -56,6 +59,7 @@ namespace IMDB.Services
 
 		public Movie Check(int movieID)
 		{
+			//Validate movie ID
 			var foundMovie = this.movieRepo.All().FirstOrDefault(mov => mov.ID == movieID);
 			if (foundMovie is null)
 				throw new MovieNotFoundException();
@@ -63,19 +67,21 @@ namespace IMDB.Services
 		}
 		public void RateMovie(int movieID, double rating, string reviewText)
 		{
+			//Validate movie ID, rating and review text
 			var foundMovie = this.movieRepo.All().FirstOrDefault(mov => mov.ID == movieID);
 			if (foundMovie is null)
 				throw new MovieNotFoundException();
 			var reviewToAdd = new Review()
 			{
 				MovieID = movieID,
-				//Score = rating,
+				MovieRating = rating,
+				UserID = loginSession.LoggedUserID,
 				Text = reviewText
 			};
 			foundMovie.Reviews.Add(reviewToAdd);
 			movieRepo.Update(foundMovie);
 			movieRepo.Save();
-			//TODO update the rating on the movie
+			//TODO update the rating on the movie SHABAN its you here!
 		}
 	}
 }

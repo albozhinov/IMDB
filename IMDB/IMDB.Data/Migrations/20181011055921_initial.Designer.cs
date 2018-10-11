@@ -4,14 +4,16 @@ using IMDB.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IMDB.Data.Migrations
 {
     [DbContext(typeof(IMDBContext))]
-    partial class IMDBContextModelSnapshot : ModelSnapshot
+    [Migration("20181011055921_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,7 +29,11 @@ namespace IMDB.Data.Migrations
 
                     b.Property<string>("GenreType");
 
+                    b.Property<int?>("MovieID");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("MovieID");
 
                     b.ToTable("Genres");
                 });
@@ -38,9 +44,9 @@ namespace IMDB.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<int>("GenreID");
 
-                    b.Property<int>("MovieGenreID");
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<double>("MovieScore");
 
@@ -51,19 +57,6 @@ namespace IMDB.Data.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Movies");
-                });
-
-            modelBuilder.Entity("IMDB.Data.Models.MovieGenre", b =>
-                {
-                    b.Property<int>("GenreID");
-
-                    b.Property<int>("MovieID");
-
-                    b.HasKey("GenreID", "MovieID");
-
-                    b.HasIndex("MovieID");
-
-                    b.ToTable("MovieGenres");
                 });
 
             modelBuilder.Entity("IMDB.Data.Models.Permition", b =>
@@ -86,8 +79,6 @@ namespace IMDB.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsDeleted");
 
                     b.Property<int>("MovieID");
 
@@ -148,17 +139,11 @@ namespace IMDB.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("IMDB.Data.Models.MovieGenre", b =>
+            modelBuilder.Entity("IMDB.Data.Models.Genre", b =>
                 {
-                    b.HasOne("IMDB.Data.Models.Genre", "Genre")
-                        .WithMany("MovieGenres")
-                        .HasForeignKey("GenreID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("IMDB.Data.Models.Movie", "Movie")
-                        .WithMany("MovieGenres")
-                        .HasForeignKey("MovieID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("IMDB.Data.Models.Movie")
+                        .WithMany("Genres")
+                        .HasForeignKey("MovieID");
                 });
 
             modelBuilder.Entity("IMDB.Data.Models.Review", b =>
