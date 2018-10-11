@@ -1,4 +1,5 @@
 ﻿using IMDB.Data.Models;
+using System.Collections.Generic;
 
 namespace IMDB.Services.Contracts
 {
@@ -10,7 +11,7 @@ namespace IMDB.Services.Contracts
 		/// <param name="name"></param>
 		/// <param name="genre"></param>
 		/// <param name="producer"></param>
-		void CreateMovie(string name, string genre, string producer);
+		void CreateMovie(string name, ICollection<string> genre, string producer);
 		/// <summary>
 		/// Deletes movie via its ID
 		/// </summary>
