@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PingPong.Providers.Validation
+namespace IMDB.Services.Providers
 {
     public static class Validator
     {
