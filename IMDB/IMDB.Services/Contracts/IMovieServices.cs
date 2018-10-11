@@ -24,6 +24,7 @@ namespace IMDB.Services.Contracts
 		/// <param name="rating"></param>
 		/// <param name="reviewText"></param>
 		void RateMovie(int movieID, double rating, string reviewText);
+        ICollection<Movie> SearchMovies(string name, string genre, string producer); 
 		Movie Check(int movieID);
 	}
 }
