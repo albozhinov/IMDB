@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using IMDB.Services.Contracts;
-using PingPong.Providers.Validation;
 using System;
+using IMDB.Services.Providers;
 
 namespace IMDB.Services
 {
