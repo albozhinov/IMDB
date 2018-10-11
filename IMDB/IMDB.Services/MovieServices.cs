@@ -1,5 +1,4 @@
 ﻿using IMDB.Data.Context;
-using IMDB.Data.Contracts;
 using IMDB.Data.Models;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
@@ -22,10 +21,10 @@ namespace IMDB.Services
 		public void CreateMovie(string name, ICollection<string> genres, string producer)
 		{
             //Validate name, genre and producer for format - Done?
-            var findMovie = context.Movies.FirstOrDefault(mov => mov.Name.ToLower().Equals(name.ToLower()) && mov.Producer.ToLower().Equals(producer.ToLower()));
+            var foundMovie = context.Movies.FirstOrDefault(mov => mov.Name.ToLower().Equals(name.ToLower()) && mov.Producer.ToLower().Equals(producer.ToLower()));
 
 			Movie movieToAdd = null;
-			if (findMovie == null)
+			if (foundMovie == null)
 			{
 				movieToAdd = new Movie()
 				{
@@ -36,10 +35,11 @@ namespace IMDB.Services
 			}
 			else
 			{
-				if (findMovie.IsDeleted == true)
+				if (foundMovie.IsDeleted == true)
 				{
 					//TODO restore all deleted posts and their stuff - no need of that
-					findMovie.IsDeleted = false;
+					foundMovie.IsDeleted = false;
+					context.Movies.Update(foundMovie);
                     context.SaveChanges();
 					return;
 				}else throw new MovieExistsException();
@@ -71,6 +71,7 @@ namespace IMDB.Services
                 foreach (var review in reviews)
                 {
                     review.IsDeleted = true;
+					context.Reviews.Update(review);
                 }
             }
 			context.SaveChanges();
@@ -104,12 +105,13 @@ namespace IMDB.Services
 
             //TODO update the rating on the movie SHABAN its you here! 
             //Shaban: DONE!
-            foundMovie.MovieScore = UpdateRating(foundMovie, rating);
+            foundMovie.MovieScore = CalcualteRating(foundMovie, rating);
+			context.Movies.Update(foundMovie);
             context.SaveChanges();
 
 		}
 
-        private double UpdateRating(Movie movie , double newRating)
+        private double CalcualteRating(Movie movie , double newRating)
         {
             int count = context.Reviews.Count(rev => rev.MovieID == movie.ID);
             double sumAllRatings = context.Reviews.Where(rev => rev.MovieID == movie.ID).Sum(rev => rev.MovieRating);
