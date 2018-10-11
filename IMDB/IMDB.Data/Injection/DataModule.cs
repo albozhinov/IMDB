@@ -9,6 +9,9 @@ namespace IMDB.Data.Injection
 		{
 			builder.RegisterType<IMDBContext>().AsSelf();
 			base.Load(builder);
-		}
-	}
+
+            builder.RegisterType<IMDBContext>().AsSelf();
+
+        }
+    }
 }

@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using IMDB.Core.Contracts;
-using IMDB.Core.Injection;
+using IMDB.Console.Contracts;
+using IMDB.Console.Injection;
 
 namespace IMDB.CLI
 {
