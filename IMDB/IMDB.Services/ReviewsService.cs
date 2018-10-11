@@ -1,5 +1,4 @@
-﻿using IMDB.Data.Contracts;
-using IMDB.Services.Contracts;
+﻿using IMDB.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace IMDB.Services
     {
         private IMDBContext context;
         private ILoginSession loginSession;
-        private int adminRank = 2;
+        private const int adminRank = 2;
 
         public ReviewsServices(IMDBContext context, ILoginSession login)
         {
@@ -21,19 +20,20 @@ namespace IMDB.Services
             this.loginSession = login;            
         }
         
-        public ICollection<Review> ShowReviews(int movieID)
+        public IEnumerable<Review> ShowReviews(int movieID)
         {
-            Movie findMovie = this.movieRepo.AllButDeleted().FirstOrDefault(m => m.ID == movieID);
-
-            if (findMovie is null)
+            if (!this.context.Movies.Any(m => m.ID == movieID))
             {
-                throw new ReviewsException("Incorrect movie ID");
-            }           
+                throw new MovieNotFoundException("Movie not found.");
+            }
 
-            return findMovie.Reviews;
+
+            var reviewsQuery = this.context.Reviews.Where(r => r.MovieID == movieID);                    
+
+            return reviewsQuery.ToList();
         }
         
-        public void RateReview(int reviewID, int score)
+        public Review RateReview(int reviewID, int score)
         {
             Review findReview = this.reviewRepo.AllButDeleted().FirstOrDefault(r => r.ID == reviewID);
 
@@ -46,9 +46,9 @@ namespace IMDB.Services
 
         }
 
-        public void DeleteReview(int reviewID)
+        public Review DeleteReview(int reviewID)
         {
-            Review findReview = reviewRepo.AllButDeleted().FirstOrDefault(r => r.ID == reviewID);
+            var findReview = context.Reviews.FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {

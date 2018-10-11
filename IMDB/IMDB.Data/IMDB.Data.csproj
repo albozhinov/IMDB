@@ -5,13 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" />
+    <Compile Remove="Contracts\**" />
+    <EmbeddedResource Remove="Contracts\**" />
+    <None Remove="Contracts\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\" />
+    <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" />
   </ItemGroup>
 
 </Project>

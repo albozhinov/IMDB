@@ -7,10 +7,10 @@ namespace IMDB.Services.Contracts
 {
     interface IReviewsServices
     {
-        ICollection<Review> ShowReviews(int movieId);
+        IEnumerable<Review> ShowReviews(int movieId);
 
-        void RateReview(int reviewID, int socre);
+        Review RateReview(int reviewID, int socre);
 
-        void DeleteReview(int reviewID);
+        Review DeleteReview(int reviewID);
     }
 }
