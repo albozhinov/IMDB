@@ -5,21 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using IMDB.Services.Exceptions;
 using IMDB.Data.Models;
+using IMDB.Data.Context;
 
 namespace IMDB.Services
 {
     public class ReviewsServices : IReviewsServices
     {
-        private IRepository<Movie> movieRepo;
-        private IRepository<Review> reviewRepo;
+        private IMDBContext context;
         private ILoginSession loginSession;
         private int adminRank = 2;
 
-        public ReviewsServices(IRepository<Movie> movie, ILoginSession login, IRepository<Review> review)
+        public ReviewsServices(IMDBContext context, ILoginSession login)
         {
-            this.movieRepo = movie;
-            this.loginSession = login;
-            this.reviewRepo = review;
+            this.context = context;
+            this.loginSession = login;            
         }
         
         public ICollection<Review> ShowReviews(int movieID)
