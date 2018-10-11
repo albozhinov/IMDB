@@ -5,6 +5,7 @@ using System.Linq;
 using IMDB.Services.Exceptions;
 using IMDB.Data.Models;
 using IMDB.Data.Context;
+using IMDB.Services.Providers;
 
 namespace IMDB.Services
 {
@@ -35,7 +36,8 @@ namespace IMDB.Services
         
         public Review RateReview(int reviewID, int score)
         {
-            Review findReview = this.reviewRepo.AllButDeleted().FirstOrDefault(r => r.ID == reviewID);
+
+            var findReview = this.context.FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
@@ -46,21 +48,25 @@ namespace IMDB.Services
 
         }
 
-        public Review DeleteReview(int reviewID)
+        public void DeleteReview(int reviewID)
         {
+            Validator.IsNonNegative(reviewID, "ReviewID cannot be megative");
+            
+
             var findReview = context.Reviews.FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
-                throw new ReviewsException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
+                throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
             }            
             
-            if (findReview.User.ID == loginSession.LoggedUserID || loginSession.LoggedUserRank == adminRank) 
+            if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank) 
             {
-                reviewRepo.Delete(findReview);                
+                findReview.IsDeleted = true;               
+                context.Reviews.Update(findReview);
             }
 
-            reviewRepo.Save();
+            context.SaveChanges();            
         }
     }
 }

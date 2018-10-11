@@ -11,6 +11,6 @@ namespace IMDB.Services.Contracts
 
         Review RateReview(int reviewID, int socre);
 
-        Review DeleteReview(int reviewID);
+        void DeleteReview(int reviewID);
     }
 }
