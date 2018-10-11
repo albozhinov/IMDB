@@ -1,7 +1,5 @@
 ﻿using IMDB.Data.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IMDB.Services.Contracts
 {
@@ -9,7 +7,7 @@ namespace IMDB.Services.Contracts
     {
         IEnumerable<Review> ShowReviews(int movieId);
 
-        Review RateReview(int reviewID, int socre);
+        Review RateReview(int reviewID, double socre);
 
         void DeleteReview(int reviewID);
     }

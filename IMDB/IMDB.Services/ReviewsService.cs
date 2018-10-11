@@ -34,23 +34,29 @@ namespace IMDB.Services
             return reviewsQuery.ToList();
         }
         
-        public Review RateReview(int reviewID, int score)
+        public Review RateReview(int reviewID, double score)
         {
+            Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
+            Validator.IfIsInRangeInclusive(score, 0D, 10D, "Score is incorrect range.");
 
-            var findReview = this.context.FirstOrDefault(r => r.ID == reviewID);
+            var findReview = this.context.Reviews.FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
-                throw new ReviewsException($"Review with ID: {reviewID} not found");
+                throw new ReviewNotFoundException($"Review with ID: {reviewID} not found");
             }
 
-            // Изчакай премоделирането на точките в ревютата, след което довърши командата!
+            findReview.ReviewScore += score;
+            context.Update(findReview);
 
+            context.SaveChanges();
+
+            return findReview;
         }
 
         public void DeleteReview(int reviewID)
         {
-            Validator.IsNonNegative(reviewID, "ReviewID cannot be megative");
+            Validator.IsNonNegative(reviewID, "ReviewID cannot be negative.");
             
 
             var findReview = context.Reviews.FirstOrDefault(r => r.ID == reviewID);
