@@ -1,11 +1,8 @@
 ﻿using IMDB.Console.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IMDB.Console.ConsoleProviders
 {
-    public class ConsoleReader : IReader
+    public sealed class ConsoleReader : IUIReader
     {
         public string ReadLine()
         {
