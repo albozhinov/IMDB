@@ -13,16 +13,18 @@ namespace IMDB.Services
         private IRepository<Movie> movieRepo;
         private IRepository<Review> reviewRepo;
         private ILoginSession loginSession;
+        private int adminRank = 2;
 
-        public ReviewsServices(IRepository<Movie> movie, ILoginSession login)
+        public ReviewsServices(IRepository<Movie> movie, ILoginSession login, IRepository<Review> review)
         {
             this.movieRepo = movie;
             this.loginSession = login;
+            this.reviewRepo = review;
         }
         
         public ICollection<Review> ShowReviews(int movieID)
         {
-            Movie findMovie = this.movieRepo.All().FirstOrDefault(m => m.ID == movieID);
+            Movie findMovie = this.movieRepo.AllButDeleted().FirstOrDefault(m => m.ID == movieID);
 
             if (findMovie is null)
             {
@@ -34,7 +36,7 @@ namespace IMDB.Services
         
         public void RateReview(int reviewID, int score)
         {
-            Review findReview = this.reviewRepo.All().FirstOrDefault(r => r.ID == reviewID);
+            Review findReview = this.reviewRepo.AllButDeleted().FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
@@ -47,21 +49,18 @@ namespace IMDB.Services
 
         public void DeleteReview(int reviewID)
         {
-            Review findReview = reviewRepo.All().FirstOrDefault(r => r.ID == reviewID);
+            Review findReview = reviewRepo.AllButDeleted().FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
                 throw new ReviewsException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
-            }
-
-            // Обсъди с Генерала дали може loginSession.LoggedUser 
-            //да е от тип User. ПРоверката да е по userID, а не по name!!!
-            if (findReview.User.UserName == loginSession.LoggedUser || loginSession.LoggedUserRole.ToLower() == "admin") 
+            }            
+            
+            if (findReview.User.ID == loginSession.LoggedUserID || loginSession.LoggedUserRank == adminRank) 
             {
-                reviewRepo.Delete(findReview);
+                reviewRepo.Delete(findReview);                
             }
 
-            // Review трябва да има Property bool isDeleted !!!
             reviewRepo.Save();
         }
     }
