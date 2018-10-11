@@ -2,6 +2,7 @@
 using IMDB.Data.Models;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,25 +11,26 @@ namespace IMDB.Services
 	public sealed class UserServices : IUserServices
 	{
 		private IRepository<User> userRepo;
+		private IRepository<Permition> permRepo;
 		private ILoginSession loginSession;
-		private const string DEFAULT_USER_REGISTER_ROLE = "user";
-		private const int DEFAULT_USER_REGISTER_RANK = 1;
 
-		public UserServices(IRepository<User> userRepo, ILoginSession loginSession)
+		private const int GUEST_ID = -1;
+		public UserServices(IRepository<User> userRepo, IRepository<Permition> permRepo,ILoginSession loginSession)
 		{
 			this.userRepo = userRepo;
 			this.loginSession = loginSession;
+			this.permRepo = permRepo;
 
-			this.loginSession.LoggedUserPermissions = GetPermissions(-1);
-			this.loginSession.LoggedUserID = -1;
-			this.loginSession.LoggedUserRank = 0;
+			this.loginSession.LoggedUserPermissions = GetPermissions(GUEST_ID);
+			this.loginSession.LoggedUserID = GUEST_ID;
+			this.loginSession.LoggedUserRank = (int)UserRoles.Guest;
 		}
 
 		private ICollection<string> GetPermissions(int userID)
 		{
 			//gets the permissions of guest
 			if(userID == -1)
-				return this.userRepo.All().Where(u => u.Rank <= loginSession.LoggedUserRank).Select(u => u.UserName).ToList();
+				return this.permRepo.All().
 			//gets the permissions of a user
 			return this.userRepo.All().Where(u => u.Rank <= loginSession.LoggedUserRank).Select(u => u.UserName).ToList();
 		}
@@ -62,8 +64,8 @@ namespace IMDB.Services
 			{
 				UserName = userName,
 				Password = password,
-				Rank = DEFAULT_USER_REGISTER_RANK,
-				Role = DEFAULT_USER_REGISTER_ROLE
+				Rank = (int)UserRoles.Guest,
+				Role = UserRoles.Admin.ToString().ToLower()
 			};
 			this.userRepo.Add(userToAdd);
 		}

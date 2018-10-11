@@ -10,17 +10,13 @@ namespace IMDB.Services
 {
 	public sealed class MovieServices : IMovieServices
 	{
-		private IRepository<Movie> movieRepo;
 		private ILoginSession loginSession;
-		private IRepository<Genre> genreRepo;
-		private IRepository<MovieGenre> movieGenreRepo;
+		private IMDBContext context;
 
-		public MovieServices(IRepository<Movie> movieRepo, IRepository<Genre> genreRepo, IRepository<MovieGenre> movieGenreRepo,ILoginSession loginSession)
+		public MovieServices(IMDBContext context, ILoginSession loginSession)
 		{
-			this.movieRepo = movieRepo;
+			this.context = context;
 			this.loginSession = loginSession;
-			this.genreRepo = genreRepo;
-			this.movieGenreRepo = movieGenreRepo;
 			//TODO add permissions for all services if the user is authorizied
 		}
 		public void CreateMovie(string name, ICollection<string> genres, string producer)
