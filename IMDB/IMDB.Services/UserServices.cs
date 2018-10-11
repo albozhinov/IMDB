@@ -2,7 +2,7 @@
 using IMDB.Data.Models;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
-using PingPong.Providers.Validation;
+using IMDB.Services.Providers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

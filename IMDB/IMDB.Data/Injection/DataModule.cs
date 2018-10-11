@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using System.Reflection;
+using IMDB.Data.Context;
 
 namespace IMDB.Data.Injection
 {
@@ -7,10 +7,7 @@ namespace IMDB.Data.Injection
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
-			builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-				.AsImplementedInterfaces();
-
-
+			builder.RegisterType<IMDBContext>().AsSelf();
 			base.Load(builder);
 		}
 	}
