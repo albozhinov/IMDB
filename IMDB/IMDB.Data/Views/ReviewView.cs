@@ -1,4 +1,6 @@
-﻿namespace IMDB.Data.Views
+﻿using System.Text;
+
+namespace IMDB.Data.Views
 {
 	public sealed class ReviewView
 	{
@@ -6,7 +8,13 @@
 		public double Score { get; set; }
 		public string Text { get; set; }
 		public string ByUser { get; set; }
-		//Is it ok?
 		public string MovieName { get; set; }
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine($"# |{this.Rating}| |{this.Score}| |{this.ByUser}|");
+			sb.AppendLine($"   {this.Text}");
+			return sb.ToString();
+		}
 	}
 }

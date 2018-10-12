@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using IMDB.Console.Contracts;
 using IMDB.Services.Contracts;
 using IMDB.Services.Providers;
@@ -31,8 +32,11 @@ namespace IMDB.Console.Commands
 			{
 				return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
 			}
-			movieServices.Check(movieID);
+			var movieView = movieServices.Check(movieID);
 
+			StringBuilder result = new StringBuilder();
+			result.AppendLine($"Movie: {movieView.Name}		Director: {movieView.Director}");
+			result.AppendLine("Genre: " + String.Join(", ", movieView.Genres));
 			return "Movie created successfully";
 		}
 	}
