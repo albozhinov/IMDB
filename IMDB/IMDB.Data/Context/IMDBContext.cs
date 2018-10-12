@@ -30,12 +30,12 @@ namespace IMDB.Data.Context
 
 		public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
-        public DbSet<Permissions> Permitions { get; set; }
+        public DbSet<Permissions> Permissions { get; set; }
 		public DbSet<MovieGenre> MovieGenres { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<ReviewRatings> ReviewRatings { get; set; }
-        public DbSet<Producer> Producers { get; set; }
+        public DbSet<Director> Directors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -55,7 +55,8 @@ namespace IMDB.Data.Context
 			var usersAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\users.json");
 			var reviewsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\reviews.json");
 			var reviewRatingsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\reviewratings.json");
-			
+			var directorsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\directors.json");
+
 			var genres = JsonConvert.DeserializeObject<Genre[]>(genresAsJson);
 			var permissions = JsonConvert.DeserializeObject<Permissions[]>(permissionsAsJson);
 			var movies = JsonConvert.DeserializeObject<Movie[]>(moviesAsJson);
@@ -63,6 +64,7 @@ namespace IMDB.Data.Context
 			var users = JsonConvert.DeserializeObject<User[]>(usersAsJson);
 			var reviews = JsonConvert.DeserializeObject<Review[]>(reviewsAsJson);
 			var ratingReviews = JsonConvert.DeserializeObject<ReviewRatings[]>(reviewRatingsAsJson);
+			var directors = JsonConvert.DeserializeObject<Director[]>(directorsAsJson);
 
 			modelBuilder.Entity<Genre>().HasData(genres);
 			modelBuilder.Entity<Permissions>().HasData(permissions);
@@ -71,6 +73,7 @@ namespace IMDB.Data.Context
 			modelBuilder.Entity<User>().HasData(users);
 			modelBuilder.Entity<Review>().HasData(reviews);
 			modelBuilder.Entity<ReviewRatings>().HasData(ratingReviews);
+			modelBuilder.Entity<Director>().HasData(directors);
 		}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

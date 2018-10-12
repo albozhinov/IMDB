@@ -32,7 +32,7 @@ namespace IMDB.Services
 
 		private ICollection<string> GetPermissions(int role)
 		{
-			return this.context.Permitions.Where(p => p.Rank <= role).Select(p => p.Text).ToList();
+			return this.context.Permissions.Where(p => p.Rank <= role).Select(p => p.Text).ToList();
 		}
 		public void Login(string userName, string password)
 		{

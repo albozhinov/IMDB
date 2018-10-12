@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IMDB.Data.Models
 {
-    public class Producer
+    public class Director
     {
         public int ID { get; set; }
         [Required]

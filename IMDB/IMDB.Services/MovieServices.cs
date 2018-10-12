@@ -23,7 +23,7 @@ namespace IMDB.Services
 
         public bool CheckProducerExists(string producerName)
         {
-            var findProducer = context.Producers.FirstOrDefault(prod => prod.Name.Equals(producerName));
+            var findProducer = context.Directors.FirstOrDefault(prod => prod.Name.Equals(producerName));
             if (findProducer != null)
             {
                 return true;
@@ -37,7 +37,7 @@ namespace IMDB.Services
             Movie movieToAdd = null;
             if (!CheckProducerExists(producer))
             {
-                Producer producerToAdd = new Producer() { Name = producer };
+                Director producerToAdd = new Director() { Name = producer };
                 movieToAdd = new Movie()
                 {
                     Name = name,
@@ -56,7 +56,7 @@ namespace IMDB.Services
                     movieToAdd = new Movie()
                     {
                         Name = name,
-                        ProducerID = context.Producers.FirstOrDefault(prod => prod.Name.Equals(producer)).ID
+                        ProducerID = context.Directors.FirstOrDefault(prod => prod.Name.Equals(producer)).ID
                     };
                     this.context.Movies.Add(movieToAdd);
                 }
