@@ -1,4 +1,5 @@
 ﻿using IMDB.Data.Models;
+using IMDB.Data.Views;
 using System.Collections.Generic;
 
 namespace IMDB.Services.Contracts
@@ -24,7 +25,7 @@ namespace IMDB.Services.Contracts
 		/// <param name="rating"></param>
 		/// <param name="reviewText"></param>
 		void RateMovie(int movieID, double rating, string reviewText);
+		MovieView Check(int movieID);
         ICollection<Movie> SearchMovies(string name, string genre, string producer); 
-		Movie Check(int movieID);
 	}
 }

@@ -16,8 +16,7 @@ namespace IMDB.Console.ConsoleProviders
             //command format: cmdname - <arg1> : <arg2> : <arg3> : ...
             var cmdArguments = inputLine.Split('-').Select(arg => arg.Trim()).ToList();
             ICommand command = parser.ParseCommand(cmdArguments.First().Replace(" ", ""));
-            cmdArguments.Skip(1);
-            var parameters = inputLine.Split(':').Select(arg => arg.Trim()).ToList();
+            var parameters = cmdArguments[1].Split(':').Select(arg => arg.Trim()).ToList();
             return command.Run(parameters);
         }
     }

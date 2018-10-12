@@ -1,5 +1,6 @@
 ﻿using IMDB.Data.Context;
 using IMDB.Data.Models;
+using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -105,10 +106,27 @@ namespace IMDB.Services
 			context.SaveChanges();
 		}
 
-		public Movie Check(int movieID)
+		public MovieView Check(int movieID)
 		{
 			//Validate movie ID
-			var foundMovie = this.context.Movies.Where(mov => mov.ID == movieID).First();
+			var foundMovie = this.context.Movies
+				.Where(mov => mov.ID == movieID)
+				.Select(mov => new MovieView
+				{
+					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
+					Top5Reviews = mov.Reviews.OrderBy(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
+						{
+							ByUser = rev.User.UserName,
+							Score = rev.ReviewScore,
+							MovieName = rev.Movie.Name,
+							Rating = rev.MovieRating,
+							Text = rev.Text
+						})
+						.ToList(),
+					Score = mov.MovieScore,
+					Producer = mov.Producer
+				})
+				.FirstOrDefault();
 			if (foundMovie is null)
 				throw new MovieNotFoundException("Movie not found!");
 			return foundMovie;
