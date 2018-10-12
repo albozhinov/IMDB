@@ -4,12 +4,12 @@ using System.Text;
 
 namespace IMDB.Services.Exceptions
 {
-    public sealed class ReviewsException : Exception        
+    public class ReviewNotFoundException : Exception
     {
-        public ReviewsException(string message)
+        public ReviewNotFoundException(string message)
             : base(message)
         {
-
+                
         }
     }
 }

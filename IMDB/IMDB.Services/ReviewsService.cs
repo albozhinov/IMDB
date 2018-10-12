@@ -1,68 +1,78 @@
-﻿using IMDB.Data.Contracts;
-using IMDB.Services.Contracts;
+﻿using IMDB.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using IMDB.Services.Exceptions;
 using IMDB.Data.Models;
+using IMDB.Data.Context;
+using IMDB.Services.Providers;
 
 namespace IMDB.Services
 {
     public class ReviewsServices : IReviewsServices
     {
-        private IRepository<Movie> movieRepo;
-        private IRepository<Review> reviewRepo;
+        private IMDBContext context;
         private ILoginSession loginSession;
+        private const int adminRank = 2;
 
-        public ReviewsServices(IRepository<Movie> movie, ILoginSession login)
+        public ReviewsServices(IMDBContext context, ILoginSession login)
         {
-            this.movieRepo = movie;
-            this.loginSession = login;
+            this.context = context;
+            this.loginSession = login;            
         }
         
-        public ICollection<Review> ShowReviews(int movieID)
+        public IEnumerable<Review> ShowReviews(int movieID)
         {
-            Movie findMovie = this.movieRepo.All().FirstOrDefault(m => m.ID == movieID);
-
-            if (findMovie is null)
+            if (!this.context.Movies.Any(m => m.ID == movieID))
             {
-                throw new ReviewsException("Incorrect movie ID");
-            }           
+                throw new MovieNotFoundException("Movie not found.");
+            }
 
-            return findMovie.Reviews;
+
+            var reviewsQuery = this.context.Reviews.Where(r => r.MovieID == movieID);                    
+
+            return reviewsQuery.ToList();
         }
         
-        public void RateReview(int reviewID, int score)
+        public Review RateReview(int reviewID, double score)
         {
-            Review findReview = this.reviewRepo.All().FirstOrDefault(r => r.ID == reviewID);
+            Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
+            Validator.IfIsInRangeInclusive(score, 0D, 10D, "Score is incorrect range.");
+
+            var findReview = this.context.Reviews.FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
-                throw new ReviewsException($"Review with ID: {reviewID} not found");
+                throw new ReviewNotFoundException($"Review with ID: {reviewID} not found");
             }
 
-            // Изчакай премоделирането на точките в ревютата, след което довърши командата!
+            findReview.ReviewScore += score;
+            context.Update(findReview);
 
+            context.SaveChanges();
+
+            return findReview;
         }
 
         public void DeleteReview(int reviewID)
         {
-            Review findReview = reviewRepo.All().FirstOrDefault(r => r.ID == reviewID);
+            Validator.IsNonNegative(reviewID, "ReviewID cannot be negative.");
+            
+
+            var findReview = context.Reviews.FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
-                throw new ReviewsException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
-            }
-
-            // Обсъди с Генерала дали може loginSession.LoggedUser 
-            //да е от тип User. ПРоверката да е по userID, а не по name!!!
-            if (findReview.User.UserName == loginSession.LoggedUser || loginSession.LoggedUserRole.ToLower() == "admin") 
+                throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
+            }            
+            
+            if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank) 
             {
-                reviewRepo.Delete(findReview);
+                findReview.IsDeleted = true;               
+                context.Reviews.Update(findReview);
             }
 
-            // Review трябва да има Property bool isDeleted !!!
-            reviewRepo.Save();
+            context.SaveChanges();            
         }
     }
 }

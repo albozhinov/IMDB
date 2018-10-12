@@ -9,7 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
+    <ProjectReference Include="..\IMDB.Data\IMDB.Data.csproj" />
+    <ProjectReference Include="..\IMDB.Services\IMDB.Services.csproj" />
   </ItemGroup>
 
 </Project>

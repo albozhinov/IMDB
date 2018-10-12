@@ -1,20 +1,17 @@
 ﻿using IMDB.Console.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IMDB.Console.ConsoleProviders
 {
-    public class ConsoleWriter : IWriter
+    public sealed class ConsoleWriter : IUIWriter
     {
-        public void WirteLine(string message)
+        public void WriteLine(string message)
         {
-            System.Console.Write(message);
+            System.Console.WriteLine(message);
         }
 
         public void Write(string message)
         {
-            System.Console.WriteLine(message);
+            System.Console.Write(message);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace IMDB.Services
 					Name = name,
 					Producer = producer
 				};
-				this.context.Add(movieToAdd);
+				this.context.Movies.Add(movieToAdd);
 			}
 			else
 			{
@@ -54,7 +54,7 @@ namespace IMDB.Services
 					GenreID = genre.ID,
 					MovieID = movieToAdd.ID
 				};
-				context.Add(movieGenreToAdd);
+				context.MovieGenres.Add(movieGenreToAdd);
 			}
 			context.SaveChanges();
 		}

@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IMDB.Core\IMDB.Core.csproj" />
-    <ProjectReference Include="..\IMDB.Data\IMDB.Data.csproj" />
+    <ProjectReference Include="..\IMDB.Console\IMDB.Console.csproj" />
   </ItemGroup>
 
 </Project>

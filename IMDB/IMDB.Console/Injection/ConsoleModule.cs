@@ -1,4 +1,7 @@
 ﻿using Autofac;
+using IMDB.Console.ConsoleProviders;
+using IMDB.Console.Contracts;
+using System.Linq;
 using System.Reflection;
 
 namespace IMDB.Console.Injection
@@ -10,8 +13,38 @@ namespace IMDB.Console.Injection
 			builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
 				.AsImplementedInterfaces();
 
+            this.RegisterCoreComponents(builder);
+            this.RegisterCommands(builder);
 
-			base.Load(builder);
+            base.Load(builder);
 		}
-	}
+        private void RegisterCoreComponents(ContainerBuilder builder)
+        {
+            builder.RegisterType<Engine>().As<IEngine>().SingleInstance();
+            builder.RegisterType<CommandParser>().As<ICommandParser>().SingleInstance();
+            builder.RegisterType<CommandProcessor>().As<ICommandProcessor>().SingleInstance();
+            builder.RegisterType<ConsoleReader>().As<IUIReader>().SingleInstance();
+            builder.RegisterType<ConsoleWriter>().As<IUIWriter>().SingleInstance();
+
+        }
+
+        public void RegisterCommands(ContainerBuilder builder)
+        {
+            Assembly assmebly = Assembly.GetAssembly(typeof(ICommand));
+
+            var commandTypes = assmebly.DefinedTypes
+                                .Where(x => x.ImplementedInterfaces
+                                    .Any(i => i == typeof(ICommand)))
+                                .Where(x => !x.IsAbstract);
+
+            foreach (var commandType in commandTypes)
+            {
+                builder.RegisterType(commandType.UnderlyingSystemType)
+                    .Named<ICommand>(commandType.Name
+                                        .ToLower()
+                                        .Replace("command", ""))
+                    .SingleInstance();
+            }
+        }
+    }
 }
