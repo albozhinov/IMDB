@@ -41,22 +41,22 @@ namespace IMDB.Services
                 movieToAdd = new Movie()
                 {
                     Name = name,
-                    ProducerID = producerToAdd.ID
+                    DirectorID = producerToAdd.ID
                 };
                 this.context.Movies.Add(movieToAdd);
             }
             else
             {
-                var foundMovie = context.Movies.Include(mov => mov.Producer).FirstOrDefault(
+                var foundMovie = context.Movies.Include(mov => mov.Director).FirstOrDefault(
                     mov => mov.Name.ToLower().Equals(name.ToLower())
-                    && mov.Producer.Name.Equals(producer));
+                    && mov.Director.Name.Equals(producer));
 
                 if (foundMovie == null)
                 {
                     movieToAdd = new Movie()
                     {
                         Name = name,
-                        ProducerID = context.Directors.FirstOrDefault(prod => prod.Name.Equals(producer)).ID
+                        DirectorID = context.Directors.FirstOrDefault(prod => prod.Name.Equals(producer)).ID
                     };
                     this.context.Movies.Add(movieToAdd);
                 }
@@ -124,7 +124,7 @@ namespace IMDB.Services
 						})
 						.ToList(),
 					Score = mov.MovieScore,
-					Producer = mov.Producer.Name
+					Producer = mov.Director.Name
 				})
 				.FirstOrDefault();
 			if (foundMovie is null)
@@ -183,7 +183,7 @@ namespace IMDB.Services
             }
             if (producer != null)
             {
-                movies = context.Movies.Include(mov => mov.Producer).Where(mov => mov.Producer.Name.Equals(producer));
+                movies = context.Movies.Include(mov => mov.Director).Where(mov => mov.Director.Name.Equals(producer));
             }
             if (movies.ToList() != null)
             {

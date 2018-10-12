@@ -72,7 +72,6 @@ namespace IMDB.Services
         public void DeleteReview(int reviewID)
         {
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative.");
-            
 
             var findReview = context.Reviews.FirstOrDefault(r => r.ID == reviewID);
 

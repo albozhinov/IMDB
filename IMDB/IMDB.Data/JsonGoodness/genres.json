@@ -1,112 +1,110 @@
 [
 	{
-	"ID": 1,
-	"GenreType":"Action"
-},
-{
-	"ID": 2,
-	"GenreType":"Adventure"
-},
-{
-	"ID": 3,
-	"GenreType":"Comedy"
-},
-{
-	"ID": 4,
-	"GenreType":"Crime"
-},
-{
-	"ID": 5,
-	"GenreType":"Drama"
-},
-{
-	"ID": 6,
-	"GenreType":"Fantasy"
-},
-{
-	"ID": 7,
-	"GenreType":"Historical"
-},
-{
-	"ID": 8,
-	"GenreType":"Historical fiction"
-},
-{
-	"ID": 9,
-	"GenreType":"Horror"
-},
-{
-	"ID": 10,
-	"GenreType":"Magical realism"
-},
-{
-	"ID": 11,
-	"GenreType":"Mystery"
-},
-{
-	"ID": 12,
-	"GenreType":"Paranoid Fiction"
-},
-{
-	"ID": 13,
-	"GenreType":"Philosophical"
-},
-{
-	"ID": 14,
-	"GenreType":"Political"
-},
-{
-	"ID": 15,
-	"GenreType":"Romance"
-},
-{
-	"ID": 16,
-	"GenreType":"Saga"
-},
-{
-	"ID": 17,
-	"GenreType":"Satire"
-},
-{
-	"ID": 18,
-	"GenreType":"Science fiction"
-},
-{
-	"ID": 19,
-	"GenreType":"Social"
-},
-{
-	"ID": 20,
-	"GenreType":"Speculative"
-},
-{
-	"ID": 21,
-	"GenreType":"Thriller"
-},
-{
-	"ID": 22,
-	"GenreType":"Urban"
-},
-{
-	"ID": 23,
-	"GenreType":"Western"
-},
-{
-	"ID": 24,
-	"GenreType":"Animation"
-},
-{
-	"ID": 25,
-	"GenreType":"Live-action scripted"
-},
-{
-	"ID": 26,
-	"GenreType":"Live-action unscripted"
-},
-{
-	"ID": 27,
-	"GenreType":"Crime"
-}
+		"ID": 1,
+		"GenreType": "Action"
+	},
+	{
+		"ID": 2,
+		"GenreType": "Adventure"
+	},
+	{
+		"ID": 3,
+		"GenreType": "Comedy"
+	},
+	{
+		"ID": 4,
+		"GenreType": "Crime"
+	},
+	{
+		"ID": 5,
+		"GenreType": "Drama"
+	},
+	{
+		"ID": 6,
+		"GenreType": "Fantasy"
+	},
+	{
+		"ID": 7,
+		"GenreType": "Historical"
+	},
+	{
+		"ID": 8,
+		"GenreType": "Historical fiction"
+	},
+	{
+		"ID": 9,
+		"GenreType": "Horror"
+	},
+	{
+		"ID": 10,
+		"GenreType": "Magical realism"
+	},
+	{
+		"ID": 11,
+		"GenreType": "Mystery"
+	},
+	{
+		"ID": 12,
+		"GenreType": "Paranoid Fiction"
+	},
+	{
+		"ID": 13,
+		"GenreType": "Philosophical"
+	},
+	{
+		"ID": 14,
+		"GenreType": "Political"
+	},
+	{
+		"ID": 15,
+		"GenreType": "Romance"
+	},
+	{
+		"ID": 16,
+		"GenreType": "Saga"
+	},
+	{
+		"ID": 17,
+		"GenreType": "Satire"
+	},
+	{
+		"ID": 18,
+		"GenreType": "Sci-Fi"
+	},
+	{
+		"ID": 19,
+		"GenreType": "Social"
+	},
+	{
+		"ID": 20,
+		"GenreType": "Speculative"
+	},
+	{
+		"ID": 21,
+		"GenreType": "Thriller"
+	},
+	{
+		"ID": 22,
+		"GenreType": "Urban"
+	},
+	{
+		"ID": 23,
+		"GenreType": "Western"
+	},
+	{
+		"ID": 24,
+		"GenreType": "Animation"
+	},
+	{
+		"ID": 25,
+		"GenreType": "Live-action scripted"
+	},
+	{
+		"ID": 26,
+		"GenreType": "Live-action unscripted"
+	},
+	{
+		"ID": 27,
+		"GenreType": "Crime"
+	}
 ]
-
-
