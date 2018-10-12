@@ -13,12 +13,12 @@ namespace IMDB.Console.Injection
 			builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
 				.AsImplementedInterfaces();
 
-            this.RegisterCoreComponents(builder);
+            this.RegisterComponents(builder);
             this.RegisterCommands(builder);
 
             base.Load(builder);
 		}
-        private void RegisterCoreComponents(ContainerBuilder builder)
+        private void RegisterComponents(ContainerBuilder builder)
         {
             builder.RegisterType<Engine>().As<IEngine>().SingleInstance();
             builder.RegisterType<CommandParser>().As<ICommandParser>().SingleInstance();

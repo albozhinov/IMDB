@@ -20,7 +20,7 @@ namespace IMDB.Console.Commands
         {
 			Validator.IfNull<ArgumentNullException>(parameters, "Parameters cannot be null!");
 
-			if (parameters.Count != 3)
+			if (parameters.Count < 3)
 				return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
 
 			var movieName = parameters[0];

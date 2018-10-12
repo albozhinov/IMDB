@@ -11,6 +11,8 @@ namespace IMDB.Services.Injection
 			builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
 				.AsImplementedInterfaces();
 
+			RegisterServices(builder);
+
 			base.Load(builder);
 		}
 

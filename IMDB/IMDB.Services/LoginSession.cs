@@ -2,14 +2,20 @@
 using IMDB.Services.Contracts;
 using System;
 using IMDB.Services.Providers;
+using IMDB.Data.Context;
+using System.Linq;
 
 namespace IMDB.Services
 {
 	public class LoginSession : ILoginSession
 	{
-		private string loggedUser;
 		private int loggedUserID;
 		private ICollection<string> loggedUserPermissions;
+		public LoginSession(IMDBContext context)
+		{
+			LoggedUserPermissions = context.Permissions.Where(p => p.Rank <= (int)UserRoles.Guest).Select(p => p.Text).ToList();
+			LoggedUserRole = UserRoles.Guest;
+		}
 		public int LoggedUserID
 		{
 			get => loggedUserID;
@@ -19,15 +25,7 @@ namespace IMDB.Services
 				loggedUserID = value;
 			}
 		}
-		public string LoggedUser
-		{
-			get => loggedUser;
-			set
-			{
-				Validator.IfNull<ArgumentNullException>(value, "LoggedUser cannot be null!");
-				this.loggedUser = value;
-			}
-		}
+
 		public UserRoles LoggedUserRole { get; set; }
 		public ICollection<string> LoggedUserPermissions
 		{

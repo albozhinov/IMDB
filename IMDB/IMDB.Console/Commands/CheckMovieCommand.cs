@@ -37,7 +37,11 @@ namespace IMDB.Console.Commands
 			StringBuilder result = new StringBuilder();
 			result.AppendLine($"Movie: {movieView.Name}		Director: {movieView.Director}");
 			result.AppendLine("Genre: " + String.Join(", ", movieView.Genres));
-			return "Movie created successfully";
+			foreach(var review in movieView.Top5Reviews)
+			{
+				result.AppendLine(review.ToString());
+			}
+			return result.ToString();
 		}
 	}
 }

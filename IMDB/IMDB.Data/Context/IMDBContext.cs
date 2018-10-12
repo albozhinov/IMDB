@@ -95,6 +95,8 @@ namespace IMDB.Data.Context
 				.IsRequired();
 			modelBuilder.Entity<User>().Property(us => us.Password)
 				.IsRequired();
+			modelBuilder.Entity<User>().Property(us => us.Rank)
+				.IsRequired();
 
 
 			modelBuilder.Entity<ReviewRatings>()

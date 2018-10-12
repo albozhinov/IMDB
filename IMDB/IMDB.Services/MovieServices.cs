@@ -21,23 +21,24 @@ namespace IMDB.Services
 			//TODO add permissions for all services if the user is authorizied
 		}
 
-        public bool CheckProducerExists(string producerName)
+        private bool CheckProducerExists(string directorName)
         {
-            var findProducer = context.Directors.FirstOrDefault(prod => prod.Name.Equals(producerName));
+            var findProducer = context.Directors.FirstOrDefault(prod => prod.Name.Equals(directorName));
             if (findProducer != null)
             {
                 return true;
             }
             else return false;
         }
-
-        public void CreateMovie(string name, ICollection<string> genres, string producer)
+		//Creating movie when such exists - works
+		//creating movie when such exists, but it is deleted - works
+		//creating movie when one doesnt exist - works
+        public void CreateMovie(string name, ICollection<string> genres, string director)
         {
-            //Validate name, genre and producer for format - Done?
             Movie movieToAdd = null;
-            if (!CheckProducerExists(producer))
+            if (!CheckProducerExists(director))
             {
-                Director producerToAdd = new Director() { Name = producer };
+                Director producerToAdd = new Director() { Name = director };
                 movieToAdd = new Movie()
                 {
                     Name = name,
@@ -47,16 +48,18 @@ namespace IMDB.Services
             }
             else
             {
-                var foundMovie = context.Movies.Include(mov => mov.Director).FirstOrDefault(
-                    mov => mov.Name.ToLower().Equals(name.ToLower())
-                    && mov.Director.Name.Equals(producer));
+                var foundMovie = context.Movies
+					.Include(mov => mov.Director)
+					.FirstOrDefault(mov => 
+						mov.Name.ToLower().Equals(name.ToLower())
+						&& mov.Director.Name.Equals(director));
 
                 if (foundMovie == null)
                 {
                     movieToAdd = new Movie()
                     {
                         Name = name,
-                        DirectorID = context.Directors.FirstOrDefault(prod => prod.Name.Equals(producer)).ID
+                        DirectorID = context.Directors.FirstOrDefault(prod => prod.Name.Equals(director)).ID
                     };
                     this.context.Movies.Add(movieToAdd);
                 }
@@ -64,13 +67,12 @@ namespace IMDB.Services
                 {
                     if (foundMovie.IsDeleted == true)
                     {
-                        //TODO restore all deleted posts and their stuff - no need of that
                         foundMovie.IsDeleted = false;
                         context.Movies.Update(foundMovie);
                         context.SaveChanges();
                         return;
                     }
-                    else throw new MovieExistsException();
+                    else throw new MovieExistsException("Movie already exists!");
                 }
 
                 var foundGenres = this.context.Genres.Where(gO => genres.Any(gS => gS == gO.GenreType));
@@ -105,14 +107,16 @@ namespace IMDB.Services
             }
 			context.SaveChanges();
 		}
-
+		//Checking when such movie exists - works
+		//checking when such movie doesnt exist - works
 		public MovieView Check(int movieID)
 		{
 			//Validate movie ID
 			var foundMovie = this.context.Movies
-				.Where(mov => mov.ID == movieID)
+				.Where(mov => mov.ID == movieID && !mov.IsDeleted)
 				.Select(mov => new MovieView
 				{
+					Name = mov.Name,
 					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType),
 					Top5Reviews = mov.Reviews.OrderBy(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
 						{
@@ -188,7 +192,8 @@ namespace IMDB.Services
             if (movies.ToList() != null)
             {
                 return movies.ToList();
-            }throw new MovieNotFoundException();
+            }
+			throw new MovieNotFoundException("Movie not found!");
 
         }
     }
