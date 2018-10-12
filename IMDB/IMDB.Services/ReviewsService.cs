@@ -6,6 +6,7 @@ using IMDB.Services.Exceptions;
 using IMDB.Data.Models;
 using IMDB.Data.Context;
 using IMDB.Services.Providers;
+using IMDB.Data.Views;
 
 namespace IMDB.Services
 {
@@ -21,17 +22,31 @@ namespace IMDB.Services
             this.loginSession = login;            
         }
         
-        public IEnumerable<Review> ShowReviews(int movieID)
+        public IEnumerable<ReviewView> ShowReviews(int movieID)
         {
-            if (!this.context.Movies.Any(m => m.ID == movieID))
+            Validator.IsNonNegative(movieID, "MovieID cannot be negative");
+
+            var foundMovie = this.context.Movies.FirstOrDefault(m => m.ID == movieID);
+
+            if (foundMovie is null || foundMovie.IsDeleted == true)
             {
                 throw new MovieNotFoundException("Movie not found.");
             }
 
 
-            var reviewsQuery = this.context.Reviews.Where(r => r.MovieID == movieID);                    
+            var reviewsQuery = foundMovie.Reviews
+                                    .Where(r => r.IsDeleted == false)
+                                    .Select(rev => new ReviewView()
+                                    {
+                                        Rating = rev.MovieRating,
+                                        Score = rev.ReviewScore,
+                                        Text = rev.Text,
+                                        ByUser = rev.User.UserName,
+                                        MovieName = rev.Movie.Name
+                                    })
+                                    .ToList();
 
-            return reviewsQuery.ToList();
+            return reviewsQuery;
         }
         
         public Review RateReview(int reviewID, double score)

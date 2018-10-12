@@ -1,0 +1,37 @@
+[
+	{
+		"ID": 1,
+		"Name": "Venom",
+		"MovieScore": 0.00,
+		"IsDeleted": false,
+		"ProducerID": 1
+	},
+	{
+		"ID": 2,
+		"Name": "A Star Is Born",
+		"MovieScore": 0.00,
+		"IsDeleted": false,
+		"ProducerID": 2
+	},
+	{
+		"ID": 3,
+		"Name": "Hold the Dark",
+		"MovieScore": 0.00,
+		"IsDeleted": false,
+		"ProducerID": 3
+	},
+	{
+		"ID": 4,
+		"Name": "Joker",
+		"MovieScore": 0.00,
+		"IsDeleted": false,
+		"ProducerID": 4
+	},
+	{
+		"ID": 5,
+		"Name": "A Simple Favor",
+		"MovieScore": 0.00,
+		"IsDeleted": false,
+		"ProducerID": 5
+	},	 
+]
