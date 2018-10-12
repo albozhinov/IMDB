@@ -32,8 +32,7 @@ namespace IMDB.Services
             {
                 throw new MovieNotFoundException("Movie not found.");
             }
-
-
+            
             var reviewsQuery = foundMovie.Reviews
                                     .Where(r => r.IsDeleted == false)
                                     .Select(rev => new ReviewView()
@@ -48,7 +47,14 @@ namespace IMDB.Services
 
             return reviewsQuery;
         }
-        
+
+        private double CalcualteRating(Review review, double newRating)
+        {
+            int count = context.ReviewRatings.Count(rev => rev.ReviewId == review.ID);
+            double sumAllRatings = context.ReviewRatings.Where(rev => rev.ReviewId == review.ID).Sum(rev => rev.ReviewRating);
+            return (sumAllRatings + newRating) / (count + 1);
+        }
+
         public Review RateReview(int reviewID, double score)
         {
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
@@ -61,9 +67,8 @@ namespace IMDB.Services
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} not found");
             }
 
-            findReview.ReviewScore += score;
+            findReview.ReviewScore = CalcualteRating(findReview, score);
             context.Update(findReview);
-
             context.SaveChanges();
 
             return findReview;
@@ -72,7 +77,6 @@ namespace IMDB.Services
         public void DeleteReview(int reviewID)
         {
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative.");
-            
 
             var findReview = context.Reviews.FirstOrDefault(r => r.ID == reviewID);
 
