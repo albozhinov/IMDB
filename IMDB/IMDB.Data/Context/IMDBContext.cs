@@ -1,12 +1,32 @@
 ﻿using IMDB.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using System.Collections.Generic;
 
 namespace IMDB.Data.Context
 {
     public class IMDBContext : DbContext
     {
+		private static readonly LoggerFactory loggerFactory;
 
-        public DbSet<Genre> Genres { get; set; }
+		static IMDBContext()
+		{
+			var loggerProviders = new List<ILoggerProvider>()
+			{
+				new ConsoleLoggerProvider(
+						(category, level) =>
+							category == DbLoggerCategory.Database.Command.Name &&
+							level == LogLevel.Information,
+						includeScopes: true
+				)
+			};
+
+			loggerFactory = new LoggerFactory(loggerProviders);
+		}
+
+
+		public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Permition> Permitions { get; set; }
 		public DbSet<MovieGenre> MovieGenres { get; set; }
@@ -18,7 +38,9 @@ namespace IMDB.Data.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=DESKTOP-8QCSQDK;Database=IMBD;Trusted_Connection=True;");
+                optionsBuilder
+					.UseLoggerFactory(loggerFactory)
+					.UseSqlServer(@"Server=DESKTOP-UQ2T66F\MSSQLSERVER01;Database=IMBD;Trusted_Connection=True;");
             }
         }
 
