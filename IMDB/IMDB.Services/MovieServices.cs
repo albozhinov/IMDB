@@ -131,12 +131,18 @@ namespace IMDB.Services
                 movies = context.Set<Movie>();
             }
 
-            if (genre!=null)
+            if (genre != null)
             {
-                var query = (from movies in context.Movies
-                             join 
-                    );
+
+                movies = context.Movies
+                    .Where(mov => mov.MovieGenres.Any(mg => mg.Genre.GenreType == genre));
             }
+            if (producer != null)
+            {
+                movies = context.Movies.Where(mov => mov.Producer.Contains(producer));
+                throw new System.Exception();
+            }
+            return movies.ToList();
 
         }
     }
