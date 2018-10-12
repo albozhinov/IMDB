@@ -113,7 +113,7 @@ namespace IMDB.Services
 				.Where(mov => mov.ID == movieID)
 				.Select(mov => new MovieView
 				{
-					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
+					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType),
 					Top5Reviews = mov.Reviews.OrderBy(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
 						{
 							ByUser = rev.User.UserName,
@@ -124,7 +124,7 @@ namespace IMDB.Services
 						})
 						.ToList(),
 					Score = mov.MovieScore,
-					Producer = mov.Director.Name
+					Director = mov.Director.Name
 				})
 				.FirstOrDefault();
 			if (foundMovie is null)
