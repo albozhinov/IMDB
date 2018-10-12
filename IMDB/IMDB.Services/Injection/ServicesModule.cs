@@ -20,7 +20,7 @@ namespace IMDB.Services.Injection
 		{
 			builder.RegisterType<UserServices>().As<IUserServices>();
 			builder.RegisterType<MovieServices>().As<IMovieServices>();
-			builder.RegisterType<ReviewsServices>().As<IReviewsServices>();
+			builder.RegisterType<ReviewsService>().As<IReviewsServices>();
 			builder.RegisterType<LoginSession>().As<ILoginSession>().SingleInstance();
 		}
 	}

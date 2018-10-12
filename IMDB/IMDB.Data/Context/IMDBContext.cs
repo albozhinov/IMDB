@@ -44,7 +44,7 @@ namespace IMDB.Data.Context
 			{
 				optionsBuilder
 					.UseLoggerFactory(loggerFactory)
-					.UseSqlServer(@"Server=DESKTOP-UQ2T66F\MSSQLSERVER01;Database=IMBD;Trusted_Connection=True;");
+					.UseSqlServer(@"Server=DESKTOP-8QCSQDK;Database=IMBD;Trusted_Connection=True;");
 			}
 		}
 		private void LoadJsonInDB(ModelBuilder modelBuilder)
@@ -90,7 +90,15 @@ namespace IMDB.Data.Context
 				.IsRequired()
 				.HasMaxLength(50);
 
-			modelBuilder.Entity<User>().Property(us => us.UserName)
+            modelBuilder.Entity<Director>().Property(dir => dir.Name)
+                .IsRequired()
+                .HasMaxLength(25);
+
+            modelBuilder.Entity<Genre>().Property(g => g.GenreType)
+               .IsRequired()
+               .HasMaxLength(15);            
+
+            modelBuilder.Entity<User>().Property(us => us.UserName)
 				.HasMaxLength(50)
 				.IsRequired();
 			modelBuilder.Entity<User>().Property(us => us.Password)

@@ -11,6 +11,11 @@ namespace IMDB.Console.Commands
     {
         private IReviewsServices reviewService;
 
+        public ListMovieReviewsCommand(IReviewsServices reviewService)
+        {
+            this.reviewService = reviewService;
+        }
+
         public string Run(IList<string> parameters)
         {
             bool isParse = int.TryParse(parameters[0], out int ID);
@@ -28,8 +33,7 @@ namespace IMDB.Console.Commands
 
             foreach (var review in reviews)
             {
-                sb.AppendLine($"# |{review.Rating}| |{review.Score}| |{review.ByUser}|");
-                sb.AppendLine($"   {review.Text}");
+                sb.Append(review.ToString());
             }
 
             return sb.ToString();

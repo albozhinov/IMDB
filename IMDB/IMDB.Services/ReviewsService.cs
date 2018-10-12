@@ -10,13 +10,13 @@ using IMDB.Data.Views;
 
 namespace IMDB.Services
 {
-    public class ReviewsServices : IReviewsServices
+    public class ReviewsService : IReviewsServices
     {
         private IMDBContext context;
         private ILoginSession loginSession;
         private const int adminRank = 2;
 
-        public ReviewsServices(IMDBContext context, ILoginSession login)
+        public ReviewsService(IMDBContext context, ILoginSession login)
         {
             this.context = context;
             this.loginSession = login;            
@@ -33,8 +33,8 @@ namespace IMDB.Services
                 throw new MovieNotFoundException("Movie not found.");
             }
             
-            var reviewsQuery = foundMovie.Reviews
-                                    .Where(r => r.IsDeleted == false)
+            var reviewsQuery = this.context.Reviews                                   
+                                    .Where(r => r.MovieID == movieID && r.IsDeleted == false)
                                     .Select(rev => new ReviewView()
                                     {
                                         Rating = rev.MovieRating,
@@ -43,6 +43,7 @@ namespace IMDB.Services
                                         ByUser = rev.User.UserName,
                                         MovieName = rev.Movie.Name
                                     })
+                                    .OrderByDescending(rev => rev.Rating)
                                     .ToList();
 
             return reviewsQuery;
@@ -55,7 +56,7 @@ namespace IMDB.Services
             return (sumAllRatings + newRating) / (count + 1);
         }
 
-        public Review RateReview(int reviewID, double score)
+        public ReviewVi RateReview(int reviewID, double score)
         {
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
             Validator.IfIsInRangeInclusive(score, 0D, 10D, "Score is incorrect range.");
@@ -70,6 +71,7 @@ namespace IMDB.Services
             findReview.ReviewScore = CalcualteRating(findReview, score);
             context.Update(findReview);
             context.SaveChanges();
+                       
 
             return findReview;
         }
