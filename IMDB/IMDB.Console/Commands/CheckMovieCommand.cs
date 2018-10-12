@@ -34,14 +34,7 @@ namespace IMDB.Console.Commands
 			}
 			var movieView = movieServices.Check(movieID);
 
-			StringBuilder result = new StringBuilder();
-			result.AppendLine($"Movie: {movieView.Name}		Director: {movieView.Director}");
-			result.AppendLine("Genre: " + String.Join(", ", movieView.Genres));
-			foreach(var review in movieView.Top5Reviews)
-			{
-				result.AppendLine(review.ToString());
-			}
-			return result.ToString();
+			return movieView.ToString();
 		}
 	}
 }

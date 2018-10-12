@@ -4,6 +4,7 @@ namespace IMDB.Data.Views
 {
 	public sealed class ReviewView
 	{
+        public int ReviewID { get; set; }
 		public double Rating { get; set; }
 		public double Score { get; set; }
 		public string Text { get; set; }
@@ -12,7 +13,7 @@ namespace IMDB.Data.Views
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			sb.AppendLine($"# |Movie Rating: {this.Rating}| |Score: {this.Score}| |By: {this.ByUser}|");
+			sb.AppendLine($"#{ReviewID} |Movie Rating: {this.Rating}| |Score: {this.Score:F2}| |By User: {this.ByUser}|");
 			sb.AppendLine($"   {this.Text}");
 			return sb.ToString();
 		}

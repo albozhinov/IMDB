@@ -18,14 +18,26 @@ namespace IMDB.Services.Contracts
 		/// </summary>
 		/// <param name="movieID"></param>
 		void DeleteMovie(int movieID);
-		/// <summary>
-		/// Rates a movie or updates its rating for the logged user
-		/// </summary>
-		/// <param name="movieID"></param>
-		/// <param name="rating"></param>
-		/// <param name="reviewText"></param>
-		void RateMovie(int movieID, double rating, string reviewText);
+        /// <summary>
+        /// Rates a movie or updates its rating for the logged user
+        /// </summary>
+        /// <param name="movieID"></param>
+        /// <param name="rating"></param>
+        /// <param name="reviewText"></param>
+        int RateMovie(int movieID, double rating, string reviewText);
+        /// <summary>
+        /// Returns the movie with all of its info, including the top 5 rating reviews
+        /// </summary>
+        /// <param name="movieID"></param>
+        /// <returns></returns>
 		MovieView Check(int movieID);
+        /// <summary>
+        /// Searches for movie via name and/or genre or/and producer. Specify with null if a parameter is not included.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="genre"></param>
+        /// <param name="producer"></param>
+        /// <returns></returns>
         ICollection<Movie> SearchMovies(string name, string genre, string producer); 
 	}
 }

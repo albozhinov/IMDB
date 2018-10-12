@@ -127,6 +127,7 @@ namespace IMDB.Services
 					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType),
 					Top5Reviews = mov.Reviews.OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
 						{
+                            ReviewID = rev.ID,
 							ByUser = rev.User.UserName,
 							Score = rev.ReviewScore,
 							MovieName = rev.Movie.Name,
@@ -143,29 +144,45 @@ namespace IMDB.Services
 			return foundMovie;
 		}
 
-		public void RateMovie(int movieID, double rating, string reviewText)
+        //updates a rating
+        //creates a new one successfully
+        //successfully updates the rating on the movie
+		public int RateMovie(int movieID, double rating, string reviewText)
 		{
-			//Validate movie ID, rating and review text
-			var foundMovie = this.context.Movies.FirstOrDefault(mov => mov.ID == movieID && mov.IsDeleted==false);
+            Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
+            Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
+
+            var foundMovie = this.context.Movies.FirstOrDefault(mov => mov.ID == movieID && mov.IsDeleted==false);
 			if (foundMovie is null)
 				throw new MovieNotFoundException("Movie not found!");
-			//TODO see if exists and enable it
-			var reviewToAdd = new Review()
-			{
-				MovieID = movieID,
-				MovieRating = rating,
-				UserID = loginSession.LoggedUserID,
-				Text = reviewText
-			};
-            context.Reviews.Add(reviewToAdd);
-            //context.Movies.
 
+            var reviewToAdd = this.context.Reviews.FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == loginSession.LoggedUserID);
+            if (reviewToAdd != null)
+            {
+                reviewToAdd.IsDeleted = false;
+                reviewToAdd.Text = reviewText;
+                reviewToAdd.MovieRating = rating;
+                context.Reviews.Update(reviewToAdd);
+            }
+            else
+            {
+                reviewToAdd = new Review()
+                {
+                    MovieID = movieID,
+                    MovieRating = rating,
+                    UserID = loginSession.LoggedUserID,
+                    Text = reviewText
+                };
+                context.Reviews.Add(reviewToAdd);
+            }
+            
             //TODO update the rating on the movie SHABAN its you here! 
             //Shaban: DONE!
             foundMovie.MovieScore = CalcualteRating(foundMovie, rating);
 			context.Movies.Update(foundMovie);
             context.SaveChanges();
 
+            return reviewToAdd.ID;
 		}
 
         private double CalcualteRating(Movie movie , double newRating)

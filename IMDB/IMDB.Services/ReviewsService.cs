@@ -1,12 +1,11 @@
-﻿using IMDB.Services.Contracts;
-using System;
+﻿using IMDB.Data.Context;
+using IMDB.Data.Models;
+using IMDB.Data.Views;
+using IMDB.Services.Contracts;
+using IMDB.Services.Exceptions;
+using IMDB.Services.Providers;
 using System.Collections.Generic;
 using System.Linq;
-using IMDB.Services.Exceptions;
-using IMDB.Data.Models;
-using IMDB.Data.Context;
-using IMDB.Services.Providers;
-using IMDB.Data.Views;
 
 namespace IMDB.Services
 {
@@ -19,24 +18,25 @@ namespace IMDB.Services
         public ReviewsService(IMDBContext context, ILoginSession login)
         {
             this.context = context;
-            this.loginSession = login;            
+            loginSession = login;
         }
-        
+
         public IEnumerable<ReviewView> ListMovieReviews(int movieID)
         {
             Validator.IsNonNegative(movieID, "MovieID cannot be negative");
 
-            var foundMovie = this.context.Movies.FirstOrDefault(m => m.ID == movieID);
+            var foundMovie = context.Movies.FirstOrDefault(m => m.ID == movieID);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
             {
                 throw new MovieNotFoundException("Movie not found.");
             }
-            
-            var reviewsQuery = this.context.Reviews                                   
+
+            var reviewsQuery = context.Reviews
                                     .Where(r => r.MovieID == movieID && r.IsDeleted == false)
                                     .Select(rev => new ReviewView()
                                     {
+                                        ReviewID = rev.ID,
                                         Rating = rev.MovieRating,
                                         Score = rev.ReviewScore,
                                         Text = rev.Text,
@@ -56,17 +56,17 @@ namespace IMDB.Services
             return (sumAllRatings + newRating) / (count + 1);
         }
 
-        public ReviewView RateReview(int reviewID, double score)
+        public ReviewView RateReview(int reviewID, double rating)
         {
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
-            Validator.IfIsInRangeInclusive(score, 0D, 10D, "Score is incorrect range.");
+            Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var findReview = this.context.Reviews
+            var findReview = context.Reviews
                                          .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                          .Select(r => new Review()
                                          {
                                              ID = r.ID,
-                                             IsDeleted = false,
+                                             IsDeleted = r.IsDeleted,
                                              MovieID = r.MovieID,
                                              MovieRating = r.MovieRating,
                                              ReviewScore = r.ReviewScore,
@@ -76,19 +76,21 @@ namespace IMDB.Services
                                              User = r.User,
                                              ReviewRatings = r.ReviewRatings
                                          }
-                                         ).ToList().FirstOrDefault();
+                                         ).FirstOrDefault();
 
             if (findReview is null)
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} not found");
             }
 
-            findReview.ReviewScore = CalcualteRating(findReview, score);
+            findReview.ReviewScore = CalcualteRating(findReview, rating);
             context.Reviews.Update(findReview);
+
             context.SaveChanges();
 
             var revView = new ReviewView()
             {
+                ReviewID = findReview.ID,
                 Rating = findReview.MovieRating,
                 Score = findReview.ReviewScore,
                 ByUser = findReview.User.UserName,
@@ -108,15 +110,15 @@ namespace IMDB.Services
             if (findReview is null)
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
-            }            
-            
-            if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank) 
+            }
+
+            if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
             {
-                findReview.IsDeleted = true;               
+                findReview.IsDeleted = true;
                 context.Reviews.Update(findReview);
             }
 
-            context.SaveChanges();            
+            context.SaveChanges();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace IMDB.Data.Views
 {
@@ -9,6 +11,19 @@ namespace IMDB.Data.Views
 		public string Director { get; set; }
 		public IEnumerable<string> Genres { get; set; }
 		public ICollection<ReviewView> Top5Reviews { get; set; }
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"|Movie: {this.Name}| |Director: {this.Director}| |Movie Score: {this.Score}|");
+            sb.AppendLine(" Genre: " + String.Join(", ", this.Genres));
+            sb.AppendLine();
+            sb.AppendLine("Top 5 reviews: ");
+            foreach (var review in this.Top5Reviews)
+            {
+                sb.AppendLine(review.ToString());
+            }
+            return sb.ToString();
+        }
 
-	}
+    }
 }

@@ -1,16 +1,18 @@
 ﻿using IMDB.Console.Contracts;
 using IMDB.Services.Contracts;
+using IMDB.Services.Providers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Text;
 
 namespace IMDB.Console.Commands
 {
     public class ListMovieReviewsCommand : ICommand
     {
         private IReviewsServices reviewService;
-
+        private const string FAILED_SYNTAX = "Wrong syntax of command";
+        private const string CMD_FORMAT = "listmoviereviews - <movieID>";
         public ListMovieReviewsCommand(IReviewsServices reviewService)
         {
             this.reviewService = reviewService;
@@ -18,11 +20,18 @@ namespace IMDB.Console.Commands
 
         public string Run(IList<string> parameters)
         {
+            Validator.IfNull<ArgumentNullException>(parameters, "Parameters cannot be null!");
+
+            if (parameters.Count != 2)
+            {
+                return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
+            }
+
             bool isParse = int.TryParse(parameters[0], out int ID);
 
             if (!isParse)
             {
-                return "Incorrect ID format";
+                return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
             }
 
             var reviews = reviewService.ListMovieReviews(ID);
