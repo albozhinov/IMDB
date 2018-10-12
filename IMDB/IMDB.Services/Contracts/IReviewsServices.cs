@@ -8,7 +8,7 @@ namespace IMDB.Services.Contracts
     {
         IEnumerable<ReviewView> ShowReviews(int movieId);
 
-        Review RateReview(int reviewID, double socre);
+        ReviewView RateReview(int reviewID, double socre);
 
         void DeleteReview(int reviewID);
     }

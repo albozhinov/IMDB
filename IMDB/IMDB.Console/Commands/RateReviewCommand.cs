@@ -1,12 +1,13 @@
 ﻿using IMDB.Console.Contracts;
 using IMDB.Services.Contracts;
+using IMDB.Services.Providers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace IMDB.Console.Commands
 {
-    public class RateReviewCommand : ICommand
+    public sealed class RateReviewCommand : ICommand
     {
         private IReviewsServices reviewService;
 
@@ -16,8 +17,9 @@ namespace IMDB.Console.Commands
         }
 
         public string Run(IList<string> parameters)
-        {
-            //int reviewID, double score
+        {            
+            Validator.IfNull<ArgumentNullException>(parameters, "Parameters cannot be null!");
+
             if (parameters.Count != 2)
             {
                 return "Invalid count of parameters.";
@@ -32,8 +34,12 @@ namespace IMDB.Console.Commands
             }
 
             var rateReview = reviewService.RateReview(reviewID, score);
+            
+            var sb = new StringBuilder();
 
-            return "";
+            sb.AppendLine($"Movie: {rateReview.MovieName}");
+            sb.Append(rateReview.ToString());
+            return sb.ToString();
         }
     }
 }

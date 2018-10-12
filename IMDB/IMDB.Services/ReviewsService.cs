@@ -56,12 +56,27 @@ namespace IMDB.Services
             return (sumAllRatings + newRating) / (count + 1);
         }
 
-        public ReviewVi RateReview(int reviewID, double score)
+        public ReviewView RateReview(int reviewID, double score)
         {
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
             Validator.IfIsInRangeInclusive(score, 0D, 10D, "Score is incorrect range.");
 
-            var findReview = this.context.Reviews.FirstOrDefault(r => r.ID == reviewID);
+            var findReview = this.context.Reviews
+                                         .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
+                                         .Select(r => new Review()
+                                         {
+                                             ID = r.ID,
+                                             IsDeleted = false,
+                                             MovieID = r.MovieID,
+                                             MovieRating = r.MovieRating,
+                                             ReviewScore = r.ReviewScore,
+                                             Text = r.Text,
+                                             UserID = r.UserID,
+                                             Movie = r.Movie,
+                                             User = r.User,
+                                             ReviewRatings = r.ReviewRatings
+                                         }
+                                         ).ToList().FirstOrDefault();
 
             if (findReview is null)
             {
@@ -69,11 +84,19 @@ namespace IMDB.Services
             }
 
             findReview.ReviewScore = CalcualteRating(findReview, score);
-            context.Update(findReview);
+            context.Reviews.Update(findReview);
             context.SaveChanges();
-                       
 
-            return findReview;
+            var revView = new ReviewView()
+            {
+                Rating = findReview.MovieRating,
+                Score = findReview.ReviewScore,
+                ByUser = findReview.User.UserName,
+                MovieName = findReview.Movie.Name,
+                Text = findReview.Text
+            };
+
+            return revView;
         }
 
         public void DeleteReview(int reviewID)
