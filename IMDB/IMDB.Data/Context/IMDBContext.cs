@@ -58,14 +58,19 @@ namespace IMDB.Data.Context
 			
 			var genres = JsonConvert.DeserializeObject<Genre[]>(genresAsJson);
 			var permissions = JsonConvert.DeserializeObject<Permissions[]>(permissionsAsJson);
-			var movies = JsonConvert.DeserializeObject<Genre[]>(moviesAsJson);
-			var movieGenres = JsonConvert.DeserializeObject<Genre[]>(movieGenresAsJson);
-			var users = JsonConvert.DeserializeObject<Genre[]>(usersAsJson);
-			var reviews = JsonConvert.DeserializeObject<Genre[]>(reviewsAsJson);
-			var ratingReviews = JsonConvert.DeserializeObject<Genre[]>(reviewRatingsAsJson);
+			var movies = JsonConvert.DeserializeObject<Movie[]>(moviesAsJson);
+			var movieGenres = JsonConvert.DeserializeObject<MovieGenre[]>(movieGenresAsJson);
+			var users = JsonConvert.DeserializeObject<User[]>(usersAsJson);
+			var reviews = JsonConvert.DeserializeObject<Review[]>(reviewsAsJson);
+			var ratingReviews = JsonConvert.DeserializeObject<ReviewRatings[]>(reviewRatingsAsJson);
 
 			modelBuilder.Entity<Genre>().HasData(genres);
-
+			modelBuilder.Entity<Permissions>().HasData(permissions);
+			modelBuilder.Entity<Movie>().HasData(movies);
+			modelBuilder.Entity<MovieGenre>().HasData(movieGenres);
+			modelBuilder.Entity<User>().HasData(users);
+			modelBuilder.Entity<Review>().HasData(reviews);
+			modelBuilder.Entity<ReviewRatings>().HasData(ratingReviews);
 		}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
