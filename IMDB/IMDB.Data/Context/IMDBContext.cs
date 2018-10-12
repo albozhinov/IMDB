@@ -35,6 +35,7 @@ namespace IMDB.Data.Context
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<ReviewRatings> ReviewRatings { get; set; }
+        public DbSet<Producer> Producers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
