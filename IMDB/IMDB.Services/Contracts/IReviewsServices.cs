@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace IMDB.Services.Contracts
 {
-    interface IReviewsServices
+    public interface IReviewsServices
     {
         IEnumerable<Review> ShowReviews(int movieId);
 
