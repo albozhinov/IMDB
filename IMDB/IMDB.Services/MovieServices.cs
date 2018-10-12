@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace IMDB.Services
 {
-	public sealed class MovieServices : IMovieServices
+    public sealed class MovieServices : IMovieServices
 	{
 		private ILoginSession loginSession;
 		private IMDBContext context;
@@ -20,6 +20,7 @@ namespace IMDB.Services
 			this.loginSession = loginSession;
 			//TODO add permissions for all services if the user is authorizied
 		}
+
 		public void CreateMovie(string name, ICollection<string> genres, string producer)
 		{
             //Validate name, genre and producer for format - Done?
@@ -136,5 +137,32 @@ namespace IMDB.Services
             double sumAllRatings = context.Reviews.Where(rev => rev.MovieID == movie.ID).Sum(rev => rev.MovieRating);
             return (sumAllRatings + newRating) / (count + 1);
         }
-	}
+
+        public ICollection<Movie> SearchMovies(string name, string genre, string producer)
+        {
+            IQueryable<Movie> movies;
+            if (name!=null)
+            {
+                 movies = context.Movies.Where(mov => mov.Name.Contains(name));
+            }
+            else
+            {
+                movies = context.Set<Movie>();
+            }
+
+            if (genre != null)
+            {
+
+                movies = context.Movies
+                    .Where(mov => mov.MovieGenres.Any(mg => mg.Genre.GenreType == genre));
+            }
+            if (producer != null)
+            {
+                movies = context.Movies.Where(mov => mov.Producer.Contains(producer));
+                throw new System.Exception();
+            }
+            return movies.ToList();
+
+        }
+    }
 }
