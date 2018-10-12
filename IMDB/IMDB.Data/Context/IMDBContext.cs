@@ -48,24 +48,29 @@ namespace IMDB.Data.Context
         }
 		private void LoadJsonInDB(ModelBuilder modelBuilder)
 		{
-			var genresAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\genres.txt");
-			var permissionsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\permissions.txt");
-			var moviesAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\movies.txt");
-			var movieGenresAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\movieGenres.txt");
-			var usersAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\users.txt");
-			var reviewsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\reviews.txt");
-			var reviewRatingsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\reviewratings.txt");
+			var genresAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\genres.json");
+			var permissionsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\permissions.json");
+			var moviesAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\movies.json");
+			var movieGenresAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\movieGenres.json");
+			var usersAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\users.json");
+			var reviewsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\reviews.json");
+			var reviewRatingsAsJson = File.ReadAllText(@"..\IMDB\JsonGoodness\reviewratings.json");
 			
 			var genres = JsonConvert.DeserializeObject<Genre[]>(genresAsJson);
 			var permissions = JsonConvert.DeserializeObject<Permissions[]>(permissionsAsJson);
-			var movies = JsonConvert.DeserializeObject<Genre[]>(moviesAsJson);
-			var movieGenres = JsonConvert.DeserializeObject<Genre[]>(movieGenresAsJson);
-			var users = JsonConvert.DeserializeObject<Genre[]>(usersAsJson);
-			var reviews = JsonConvert.DeserializeObject<Genre[]>(reviewsAsJson);
-			var ratingReviews = JsonConvert.DeserializeObject<Genre[]>(reviewRatingsAsJson);
+			var movies = JsonConvert.DeserializeObject<Movie[]>(moviesAsJson);
+			var movieGenres = JsonConvert.DeserializeObject<MovieGenre[]>(movieGenresAsJson);
+			var users = JsonConvert.DeserializeObject<User[]>(usersAsJson);
+			var reviews = JsonConvert.DeserializeObject<Review[]>(reviewsAsJson);
+			var ratingReviews = JsonConvert.DeserializeObject<ReviewRatings[]>(reviewRatingsAsJson);
 
 			modelBuilder.Entity<Genre>().HasData(genres);
-
+			modelBuilder.Entity<Permissions>().HasData(permissions);
+			modelBuilder.Entity<Movie>().HasData(movies);
+			modelBuilder.Entity<MovieGenre>().HasData(movieGenres);
+			modelBuilder.Entity<User>().HasData(users);
+			modelBuilder.Entity<Review>().HasData(reviews);
+			modelBuilder.Entity<ReviewRatings>().HasData(ratingReviews);
 		}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
