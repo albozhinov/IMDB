@@ -33,8 +33,7 @@ namespace IMDB.Console.Commands
 
             foreach (var review in reviews)
             {
-                sb.AppendLine($"# |Review rating: {review.Rating}| |Review score: {review.Score}| |User: {review.ByUser}|");
-                sb.AppendLine($"---{review.Text}");
+                sb.Append(review.ToString());
             }
 
             return sb.ToString();

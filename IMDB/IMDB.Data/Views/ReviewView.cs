@@ -12,7 +12,7 @@ namespace IMDB.Data.Views
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			sb.AppendLine($"# |{this.Rating}| |{this.Score}| |{this.ByUser}|");
+			sb.AppendLine($"# |Movie rating: {this.Rating}| |Review rating: {this.Score}| |User: {this.ByUser}|");
 			sb.AppendLine($"   {this.Text}");
 			return sb.ToString();
 		}

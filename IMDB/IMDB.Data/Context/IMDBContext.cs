@@ -90,7 +90,15 @@ namespace IMDB.Data.Context
 				.IsRequired()
 				.HasMaxLength(50);
 
-			modelBuilder.Entity<User>().Property(us => us.UserName)
+            modelBuilder.Entity<Director>().Property(dir => dir.Name)
+                .IsRequired()
+                .HasMaxLength(25);
+
+            modelBuilder.Entity<Genre>().Property(g => g.GenreType)
+               .IsRequired()
+               .HasMaxLength(15);            
+
+            modelBuilder.Entity<User>().Property(us => us.UserName)
 				.HasMaxLength(50)
 				.IsRequired();
 			modelBuilder.Entity<User>().Property(us => us.Password)

@@ -3,6 +3,7 @@ using IMDB.Data.Models;
 using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
+using IMDB.Services.Providers;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,9 @@ namespace IMDB.Services
         public void CreateMovie(string name, ICollection<string> genres, string producer)
         {
             //Validate name, genre and producer for format - Done?
+            Validator.IfIsInRangeInclusive(name.Length, 3, 50, "Movie name cannot be less than 3 and more than 50 letters.");
+
+
             Movie movieToAdd = null;
             if (!CheckProducerExists(producer))
             {
@@ -88,8 +92,9 @@ namespace IMDB.Services
         }
 
 		public void DeleteMovie(int movieID)
-		{
-			//Validate movie ID
+		{            
+            Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
+
 			//TODO delete all revies and their stuff
 			var movieToDelete = this.context.Movies.FirstOrDefault(mov => mov.ID == movieID);
             if (movieToDelete is null)
@@ -107,8 +112,9 @@ namespace IMDB.Services
 		}
 
 		public MovieView Check(int movieID)
-		{
-			//Validate movie ID
+		{            
+            Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
+
 			var foundMovie = this.context.Movies
 				.Where(mov => mov.ID == movieID)
 				.Select(mov => new MovieView
