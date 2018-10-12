@@ -19,7 +19,20 @@ namespace IMDB.Console.Commands
             {
                 return "Incorrect ID format";
             }
-            return "";
+
+            var reviews = reviewService.ShowReviews(ID);
+            var first = reviews.FirstOrDefault();
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"Movie: {first.MovieName}");
+
+            foreach (var review in reviews)
+            {
+                sb.AppendLine($"# |{review.Rating}| |{review.Score}| |{review.ByUser}|");
+                sb.AppendLine($"   {review.Text}");
+            }
+
+            return sb.ToString();
         }
     }
 }

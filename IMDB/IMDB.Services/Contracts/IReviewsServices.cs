@@ -1,11 +1,12 @@
 ﻿using IMDB.Data.Models;
+using IMDB.Data.Views;
 using System.Collections.Generic;
 
 namespace IMDB.Services.Contracts
 {
     public interface IReviewsServices
     {
-        IEnumerable<Review> ShowReviews(int movieId);
+        IEnumerable<ReviewView> ShowReviews(int movieId);
 
         Review RateReview(int reviewID, double socre);
 
