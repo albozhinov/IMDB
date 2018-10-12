@@ -13,6 +13,7 @@ namespace IMDB.Data.Context
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<ReviewRatings> ReviewRatings { get; set; }
+        public DbSet<Producer> Producers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -21,7 +22,6 @@ namespace IMDB.Data.Context
                 optionsBuilder.UseSqlServer(@"Server=ALEX-PC;Database=IMBD;Trusted_Connection=True;");
             }
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 			modelBuilder.Entity<MovieGenre>()
