@@ -8,9 +8,10 @@ namespace IMDB.Data.Models
 		public int ID { get; set; }
 		public String Name { get; set; }
 		public double MovieScore { get; set; }
-		public String Producer { get; set; }
 		public bool IsDeleted { get; set; }
-		public ICollection<Review> Reviews { get; set; }
+        public int ProducerID { get; set; }
+        public Producer Producer { get; set; }
+        public ICollection<Review> Reviews { get; set; }
         public ICollection<MovieGenre> MovieGenres { get; set; }
     }
 }

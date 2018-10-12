@@ -21,45 +21,71 @@ namespace IMDB.Services
 			//TODO add permissions for all services if the user is authorizied
 		}
 
-		public void CreateMovie(string name, ICollection<string> genres, string producer)
-		{
+        public bool CheckProducerExists(string producerName)
+        {
+            var findProducer = context.Producers.FirstOrDefault(prod => prod.Name.Equals(producerName));
+            if (findProducer != null)
+            {
+                return true;
+            }
+            else return false;
+        }
+
+        public void CreateMovie(string name, ICollection<string> genres, string producer)
+        {
             //Validate name, genre and producer for format - Done?
-            var foundMovie = context.Movies.FirstOrDefault(mov => mov.Name.ToLower().Equals(name.ToLower()) && mov.Producer.ToLower().Equals(producer.ToLower()));
+            Movie movieToAdd = null;
+            if (!CheckProducerExists(producer))
+            {
+                Producer producerToAdd = new Producer() { Name = producer };
+                movieToAdd = new Movie()
+                {
+                    Name = name,
+                    ProducerID = producerToAdd.ID
+                };
+                this.context.Movies.Add(movieToAdd);
+            }
+            else
+            {
+                var foundMovie = context.Movies.Include(mov => mov.Producer).FirstOrDefault(
+                    mov => mov.Name.ToLower().Equals(name.ToLower())
+                    && mov.Producer.Name.Equals(producer));
 
-			Movie movieToAdd = null;
-			if (foundMovie == null)
-			{
-				movieToAdd = new Movie()
-				{
-					Name = name,
-					Producer = producer
-				};
-				this.context.Movies.Add(movieToAdd);
-			}
-			else
-			{
-				if (foundMovie.IsDeleted == true)
-				{
-					//TODO restore all deleted posts and their stuff - no need of that
-					foundMovie.IsDeleted = false;
-					context.Movies.Update(foundMovie);
-                    context.SaveChanges();
-					return;
-				}else throw new MovieExistsException();
-			}
+                if (foundMovie == null)
+                {
+                    movieToAdd = new Movie()
+                    {
+                        Name = name,
+                        ProducerID = context.Producers.FirstOrDefault(prod => prod.Name.Equals(producer)).ID
+                    };
+                    this.context.Movies.Add(movieToAdd);
+                }
+                else
+                {
+                    if (foundMovie.IsDeleted == true)
+                    {
+                        //TODO restore all deleted posts and their stuff - no need of that
+                        foundMovie.IsDeleted = false;
+                        context.Movies.Update(foundMovie);
+                        context.SaveChanges();
+                        return;
+                    }
+                    else throw new MovieExistsException();
+                }
 
-			var foundGenres = this.context.Genres.Where(gO => genres.Any(gS => gS == gO.GenreType));
-			foreach(var genre in foundGenres)
-			{
-				var movieGenreToAdd = new MovieGenre
-				{
-					GenreID = genre.ID,
-					MovieID = movieToAdd.ID
-				};
-				context.MovieGenres.Add(movieGenreToAdd);
-			}
-			context.SaveChanges();
-		}
+                var foundGenres = this.context.Genres.Where(gO => genres.Any(gS => gS == gO.GenreType));
+                foreach (var genre in foundGenres)
+                {
+                    var movieGenreToAdd = new MovieGenre
+                    {
+                        GenreID = genre.ID,
+                        MovieID = movieToAdd.ID
+                    };
+                    context.MovieGenres.Add(movieGenreToAdd);
+                }
+            }
+            context.SaveChanges();
+        }
 
 		public void DeleteMovie(int movieID)
 		{
@@ -109,7 +135,7 @@ namespace IMDB.Services
 		public void RateMovie(int movieID, double rating, string reviewText)
 		{
 			//Validate movie ID, rating and review text
-			var foundMovie = this.context.Movies.FirstOrDefault(mov => mov.ID == movieID);
+			var foundMovie = this.context.Movies.FirstOrDefault(mov => mov.ID == movieID && mov.IsDeleted==false);
 			if (foundMovie is null)
 				throw new MovieNotFoundException("Movie not found!");
 			//TODO see if exists and enable it
@@ -143,13 +169,12 @@ namespace IMDB.Services
             IQueryable<Movie> movies;
             if (name!=null)
             {
-                 movies = context.Movies.Where(mov => mov.Name.Contains(name));
+                 movies = context.Movies.Where(mov => mov.Name.Contains(name) && mov.IsDeleted==false);
             }
             else
             {
-                movies = context.Set<Movie>();
+                movies = context.Set<Movie>().Where(mov=>mov.IsDeleted==false);
             }
-
             if (genre != null)
             {
 
@@ -158,10 +183,12 @@ namespace IMDB.Services
             }
             if (producer != null)
             {
-                movies = context.Movies.Where(mov => mov.Producer.Contains(producer));
-                throw new System.Exception();
+                movies = context.Movies.Include(mov => mov.Producer).Where(mov => mov.Producer.Name.Equals(producer));
             }
-            return movies.ToList();
+            if (movies.ToList() != null)
+            {
+                return movies.ToList();
+            }throw new MovieNotFoundException();
 
         }
     }
