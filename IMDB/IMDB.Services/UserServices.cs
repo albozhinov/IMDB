@@ -20,7 +20,7 @@ namespace IMDB.Services
 		private const int MAX_USERNAME_LENGTH = 23;
 		private const int MIN_USERNAME_LENGTH = 5;
 
-		private const int GUEST_ID = -1;
+		private const int GUEST_ID = 0;
 		public UserServices(IMDBContext context, ILoginSession loginSession)
 		{
 			this.context = context;
@@ -52,6 +52,7 @@ namespace IMDB.Services
 		{
 			this.loginSession.LoggedUserPermissions = GetPermissions((int)UserRoles.Guest);
 			this.loginSession.LoggedUserRole = UserRoles.Guest;
+            this.loginSession.LoggedUserID = GUEST_ID;
 		}
 		//Registring nonexistent user - works
 		//Registring an existing user - works

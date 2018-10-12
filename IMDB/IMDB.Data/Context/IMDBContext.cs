@@ -12,9 +12,8 @@ namespace IMDB.Data.Context
 	public class IMDBContext : DbContext
 	{
 		private static readonly LoggerFactory loggerFactory;
-		private static bool addedJson = false;
 		static IMDBContext()
-		{
+        {
 			var loggerProviders = new List<ILoggerProvider>()
 			{
 				new ConsoleLoggerProvider(
@@ -44,7 +43,7 @@ namespace IMDB.Data.Context
 			{
 				optionsBuilder
 					.UseLoggerFactory(loggerFactory)
-					.UseSqlServer(@"Server=DESKTOP-8QCSQDK;Database=IMBD;Trusted_Connection=True;");
+					.UseSqlServer(@"Server=ALEX-PC;Database=IMBD;Trusted_Connection=True;");
 			}
 		}
 		private void LoadJsonInDB(ModelBuilder modelBuilder)

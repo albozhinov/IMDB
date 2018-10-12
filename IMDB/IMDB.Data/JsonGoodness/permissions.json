@@ -1,54 +1,60 @@
 [
-	{
-		"ID": 1,
-		"Rank": 0,
-		"Text": "register"
-	},
-	{
-		"ID": 2,
-		"Rank": 0,
-		"Text": "login"
-	},
-	{
-		"ID": 3,
-		"Rank": 0,
-		"Text": "checkmovie"
-	},
-	{
-		"ID": 4,
-		"Rank": 0,
-		"Text": "searchmovie"
-	},
-	{
-		"ID": 5,
-		"Rank": 0,
-		"Text": "showreviews"
-	},
-	{
-		"ID": 6,
-		"Rank": 1,
-		"Text": "ratemovie"
-	},
-	{
-		"ID": 7,
-		"Rank": 1,
-		"Text": "ratereview"
+  {
+    "ID": 1,
+    "Rank": 0,
+    "Text": "register"
+  },
+  {
+    "ID": 2,
+    "Rank": 0,
+    "Text": "login"
+  },
+  {
+    "ID": 3,
+    "Rank": 0,
+    "Text": "checkmovie"
+  },
+  {
+    "ID": 4,
+    "Rank": 0,
+    "Text": "searchmovie"
+  },
+  {
+    "ID": 5,
+    "Rank": 0,
+    "Text": "listmoviereviews"
+  },
+  {
+    "ID": 6,
+    "Rank": 1,
+    "Text": "ratemovie"
+  },
+  {
+    "ID": 7,
+    "Rank": 1,
+    "Text": "ratereview"
 
-	},
-	{
-		"ID": 8,
-		"Rank": 1,
-		"Text": "deletereview"
+  },
+  {
+    "ID": 8,
+    "Rank": 1,
+    "Text": "deletereview"
 
-	},
-	{
-		"ID": 9,
-		"Rank": 2,
-		"Text": "deletemovie"
-	},
-	{
-		"ID": 10,
-		"Rank": 2,
-		"Text": "createmovie"
-	}
+  },
+  {
+    "ID": 9,
+    "Rank": 1,
+    "Text": "logout"
+
+  },
+  {
+    "ID": 10,
+    "Rank": 2,
+    "Text": "deletemovie"
+  },
+  {
+    "ID": 11,
+    "Rank": 2,
+    "Text": "createmovie"
+  }
 ]

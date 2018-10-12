@@ -22,7 +22,7 @@ namespace IMDB.Services
             this.loginSession = login;            
         }
         
-        public IEnumerable<ReviewView> ShowReviews(int movieID)
+        public IEnumerable<ReviewView> ListMovieReviews(int movieID)
         {
             Validator.IsNonNegative(movieID, "MovieID cannot be negative");
 
@@ -43,7 +43,7 @@ namespace IMDB.Services
                                         ByUser = rev.User.UserName,
                                         MovieName = rev.Movie.Name
                                     })
-                                    .OrderByDescending(rev => rev.Rating)
+                                    .OrderByDescending(rev => rev.Score)
                                     .ToList();
 
             return reviewsQuery;

@@ -125,7 +125,7 @@ namespace IMDB.Services
 				{
 					Name = mov.Name,
 					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType),
-					Top5Reviews = mov.Reviews.OrderBy(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
+					Top5Reviews = mov.Reviews.OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
 						{
 							ByUser = rev.User.UserName,
 							Score = rev.ReviewScore,

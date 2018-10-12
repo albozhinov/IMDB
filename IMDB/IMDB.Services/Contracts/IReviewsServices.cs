@@ -6,7 +6,7 @@ namespace IMDB.Services.Contracts
 {
     public interface IReviewsServices
     {
-        IEnumerable<ReviewView> ShowReviews(int movieId);
+        IEnumerable<ReviewView> ListMovieReviews(int movieId);
 
         ReviewView RateReview(int reviewID, double socre);
 

@@ -57,8 +57,8 @@ namespace IMDB.Data.Migrations
                 columns: new[] { "ID", "Rank", "Text" },
                 values: new object[,]
                 {
-                    { 10, 2, "createmovie" },
-                    { 9, 2, "deletemovie" },
+                    { 11, 2, "createmovie" },
+                    { 10, 2, "deletemovie" },
                     { 8, 1, "deletereview" },
                     { 7, 1, "ratereview" },
                     { 6, 1, "ratemovie" },
@@ -66,7 +66,8 @@ namespace IMDB.Data.Migrations
                     { 3, 0, "checkmovie" },
                     { 2, 0, "login" },
                     { 1, 0, "register" },
-                    { 5, 0, "showreviews" }
+                    { 5, 0, "listmoviereviews" },
+                    { 9, 0, "logout" }
                 });
 
             migrationBuilder.InsertData(

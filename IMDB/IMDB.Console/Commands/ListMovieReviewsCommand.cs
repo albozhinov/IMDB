@@ -25,7 +25,7 @@ namespace IMDB.Console.Commands
                 return "Incorrect ID format";
             }
 
-            var reviews = reviewService.ShowReviews(ID);
+            var reviews = reviewService.ListMovieReviews(ID);
             var first = reviews.FirstOrDefault();
 
             var sb = new StringBuilder();
