@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace IMDB.Data.Models
 {
@@ -6,6 +7,7 @@ namespace IMDB.Data.Models
     {
         public int ID { get; set; }
         public String Text { get; set; }
+        [Required]
         public int Rank { get; set; }
     }
 }

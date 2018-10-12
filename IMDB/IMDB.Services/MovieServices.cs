@@ -124,7 +124,7 @@ namespace IMDB.Services
 						})
 						.ToList(),
 					Score = mov.MovieScore,
-					Producer = mov.Producer
+					Producer = mov.Producer.Name
 				})
 				.FirstOrDefault();
 			if (foundMovie is null)

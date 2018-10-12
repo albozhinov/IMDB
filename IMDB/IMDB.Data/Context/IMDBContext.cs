@@ -43,7 +43,7 @@ namespace IMDB.Data.Context
             {
                 optionsBuilder
 					.UseLoggerFactory(loggerFactory)
-					.UseSqlServer(@"Server=DESKTOP-UQ2T66F\MSSQLSERVER01;Database=IMBD;Trusted_Connection=True;");
+					.UseSqlServer(@"Server=DESKTOP-4T206OM;Database=IMBD;Trusted_Connection=True;");
             }
         }
 		private void LoadJsonInDB(ModelBuilder modelBuilder)
@@ -75,7 +75,15 @@ namespace IMDB.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-			LoadJsonInDB(modelBuilder);
+            modelBuilder.Entity<Movie>().Property(mov => mov.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<User>().Property(us => us.UserName)
+                .HasMaxLength(50)
+                .IsRequired();
+
+			//LoadJsonInDB(modelBuilder);
 
 			modelBuilder.Entity<MovieGenre>()
 				.HasKey(m => new { m.GenreID, m.MovieID });
