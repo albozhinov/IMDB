@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using IMDB.Console.Contracts;
 using IMDB.Console.Injection;
+using IMDB.Data.Context;
+using System.Linq;
 
 namespace IMDB.CLI
 {

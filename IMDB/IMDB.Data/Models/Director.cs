@@ -9,7 +9,7 @@ namespace IMDB.Data.Models
     {
         public int ID { get; set; }
         [Required]
-        [MaxLength (255)]
+        [MaxLength (78)]
         public String Name { get; set; }
         public ICollection<Movie> Movies { get; set; }
     }
