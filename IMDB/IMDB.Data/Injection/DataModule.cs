@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using IMDB.Data.Context;
+using IMDB.Data.Repository;
 
 namespace IMDB.Data.Injection
 {
@@ -9,6 +10,8 @@ namespace IMDB.Data.Injection
 		{
 			builder.RegisterType<IMDBContext>().AsSelf();
 			base.Load(builder);
+
+            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).SingleInstance();
         }
     }
 }
