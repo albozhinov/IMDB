@@ -5,6 +5,7 @@ using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Services.Providers;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,40 +77,40 @@ namespace IMDB.Services
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
             Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var findReview = reviewRepo.All()
+            var foundReview = reviewRepo.All()
                                          .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
-                                         .Select(r => new Review()
-                                         {
-                                             ID = r.ID,
-                                             IsDeleted = r.IsDeleted,
-                                             MovieID = r.MovieID,
-                                             MovieRating = r.MovieRating,
-                                             ReviewScore = r.ReviewScore,
-                                             Text = r.Text,
-                                             UserID = r.UserID,
-                                             Movie = r.Movie,
-                                             User = r.User,
-                                             ReviewRatings = r.ReviewRatings
-                                         }).FirstOrDefault();
+                                         .Include(r => r.User)
+                                         .Include(r => r.Movie)
+                                         .Include(r => r.ReviewRatings)
+                                         .ToList()
+                                         .FirstOrDefault();
 
-            if (findReview is null)
+            if (foundReview is null)
             {
-                throw new ReviewNotFoundException($"Review with ID: {reviewID} not found");
+                throw new ReviewNotFoundException($"Review with ID {reviewID} not found");
             }
 
-            findReview.ReviewScore = CalcualteRating(findReview, rating);
-            reviewRepo.Update(findReview);
+            foundReview.ReviewScore = CalcualteRating(foundReview, rating);
 
+            var reviewRatingToAdd = new ReviewRatings()
+            {
+                ReviewId = foundReview.ID,
+                UserId = loginSession.LoggedUserID,
+                ReviewRating = rating,
+            };
+
+            foundReview.ReviewRatings.Add(reviewRatingToAdd);
+            reviewRepo.Update(foundReview);            
             reviewRepo.Save();
 
             var revView = new ReviewView()
             {
-                ReviewID = findReview.ID,
-                Rating = findReview.MovieRating,
-                Score = findReview.ReviewScore,
-                ByUser = findReview.User.UserName,
-                MovieName = findReview.Movie.Name,
-                Text = findReview.Text
+                ReviewID = foundReview.ID,
+                Rating = foundReview.MovieRating,
+                Score = foundReview.ReviewScore,
+                ByUser = foundReview.User.UserName,
+                MovieName = foundReview.Movie.Name,
+                Text = foundReview.Text
             };
 
             return revView;

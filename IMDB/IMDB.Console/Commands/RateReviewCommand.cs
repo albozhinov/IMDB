@@ -38,7 +38,7 @@ namespace IMDB.Console.Commands
             
             var sb = new StringBuilder();
 
-            sb.AppendLine($"The rated review for movie {rateReview.MovieName}:");
+            sb.AppendLine($"The rated review for movie \"{rateReview.MovieName}\":");
             sb.Append(rateReview.ToString());
             return sb.ToString();
         }
