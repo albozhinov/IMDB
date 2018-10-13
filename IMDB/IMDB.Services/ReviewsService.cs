@@ -91,15 +91,11 @@ namespace IMDB.Services
             }
 
             foundReview.ReviewScore = CalcualteRating(foundReview, rating);
-
-            var reviewRatingToAdd = new ReviewRatings()
-            {
-                ReviewId = foundReview.ID,
-                UserId = loginSession.LoggedUserID,
-                ReviewRating = rating,
-            };
-
-            foundReview.ReviewRatings.Add(reviewRatingToAdd);
+            var reviewRatingToUpdate = foundReview.ReviewRatings
+                                                  .FirstOrDefault(r => r.UserId == foundReview.UserID 
+                                                                    && r.ReviewId == foundReview.ID);
+            reviewRatingToUpdate.ReviewRating = rating;
+            
             reviewRepo.Update(foundReview);            
             reviewRepo.Save();
 
