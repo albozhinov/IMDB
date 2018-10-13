@@ -1,9 +1,11 @@
 ﻿using IMDB.Data.Context;
 using IMDB.Data.Models;
+using IMDB.Data.Repository;
 using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Services.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,13 +13,21 @@ namespace IMDB.Services
 {
     public class ReviewsService : IReviewsServices
     {
-        private IMDBContext context;
+        private IRepository<ReviewRatings> reviewRatingsRepo;
+        private IRepository<Movie> movieRepo;
+        private IRepository<Review> reviewRepo;
         private ILoginSession loginSession;
         private const int adminRank = 2;
 
-        public ReviewsService(IMDBContext context, ILoginSession login)
+        public ReviewsService(
+            IRepository<Review> reviewRepo, 
+            IRepository<Movie> movieRepo,
+            IRepository<ReviewRatings> reviewRatingsRepo,
+            ILoginSession login)
         {
-            this.context = context;
+            this.reviewRatingsRepo = reviewRatingsRepo;
+            this.movieRepo = movieRepo;
+            this.reviewRepo = reviewRepo;
             loginSession = login;
         }
 
@@ -25,14 +35,13 @@ namespace IMDB.Services
         {
             Validator.IsNonNegative(movieID, "MovieID cannot be negative");
 
-            var foundMovie = context.Movies.FirstOrDefault(m => m.ID == movieID);
+            var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
             {
                 throw new MovieNotFoundException("Movie not found.");
             }
-
-            var reviewsQuery = context.Reviews
+            var reviewsQuery = reviewRepo.All()
                                     .Where(r => r.MovieID == movieID && r.IsDeleted == false)
                                     .Select(rev => new ReviewView()
                                     {
@@ -51,8 +60,8 @@ namespace IMDB.Services
 
         private double CalcualteRating(Review review, double newRating)
         {
-            int count = context.ReviewRatings.Count(rev => rev.ReviewId == review.ID);
-            double sumAllRatings = context.ReviewRatings.Where(rev => rev.ReviewId == review.ID).Sum(rev => rev.ReviewRating);
+            int count = reviewRatingsRepo.All().Count(rev => rev.ReviewId == review.ID);
+            double sumAllRatings = reviewRatingsRepo.All().Where(rev => rev.ReviewId == review.ID).Sum(rev => rev.ReviewRating);
             return (sumAllRatings + newRating) / (count + 1);
         }
 
@@ -61,7 +70,7 @@ namespace IMDB.Services
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative");
             Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var findReview = context.Reviews
+            var findReview = reviewRepo.All()
                                          .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                          .Select(r => new Review()
                                          {
@@ -75,8 +84,7 @@ namespace IMDB.Services
                                              Movie = r.Movie,
                                              User = r.User,
                                              ReviewRatings = r.ReviewRatings
-                                         }
-                                         ).FirstOrDefault();
+                                         }).FirstOrDefault();
 
             if (findReview is null)
             {
@@ -84,9 +92,9 @@ namespace IMDB.Services
             }
 
             findReview.ReviewScore = CalcualteRating(findReview, rating);
-            context.Reviews.Update(findReview);
+            reviewRepo.Update(findReview);
 
-            context.SaveChanges();
+            reviewRepo.Save();
 
             var revView = new ReviewView()
             {
@@ -105,7 +113,7 @@ namespace IMDB.Services
         {
             Validator.IsNonNegative(reviewID, "ReviewID cannot be negative.");
 
-            var findReview = context.Reviews.FirstOrDefault(r => r.ID == reviewID);
+            var findReview = reviewRepo.All().FirstOrDefault(r => r.ID == reviewID);
 
             if (findReview is null)
             {
@@ -115,10 +123,10 @@ namespace IMDB.Services
             if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
             {
                 findReview.IsDeleted = true;
-                context.Reviews.Update(findReview);
+                reviewRepo.Update(findReview);
             }
 
-            context.SaveChanges();
+            reviewRepo.Save();
         }
     }
 }
