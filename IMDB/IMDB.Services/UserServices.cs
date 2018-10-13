@@ -7,14 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System;
-using IMDB.Data.Repository;
 
 namespace IMDB.Services
 {
 	public sealed class UserServices : IUserServices
 	{
-        private IRepository<Permissions> permoRepo;
-        private IRepository<User> userRepo;
+		private IMDBContext context;
 		private ILoginSession loginSession;
 
 		private const int MAX_PASS_LENGTH = 16;
@@ -23,16 +21,15 @@ namespace IMDB.Services
 		private const int MIN_USERNAME_LENGTH = 5;
 
 		private const int GUEST_ID = 0;
-		public UserServices(ILoginSession loginSession, IRepository<User> userRepo, IRepository<Permissions> permoRepo)
+		public UserServices(IMDBContext context, ILoginSession loginSession)
 		{
-            this.permoRepo = permoRepo;
-            this.userRepo = userRepo;
+			this.context = context;
 			this.loginSession = loginSession;
 		}
 
 		private ICollection<string> GetPermissions(int role)
 		{
-			return this.permoRepo.All().Where(p => p.Rank <= role).Select(p => p.Text).ToList();
+			return this.context.Permissions.Where(p => p.Rank <= role).Select(p => p.Text).ToList();
 		}
 		//Login with existing user - works
 		//Login with non existing user - works
@@ -43,7 +40,7 @@ namespace IMDB.Services
 
 			password = Sha256(password);
 
-			var user = userRepo.All().FirstOrDefault(u => u.UserName == userName && u.Password == password);
+			var user = context.Users.FirstOrDefault(u => u.UserName == userName && u.Password == password);
 			if (user is null) throw new LoginFailedException("User not found or wrong password!");
 
 			this.loginSession.LoggedUserID = user.ID;
@@ -70,7 +67,7 @@ namespace IMDB.Services
 
 			password = Sha256(password);
 
-			if (userRepo.All().Any(u => u.UserName == userName)) throw new RegisterFailedException("Username already exists!");
+			if (this.context.Users.Any(u => u.UserName == userName)) throw new RegisterFailedException("Username already exists!");
 
 			var userToAdd = new User
 			{
@@ -78,8 +75,8 @@ namespace IMDB.Services
 				Password = password,
 				Rank = (int)UserRoles.User,
 			};
-			this.userRepo.Add(userToAdd);
-			userRepo.Save();
+			this.context.Users.Add(userToAdd);
+			context.SaveChanges();
 		}
 
 		private static string Sha256(string randomString)

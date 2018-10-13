@@ -18,9 +18,9 @@ namespace IMDB.Services.Injection
 
 		private void RegisterServices(ContainerBuilder builder)
 		{
-			builder.RegisterType<UserServices>().As<IUserServices>().SingleInstance();
-			builder.RegisterType<MovieServices>().As<IMovieServices>().SingleInstance();
-			builder.RegisterType<ReviewsService>().As<IReviewsServices>().SingleInstance();
+			builder.RegisterType<UserServices>().As<IUserServices>();
+			builder.RegisterType<MovieServices>().As<IMovieServices>();
+			builder.RegisterType<ReviewsService>().As<IReviewsServices>();
 			builder.RegisterType<LoginSession>().As<ILoginSession>().SingleInstance();
 		}
 	}

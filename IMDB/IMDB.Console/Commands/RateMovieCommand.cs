@@ -41,9 +41,9 @@ namespace IMDB.Console.Commands
             }
 
 
-            movieServices.RateMovie(movieID, rating, text);
+            var reviewID = movieServices.RateMovie(movieID, rating, text);
 
-            return $"Your successfully created or updated a review for movie with ID: {movieID}";
+            return $"Your successfully created or updated a review with ID:{reviewID}";
         }
     }
 }
