@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IMDB.Services
+﻿namespace IMDB.Services
 {
 	public enum UserRoles
 	{

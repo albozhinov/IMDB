@@ -67,7 +67,7 @@ namespace IMDB.Data.Migrations
                     { 2, 0, "login" },
                     { 1, 0, "register" },
                     { 5, 0, "listmoviereviews" },
-                    { 9, 0, "logout" }
+                    { 9, 1, "logout" }
                 });
 
             migrationBuilder.InsertData(

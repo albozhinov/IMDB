@@ -53,6 +53,8 @@ namespace IMDB.Services
 
 		public void Logout()
 		{
+            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
+                throw new NotEnoughPermissionException("How exactly did you get the idea of logout when you have not logged in?");
 			this.loginSession.LoggedUserPermissions = GetPermissions((int)UserRoles.Guest);
 			this.loginSession.LoggedUserRole = UserRoles.Guest;
             this.loginSession.LoggedUserID = GUEST_ID;

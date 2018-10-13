@@ -54,6 +54,8 @@ namespace IMDB.Services
 		//creating movie when one doesnt exist - works
         public void CreateMovie(string name, ICollection<string> genres, string director)
         {
+            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
+                throw new NotEnoughPermissionException("Not enough permision bro");
             //Validate name, genre and producer for format - Done?
             Validator.IfIsInRangeInclusive(name.Length, 3, 50, "Movie name cannot be less than 3 and more than 50 letters.");
 
@@ -115,7 +117,9 @@ namespace IMDB.Services
         }
 
 		public void DeleteMovie(int movieID)
-		{            
+		{
+            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
+                throw new NotEnoughPermissionException("Not enough permision bro");
             Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
 
 			//TODO delete all revies and their stuff
@@ -169,6 +173,8 @@ namespace IMDB.Services
         //successfully updates the rating on the movie
 		public void RateMovie(int movieID, double rating, string reviewText)
 		{
+            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
+                throw new NotEnoughPermissionException("Not enough permision bro");
             Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
             Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
@@ -218,6 +224,8 @@ namespace IMDB.Services
 
         public ICollection<Movie> SearchMovies(string name, string genre, string producer)
         {
+            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
+                throw new NotEnoughPermissionException("Not enough permision bro");
             IQueryable<Movie> movies;
             if (name!=null)
             {
