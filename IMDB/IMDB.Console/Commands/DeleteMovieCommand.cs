@@ -3,19 +3,20 @@ using IMDB.Services.Contracts;
 using IMDB.Services.Providers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace IMDB.Console.Commands
 {
-    public sealed class ListMovieReviewsCommand : ICommand
+    public sealed class DeleteMovieCommand : ICommand
     {
-        private IReviewsServices reviewService;
+        private IMovieServices movieServices;
         private const string FAILED_SYNTAX = "Wrong syntax of command";
-        private const string CMD_FORMAT = "listmoviereviews - <movieID>";
-        public ListMovieReviewsCommand(IReviewsServices reviewService)
+        private const string CMD_FORMAT = "deletemovie - <movieID>";
+
+
+        public DeleteMovieCommand(IMovieServices movieServices)
         {
-            this.reviewService = reviewService;
+            this.movieServices = movieServices;
         }
 
         public string Run(IList<string> parameters)
@@ -34,18 +35,9 @@ namespace IMDB.Console.Commands
                 return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
             }
 
-            var reviews = reviewService.ListMovieReviews(ID);
-            var first = reviews.FirstOrDefault();
+            movieServices.DeleteMovie(ID);
 
-            var sb = new StringBuilder();
-            sb.AppendLine($"Movie: {first.MovieName}");
-
-            foreach (var review in reviews)
-            {
-                sb.Append(review.ToString());
-            }
-
-            return sb.ToString();
+            return $"Movie with ID: {ID} deleted successfully";
         }
     }
 }

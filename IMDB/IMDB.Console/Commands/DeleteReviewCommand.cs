@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IMDB.Console.Commands
 {
-    public class DeleteReviewCommand : ICommand
+    public sealed class DeleteReviewCommand : ICommand
     {
         private IReviewsServices reviewService;
         private const string FAILED_SYNTAX = "Wrong syntax of command";

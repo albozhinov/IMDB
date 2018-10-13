@@ -6,6 +6,7 @@ using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Services.Providers;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,6 +21,7 @@ namespace IMDB.Services
         private IRepository<Movie> movieRepo;
         private ILoginSession loginSession;
         private IReviewsServices reviewServices;
+        private const int adminRank = 2;
 
 		public MovieServices(
             IRepository<Review> reviewRepo,
@@ -55,10 +57,10 @@ namespace IMDB.Services
         public void CreateMovie(string name, ICollection<string> genres, string director)
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permision bro");
-            //Validate name, genre and producer for format - Done?
+                throw new NotEnoughPermissionException("Not enough permission bro");
+            //Validate name, genre and director for format - Done?
             Validator.IfIsInRangeInclusive(name.Length, 3, 50, "Movie name cannot be less than 3 and more than 50 letters.");
-
+            Validator.IfNull<ArgumentNullException>(genres);
 
             Movie movieToAdd = null;
             if (!CheckProducerExists(director))
@@ -102,7 +104,7 @@ namespace IMDB.Services
                     else throw new MovieExistsException("Movie already exists!");
                 }
 
-                var foundGenres = genreRepo.All().Where(gO => genres.Any(gS => gS == gO.GenreType));
+                var foundGenres = genreRepo.All().Where(gO => genres.Any(gS => gS == gO.GenreType)).ToList();
                 foreach (var genre in foundGenres)
                 {
                     var movieGenreToAdd = new MovieGenre
@@ -119,24 +121,39 @@ namespace IMDB.Services
 		public void DeleteMovie(int movieID)
 		{
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permision bro");
+                throw new NotEnoughPermissionException("Not enough permission bro");
             Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
 
 			//TODO delete all revies and their stuff
-			var movieToDelete = movieRepo.All().FirstOrDefault(mov => mov.ID == movieID);
+			var movieToDelete = movieRepo.All()
+                                         .Where(mov => mov.ID == movieID && mov.IsDeleted == false)
+                                         .ToList()
+                                         .FirstOrDefault();
             if (movieToDelete is null)
+            {
                 throw new MovieNotFoundException("Movie not found!");
-            else {
+            }
+            else if ((int)loginSession.LoggedUserRole == adminRank)
+            {
                 movieToDelete.IsDeleted = true;
-                var reviews = reviewRepo.All().Where(rev => rev.MovieID == movieToDelete.ID);
+                var reviews = reviewRepo.All()
+                                        .Where(rev => rev.MovieID == movieToDelete.ID && rev.IsDeleted == false)
+                                        .ToList();
+
                 foreach (var review in reviews)
                 {
                     review.IsDeleted = true;
 					reviewRepo.Update(review);
                 }
+                movieRepo.Update(movieToDelete);
+                movieRepo.Save();
+                reviewRepo.Save();
             }
-			reviewRepo.Save();
-		}
+            else
+            {
+                throw new NotEnoughPermissionException("Not enough permission bro");
+            }
+        }
 		//Checking when such movie exists - works
 		//checking when such movie doesnt exist - works
 		public MovieView Check(int movieID)
@@ -174,7 +191,7 @@ namespace IMDB.Services
 		public void RateMovie(int movieID, double rating, string reviewText)
 		{
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permision bro");
+                throw new NotEnoughPermissionException("Not enough permission bro");
             Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
             Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
@@ -225,7 +242,7 @@ namespace IMDB.Services
         public ICollection<Movie> SearchMovies(string name, string genre, string producer)
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permision bro");
+                throw new NotEnoughPermissionException("Not enough permission bro");
             IQueryable<Movie> movies;
             if (name!=null)
             {
