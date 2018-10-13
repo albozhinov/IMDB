@@ -1,5 +1,6 @@
 ﻿using IMDB.Data.Context;
 using IMDB.Data.Models;
+using IMDB.Data.Repository;
 using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
@@ -12,19 +13,36 @@ namespace IMDB.Services
 {
     public sealed class MovieServices : IMovieServices
 	{
-		private ILoginSession loginSession;
-		private IMDBContext context;
+        private IRepository<Review> reviewRepo;
+        private IRepository<MovieGenre> movieGenreRepo;
+        private IRepository<Genre> genreRepo;
+        private IRepository<Director> directorRepo;
+        private IRepository<Movie> movieRepo;
+        private ILoginSession loginSession;
+        private IReviewsServices reviewServices;
 
-		public MovieServices(IMDBContext context, ILoginSession loginSession)
+		public MovieServices(
+            IRepository<Review> reviewRepo,
+            IRepository<Movie> movieRepo, 
+            IRepository<Director> directorRepo, 
+            IRepository<Genre> genreRepo, 
+            IRepository<MovieGenre> movieGenreRepo, 
+            ILoginSession loginSession, IReviewsServices reviewServices)
 		{
-			this.context = context;
+            this.reviewRepo = reviewRepo;
+            this.movieGenreRepo = movieGenreRepo;
+            this.genreRepo = genreRepo;
+            this.directorRepo = directorRepo;
+            this.movieRepo = movieRepo;
 			this.loginSession = loginSession;
+            this.reviewServices = reviewServices; //Maybe a better way?
+
 			//TODO add permissions for all services if the user is authorizied
 		}
 
         private bool CheckProducerExists(string directorName)
         {
-            var findProducer = context.Directors.FirstOrDefault(prod => prod.Name.Equals(directorName));
+            var findProducer = this.directorRepo.All().FirstOrDefault(prod => prod.Name.Equals(directorName));
             if (findProducer != null)
             {
                 return true;
@@ -49,11 +67,12 @@ namespace IMDB.Services
                     Name = name,
                     DirectorID = producerToAdd.ID
                 };
-                this.context.Movies.Add(movieToAdd);
+                movieRepo.Add(movieToAdd);
+                movieRepo.Save();
             }
             else
             {
-                var foundMovie = context.Movies
+                var foundMovie = movieRepo.All() 
 					.Include(mov => mov.Director)
 					.FirstOrDefault(mov => 
 						mov.Name.ToLower().Equals(name.ToLower())
@@ -64,23 +83,24 @@ namespace IMDB.Services
                     movieToAdd = new Movie()
                     {
                         Name = name,
-                        DirectorID = context.Directors.FirstOrDefault(prod => prod.Name.Equals(director)).ID
+                        DirectorID = directorRepo.All().FirstOrDefault(prod => prod.Name.Equals(director)).ID
                     };
-                    this.context.Movies.Add(movieToAdd);
+                    movieRepo.Add(movieToAdd);
+                    movieRepo.Save();
                 }
                 else
                 {
                     if (foundMovie.IsDeleted == true)
                     {
                         foundMovie.IsDeleted = false;
-                        context.Movies.Update(foundMovie);
-                        context.SaveChanges();
+                        movieRepo.Update(foundMovie);
+                        movieRepo.Save();
                         return;
                     }
                     else throw new MovieExistsException("Movie already exists!");
                 }
 
-                var foundGenres = this.context.Genres.Where(gO => genres.Any(gS => gS == gO.GenreType));
+                var foundGenres = genreRepo.All().Where(gO => genres.Any(gS => gS == gO.GenreType));
                 foreach (var genre in foundGenres)
                 {
                     var movieGenreToAdd = new MovieGenre
@@ -88,10 +108,10 @@ namespace IMDB.Services
                         GenreID = genre.ID,
                         MovieID = movieToAdd.ID
                     };
-                    context.MovieGenres.Add(movieGenreToAdd);
+                    movieGenreRepo.Add(movieGenreToAdd);
+                    movieGenreRepo.Save();
                 }
             }
-            context.SaveChanges();
         }
 
 		public void DeleteMovie(int movieID)
@@ -99,19 +119,19 @@ namespace IMDB.Services
             Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
 
 			//TODO delete all revies and their stuff
-			var movieToDelete = this.context.Movies.FirstOrDefault(mov => mov.ID == movieID);
+			var movieToDelete = movieRepo.All().FirstOrDefault(mov => mov.ID == movieID);
             if (movieToDelete is null)
                 throw new MovieNotFoundException("Movie not found!");
             else {
                 movieToDelete.IsDeleted = true;
-                var reviews = context.Reviews.Where(rev => rev.MovieID == movieToDelete.ID);
+                var reviews = reviewRepo.All().Where(rev => rev.MovieID == movieToDelete.ID);
                 foreach (var review in reviews)
                 {
                     review.IsDeleted = true;
-					context.Reviews.Update(review);
+					reviewRepo.Update(review);
                 }
             }
-			context.SaveChanges();
+			reviewRepo.Save();
 		}
 		//Checking when such movie exists - works
 		//checking when such movie doesnt exist - works
@@ -119,12 +139,12 @@ namespace IMDB.Services
 		{            
             Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
 
-			var foundMovie = this.context.Movies
+			var foundMovie = movieRepo.All()
 				.Where(mov => mov.ID == movieID && !mov.IsDeleted)
 				.Select(mov => new MovieView
 				{
 					Name = mov.Name,
-					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType),
+					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
 					Top5Reviews = mov.Reviews.OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
 						{
                             ReviewID = rev.ID,
@@ -147,22 +167,24 @@ namespace IMDB.Services
         //updates a rating
         //creates a new one successfully
         //successfully updates the rating on the movie
-		public int RateMovie(int movieID, double rating, string reviewText)
+		public void RateMovie(int movieID, double rating, string reviewText)
 		{
             Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
             Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var foundMovie = this.context.Movies.FirstOrDefault(mov => mov.ID == movieID && mov.IsDeleted==false);
+            var foundMovie = movieRepo.All().FirstOrDefault(mov => mov.ID == movieID && !mov.IsDeleted);
 			if (foundMovie is null)
 				throw new MovieNotFoundException("Movie not found!");
 
-            var reviewToAdd = this.context.Reviews.FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == loginSession.LoggedUserID);
+            var reviewToAdd = reviewRepo.All().FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == loginSession.LoggedUserID);
             if (reviewToAdd != null)
             {
+                foundMovie.MovieScore = CalcualteUpdateRating(foundMovie, rating, reviewToAdd.MovieRating);
+
                 reviewToAdd.IsDeleted = false;
                 reviewToAdd.Text = reviewText;
                 reviewToAdd.MovieRating = rating;
-                context.Reviews.Update(reviewToAdd);
+                reviewRepo.Update(reviewToAdd);
             }
             else
             {
@@ -173,23 +195,25 @@ namespace IMDB.Services
                     UserID = loginSession.LoggedUserID,
                     Text = reviewText
                 };
-                context.Reviews.Add(reviewToAdd);
+                foundMovie.MovieScore = CalcualteNewRating(foundMovie, rating);
+                reviewRepo.Add(reviewToAdd);
             }
             
-            //TODO update the rating on the movie SHABAN its you here! 
-            //Shaban: DONE!
-            foundMovie.MovieScore = CalcualteRating(foundMovie, rating);
-			context.Movies.Update(foundMovie);
-            context.SaveChanges();
-
-            return reviewToAdd.ID;
+			movieRepo.Update(foundMovie);
+            movieRepo.Save();
 		}
 
-        private double CalcualteRating(Movie movie , double newRating)
+        private double CalcualteNewRating(Movie movie , double newRating)
         {
-            int count = context.Reviews.Count(rev => rev.MovieID == movie.ID);
-            double sumAllRatings = context.Reviews.Where(rev => rev.MovieID == movie.ID).Sum(rev => rev.MovieRating);
+            int count = reviewRepo.All().Count(rev => rev.MovieID == movie.ID);
+            double sumAllRatings = reviewRepo.All().Where(rev => rev.MovieID == movie.ID && !rev.IsDeleted).Sum(rev => rev.MovieRating);
             return (sumAllRatings + newRating) / (count + 1);
+        }
+        private double CalcualteUpdateRating(Movie movie, double newRating, double oldRating)
+        {
+            int count = reviewRepo.All().Count(rev => rev.MovieID == movie.ID);
+            double sumAllRatings = reviewRepo.All().Where(rev => rev.MovieID == movie.ID && !rev.IsDeleted).Sum(rev => rev.MovieRating) - oldRating;
+            return (sumAllRatings + newRating) / count;
         }
 
         public ICollection<Movie> SearchMovies(string name, string genre, string producer)
@@ -197,21 +221,21 @@ namespace IMDB.Services
             IQueryable<Movie> movies;
             if (name!=null)
             {
-                 movies = context.Movies.Where(mov => mov.Name.Contains(name) && mov.IsDeleted==false);
+                 movies = movieRepo.All().Where(mov => mov.Name.Contains(name) && mov.IsDeleted==false);
             }
             else
             {
-                movies = context.Set<Movie>().Where(mov=>mov.IsDeleted==false);
+                movies = movieRepo.All().Where(mov=>mov.IsDeleted==false);
             }
             if (genre != null)
             {
 
-                movies = context.Movies
+                movies = movies
                     .Where(mov => mov.MovieGenres.Any(mg => mg.Genre.GenreType == genre));
             }
             if (producer != null)
             {
-                movies = context.Movies.Include(mov => mov.Director).Where(mov => mov.Director.Name.Equals(producer));
+                movies = movies.Include(mov => mov.Director).Where(mov => mov.Director.Name.Equals(producer));
             }
             if (movies.ToList() != null)
             {

@@ -1,5 +1,4 @@
-﻿using IMDB.Data.Models;
-using IMDB.Data.Views;
+﻿using IMDB.Data.Views;
 using System.Collections.Generic;
 
 namespace IMDB.Services.Contracts

@@ -22,7 +22,7 @@ namespace IMDB.Console.Commands
         {
             Validator.IfNull<ArgumentNullException>(parameters, "Parameters cannot be null!");
 
-            if (parameters.Count != 2)
+            if (parameters.Count != 1)
             {
                 return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
             }
