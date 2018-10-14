@@ -20,7 +20,7 @@ namespace IMDB.Tests.Services.UserServicesTests
             var loginSessionMock = new Mock<ILoginSession>();
             loginSessionMock
                 .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() {"cmd0", "cmd1", "butNotCmdLogout" });
+                .Returns(new List<string>() {"cmd0", "cmd1", "butnotcmdlogout" });
             var userRepoStub = new Mock<IRepository<User>>();
             var permissionsRepoStub = new Mock<IRepository<Permissions>>();
             var sut = new UserServices(loginSessionMock.Object, userRepoStub.Object, permissionsRepoStub.Object);

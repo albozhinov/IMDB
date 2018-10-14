@@ -20,15 +20,15 @@ namespace IMDB.Services.Providers
 			if (item.CompareTo(min) < 0 || item.CompareTo(max) > 0)
 				throw new ArgumentException(msg);
 		}
-		public static void IsNotNonNegative(int item, string msg)
+		public static void IfIsNotNonNegative(int item, string msg)
 		{
 			if (item < 0)
 				throw new ArgumentException(msg);
 		}
-		public static void IsNotPositive(int item, string msg)
+		public static void IfIsNotPositive(int item, string msg)
 		{
 			if (item <= 0)
-				throw new ArgumentOutOfRangeException(msg);
+				throw new ArgumentException(msg);
 		}
 		public static void IsNotLetter(char symbol, string msg)
 		{
