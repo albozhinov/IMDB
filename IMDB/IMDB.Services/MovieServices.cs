@@ -38,10 +38,6 @@ namespace IMDB.Services
 
             //TODO add permissions for all services if the user is authorizied
         }
-
-        //Creating movie when such exists - works
-        //creating movie when such exists, but it is deleted - works
-        //creating movie when one doesnt exist - works
         public void CreateMovie(string name, ICollection<string> genres, string director)
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
@@ -208,7 +204,7 @@ namespace IMDB.Services
                 foundMovie.MovieScore = CalcualteNewRating(foundMovie, rating);
                 reviewRepo.Add(reviewToAdd);
             }
-
+            reviewRepo.Save();
             movieRepo.Update(foundMovie);
             movieRepo.Save();
         }

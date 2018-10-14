@@ -152,6 +152,8 @@ namespace IMDB.Tests.Services.MovieServicesTests
             Assert.IsTrue(createdReviewBySut.Text == textInput);
             movieRepoMock.Verify(mr => mr.Update(movie));
             movieRepoMock.Verify(mr => mr.Save(), Times.Once);
+            reviewRepoMock.Verify(rrm => rrm.Save(), Times.Once);
+            movieRepoMock.Verify(rrm => rrm.Save(), Times.Once);
         }
         [TestMethod]
         public void UpdateMovieScoreUpdatingReview_WhenParametersAreCorrect()
@@ -169,7 +171,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var movieRepoMock = new Mock<IRepository<Movie>>();
             var review1ToBeUpdated = new Review { MovieID = movieID, MovieRating = r1rating, UserID = loggedUserID };
-            var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 124124};
+            var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 124124 };
             var review3Deleted = new Review { MovieID = movieID, MovieRating = r3DeleteDrating, IsDeleted = true };
             var movie = new Movie
             {
@@ -213,6 +215,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             movieRepoMock.Verify(mr => mr.Update(movie));
             movieRepoMock.Verify(mr => mr.Save(), Times.Once);
             reviewRepoMock.Verify(mr => mr.Update(It.IsAny<Review>()), Times.Once);
+            reviewRepoMock.Verify(rrm => rrm.Save(), Times.Once);
         }
     }
 }
