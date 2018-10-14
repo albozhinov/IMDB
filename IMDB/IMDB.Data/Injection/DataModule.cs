@@ -8,10 +8,9 @@ namespace IMDB.Data.Injection
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
-			builder.RegisterType<IMDBContext>().AsSelf();
-			base.Load(builder);
-
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
+			builder.RegisterType<IMDBContext>().AsSelf();
+            base.Load(builder);
         }
     }
 }

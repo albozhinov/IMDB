@@ -82,7 +82,6 @@ namespace IMDB.Services
                                          .Include(r => r.User)
                                          .Include(r => r.Movie)
                                          .Include(r => r.ReviewRatings)
-                                         .ToList()
                                          .FirstOrDefault();
 
             if (foundReview is null)
@@ -94,9 +93,24 @@ namespace IMDB.Services
             var reviewRatingToUpdate = foundReview.ReviewRatings
                                                   .FirstOrDefault(r => r.UserId == foundReview.UserID 
                                                                     && r.ReviewId == foundReview.ID);
-            reviewRatingToUpdate.ReviewRating = rating;
-            
-            reviewRepo.Update(foundReview);            
+
+            if(reviewRatingToUpdate is null)
+            {
+                var reviewRatingToAdd = new ReviewRatings()
+                {
+                    ReviewId = foundReview.ID,
+                    UserId = loginSession.LoggedUserID,
+                    ReviewRating = rating,
+                };
+
+                foundReview.ReviewRatings.Add(reviewRatingToAdd);
+            }
+            else
+            {
+                reviewRatingToUpdate.ReviewRating = rating;
+                reviewRepo.Update(foundReview);
+            }
+       
             reviewRepo.Save();
 
             var revView = new ReviewView()
