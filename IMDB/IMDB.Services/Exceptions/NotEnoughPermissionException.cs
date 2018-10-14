@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace IMDB.Services.Exceptions
 {
     [Serializable]
-    internal class NotEnoughPermissionException : Exception
+    public class NotEnoughPermissionException : Exception
     {
         public NotEnoughPermissionException()
         {

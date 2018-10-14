@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace IMDB.Services.Exceptions
 {
 	[Serializable]
-	internal class RegisterFailedException : Exception
+    public class RegisterFailedException : Exception
 	{
 		public RegisterFailedException()
 		{

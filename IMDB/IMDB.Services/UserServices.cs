@@ -40,8 +40,10 @@ namespace IMDB.Services
 		{
 			Validator.IfNull<LoginFailedException>(userName, "Password cannot be empty!");	
 			Validator.IfNull<LoginFailedException>(password, "Username cannot be empty!");
+            Validator.ContainsWhiteSpaces(userName, "UserName can't have empty spaces!");
+            Validator.ContainsWhiteSpaces(password, "UserName can't have empty spaces!");
 
-			password = Sha256(password);
+            password = Sha256(password);
 
 			var user = userRepo.All().FirstOrDefault(u => u.UserName == userName && u.Password == password);
 			if (user is null) throw new LoginFailedException("User not found or wrong password!");
@@ -59,18 +61,17 @@ namespace IMDB.Services
 			this.loginSession.LoggedUserRole = UserRoles.Guest;
             this.loginSession.LoggedUserID = GUEST_ID;
 		}
-		//Registring nonexistent user - works
-		//Registring an existing user - works
-		//Constrains work
+
 		public void Register(string userName, string password)
 		{
 			Validator.IfNull<RegisterFailedException>(userName, "Password cannot be empty!");
 			Validator.IfNull<RegisterFailedException>(password, "Username cannot be empty!");
-			Validator.IfIsInRangeInclusive<int>(password.Length, MIN_PASS_LENGTH, MAX_PASS_LENGTH, "Password should be between 4 and 16 symbols long!");
-			Validator.IfIsInRangeInclusive<int>(userName.Length, MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH, "Username should be between 4 and 16 symbols long!");
-			Validator.DoesNotContainWhiteSpaces(userName, "UserNames cannot contain spaces!");
+			Validator.IfIsNotInRangeInclusive<int>(password.Length, MIN_PASS_LENGTH, MAX_PASS_LENGTH, "Password should be between 4 and 16 symbols long!");
+			Validator.IfIsNotInRangeInclusive<int>(userName.Length, MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH, "Username should be between 4 and 16 symbols long!");
+			Validator.ContainsWhiteSpaces(userName, "UserNames cannot contain spaces!");
+			Validator.ContainsWhiteSpaces(password, "UserNames cannot contain spaces!");
 
-			password = Sha256(password);
+            password = Sha256(password);
 
 			if (userRepo.All().Any(u => u.UserName == userName)) throw new RegisterFailedException("Username already exists!");
 

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace IMDB.Services.Exceptions
 {
 	[Serializable]
-	internal class LoginFailedException : Exception
+	public class LoginFailedException : Exception
 	{
 		public LoginFailedException()
 		{

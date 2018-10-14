@@ -37,7 +37,7 @@ namespace IMDB.Services
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro.");
 
-            Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
+            Validator.IsNotNonNegative(movieID, "MovieID cannot be negative.");
 
             var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID);
 
@@ -74,8 +74,8 @@ namespace IMDB.Services
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro.");
 
-            Validator.IsNonNegative(reviewID, "ReviewID cannot be negative.");
-            Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
+            Validator.IsNotNonNegative(reviewID, "ReviewID cannot be negative.");
+            Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
             var foundReview = reviewRepo.All()
                                          .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
@@ -128,10 +128,7 @@ namespace IMDB.Services
 
         public void DeleteReview(int reviewID)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro.");
-
-            Validator.IsNonNegative(reviewID, "ReviewID cannot be negative.");
+            Validator.IsNotNonNegative(reviewID, "ReviewID cannot be negative.");
 
             var findReview = reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)

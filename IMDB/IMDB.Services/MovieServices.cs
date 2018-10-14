@@ -59,7 +59,7 @@ namespace IMDB.Services
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro");
             //Validate name, genre and director for format - Done?
-            Validator.IfIsInRangeInclusive(name.Length, 3, 50, "Movie name cannot be less than 3 and more than 50 letters.");
+            Validator.IfIsNotInRangeInclusive(name.Length, 3, 50, "Movie name cannot be less than 3 and more than 50 letters.");
             Validator.IfNull<ArgumentNullException>(genres);
 
             Movie movieToAdd = null;
@@ -122,7 +122,7 @@ namespace IMDB.Services
 		{
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro");
-            Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
+            Validator.IsNotNonNegative(movieID, "MovieID cannot be negative.");
 
 			//TODO delete all revies and their stuff
 			var movieToDelete = movieRepo.All()
@@ -158,7 +158,7 @@ namespace IMDB.Services
 		//checking when such movie doesnt exist - works
 		public MovieView Check(int movieID)
 		{            
-            Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
+            Validator.IsNotNonNegative(movieID, "MovieID cannot be negative.");
 
 			var foundMovie = movieRepo.All()
 				.Where(mov => mov.ID == movieID && !mov.IsDeleted)
@@ -192,8 +192,8 @@ namespace IMDB.Services
 		{
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro");
-            Validator.IsNonNegative(movieID, "MovieID cannot be negative.");
-            Validator.IfIsInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
+            Validator.IsNotNonNegative(movieID, "MovieID cannot be negative.");
+            Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
             var foundMovie = movieRepo.All().FirstOrDefault(mov => mov.ID == movieID && !mov.IsDeleted);
 			if (foundMovie is null)

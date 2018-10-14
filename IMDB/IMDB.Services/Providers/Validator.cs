@@ -15,28 +15,28 @@ namespace IMDB.Services.Providers
 			if (o is null)
 				throw new T();
 		}
-		public static void IfIsInRangeInclusive<T>(T item, T min, T max, string msg) where T : IComparable
+		public static void IfIsNotInRangeInclusive<T>(T item, T min, T max, string msg) where T : IComparable
 		{
 			if (item.CompareTo(min) < 0 || item.CompareTo(max) > 0)
 				throw new ArgumentException(msg);
 		}
-		public static void IsNonNegative(int item, string msg)
+		public static void IsNotNonNegative(int item, string msg)
 		{
 			if (item < 0)
 				throw new ArgumentException(msg);
 		}
-		public static void IsPositive(int item, string msg)
+		public static void IsNotPositive(int item, string msg)
 		{
 			if (item <= 0)
 				throw new ArgumentOutOfRangeException(msg);
 		}
-		public static void IsLetter(char symbol, string msg)
+		public static void IsNotLetter(char symbol, string msg)
 		{
 			if (!Char.IsLetter(symbol))
 				throw new ArgumentException(msg);
 		}
 
-		public static void DoesNotContainWhiteSpaces(string source, string msg)
+		public static void ContainsWhiteSpaces(string source, string msg)
 		{
 			if(source.Contains(' '))
 				throw new ArgumentException(msg);

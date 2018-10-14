@@ -23,7 +23,7 @@ namespace IMDB.Services
 			get => loggedUserID;
 			set
 			{
-				Validator.IsNonNegative(value, "ID Cannot be negative!");
+				Validator.IsNotNonNegative(value, "ID Cannot be negative!");
 				loggedUserID = value;
 			}
 		}

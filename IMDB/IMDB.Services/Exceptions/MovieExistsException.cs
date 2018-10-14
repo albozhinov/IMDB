@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace IMDB.Services.Exceptions
 {
 	[Serializable]
-	internal class MovieExistsException : Exception
+    public class MovieExistsException : Exception
 	{
 		public MovieExistsException()
 		{
