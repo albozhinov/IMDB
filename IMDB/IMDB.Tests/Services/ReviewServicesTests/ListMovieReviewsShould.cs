@@ -17,16 +17,16 @@ namespace IMDB.Tests.Services.ReviewServicesTests
     public class ListMovieReviewsShould
     {
         [DataTestMethod]
-        [DataRow(5, 5.00)]
-        [DataRow(1, 5.00)]
-        public void ThrowMovieNotFoundException_WhenMovieNotFound(int movieId, double rating)
+        [DataRow(5)]
+        [DataRow(1)]
+        public void ThrowMovieNotFoundException_WhenMovieNotFound(int movieId)
         {
             // Arrange
             var movieRepoMock = new Mock<IRepository<Movie>>();           
             var reviewStub = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "cmd0", "cmd1", "ratereview" });
+            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "cmd0", "cmd1", "listmoviereviews" });
 
             var movieMock = new Movie()
             {
@@ -38,10 +38,37 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allMoviesMock = new List<Movie>() { movieMock }.AsQueryable();   
             movieRepoMock.Setup(m => m.All()).Returns(allMoviesMock);
 
-            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object, loginStub.Object);            
+            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object, loginStub.Object); 
 
             // Act and Assert
-            Assert.ThrowsException<ReviewNotFoundException>(() => reviewServices.RateReview(movieId, rating)); 
+            Assert.ThrowsException<MovieNotFoundException>(() => reviewServices.ListMovieReviews(movieId)); 
+        }
+
+        [DataTestMethod]
+        [DataRow(5)]
+        public void ThrowNotEnoughPermissionsException_WhenUserHasNotLoggedIn(int movieId)
+        {
+            // Arrange
+            var movieRepoMock = new Mock<IRepository<Movie>>();
+            var reviewStub = new Mock<IRepository<Review>>();
+            var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
+            var loginStub = new Mock<ILoginSession>();
+            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "Not", "Enough", "Permission" });
+
+            var movieMock = new Movie()
+            {
+                ID = 1,
+                Name = "Rambo",
+                IsDeleted = true
+            };
+
+            var allMoviesMock = new List<Movie>() { movieMock }.AsQueryable();
+            movieRepoMock.Setup(m => m.All()).Returns(allMoviesMock);
+
+            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object, loginStub.Object);
+
+            // Act and Assert
+            Assert.ThrowsException<NotEnoughPermissionException>(() => reviewServices.ListMovieReviews(movieId));
         }
 
 
