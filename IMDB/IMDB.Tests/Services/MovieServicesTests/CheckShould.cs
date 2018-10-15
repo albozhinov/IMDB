@@ -5,6 +5,7 @@ using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,6 +14,24 @@ namespace IMDB.Tests.Services.MovieServicesTests
     [TestClass]
     public class CheckShould
     {
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
+        public void ThrowArgumentException_WhenArgumentsAreIncorrect(int movieID)
+        {
+            // Arrange
+            var reviewRepoStub = new Mock<IRepository<Review>>();
+
+            var movieRepoMock = new Mock<IRepository<Movie>>();
+            var directorRepoStub = new Mock<IRepository<Director>>();
+            var genreRepoStub = new Mock<IRepository<Genre>>();
+            var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
+            var loginSessionStub = new Mock<ILoginSession>();
+
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            // Act & Assert
+            Assert.ThrowsException<ArgumentException>(() => sut.Check(movieID));
+        }
         [TestMethod]
         public void ReturnMoiewViewOfFoundMovie_WhenSuchIsValid()
         {

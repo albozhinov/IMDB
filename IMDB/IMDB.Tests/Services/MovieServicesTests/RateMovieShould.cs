@@ -15,7 +15,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
     public class RateMovieShould
     {
         [TestMethod]
-        public void ThrowNotEnoughPermissionsException_WhenUserHasNotLoggedIn()
+        public void ThrowNotEnoughPermissionsException_WhenUserIsNotAuthorized()
         {
             // Arrange
             var reviewRepoStub = new Mock<IRepository<Review>>();
