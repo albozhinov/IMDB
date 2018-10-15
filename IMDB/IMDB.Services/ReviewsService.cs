@@ -54,7 +54,8 @@ namespace IMDB.Services
                                         Score = rev.ReviewScore,
                                         Text = rev.Text,
                                         ByUser = rev.User.UserName,
-                                        MovieName = rev.Movie.Name
+                                        MovieName = rev.Movie.Name,
+										NumberOfVotes = rev.NumberOfVotes
                                     })
                                     .OrderByDescending(rev => rev.Score)
                                     .ToList();
@@ -89,7 +90,6 @@ namespace IMDB.Services
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} not found.");
             }
 
-            foundReview.ReviewScore = CalcualteRating(foundReview, rating);
             var reviewRatingToUpdate = foundReview.ReviewRatings
                                                   .FirstOrDefault(r => r.UserId == foundReview.UserID 
                                                                     && r.ReviewId == foundReview.ID);
@@ -103,13 +103,17 @@ namespace IMDB.Services
                     ReviewRating = rating,
                 };
 
+				foundReview.NumberOfVotes++;
+				foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
                 foundReview.ReviewRatings.Add(reviewRatingToAdd);
-            }
+			}
             else
             {
+				foundReview.ReviewScore = ((double)(foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating) / (double)(foundReview.NumberOfVotes - 1);
+				foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
                 reviewRatingToUpdate.ReviewRating = rating;
-                reviewRepo.Update(foundReview);
-            }
+				reviewRepo.Update(foundReview);
+			}
        
             reviewRepo.Save();
 
@@ -120,7 +124,8 @@ namespace IMDB.Services
                 Score = foundReview.ReviewScore,
                 ByUser = foundReview.User.UserName,
                 MovieName = foundReview.Movie.Name,
-                Text = foundReview.Text
+                Text = foundReview.Text,
+				NumberOfVotes = foundReview.NumberOfVotes
             };
 
             return revView;
@@ -133,6 +138,7 @@ namespace IMDB.Services
             var findReview = reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                        .Include(r => r.User)
+									   .Include(r => r.Movie)
                                        .FirstOrDefault();
 
             if (findReview is null)
@@ -143,6 +149,7 @@ namespace IMDB.Services
             if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
             {
                 findReview.IsDeleted = true;
+				findReview.Movie.NumberOfVotes--;
                 reviewRepo.Update(findReview);
             }
             else

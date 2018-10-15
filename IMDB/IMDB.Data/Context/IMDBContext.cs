@@ -43,7 +43,7 @@ namespace IMDB.Data.Context
 			{
 				optionsBuilder
 					.UseLoggerFactory(loggerFactory)
-					.UseSqlServer(@"Server=ALEX-PC;Database=IMBD;Trusted_Connection=True;");
+					.UseSqlServer(@"Server=DESKTOP-4T206OM;Database=IMBD;Trusted_Connection=True;");
 			}
 		}
 		private void LoadJsonInDB(ModelBuilder modelBuilder)
@@ -85,17 +85,13 @@ namespace IMDB.Data.Context
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			LoadJsonInDB(modelBuilder);
+
 			modelBuilder.Entity<Movie>().Property(mov => mov.Name)
 				.IsRequired()
 				.HasMaxLength(50);
-
-            modelBuilder.Entity<Director>().Property(dir => dir.Name)
-                .IsRequired()
-                .HasMaxLength(25);
-
-            modelBuilder.Entity<Genre>().Property(g => g.GenreType)
-               .IsRequired()
-               .HasMaxLength(15);            
+			modelBuilder.Entity<Movie>().Property(mov => mov.DirectorID)
+				.IsRequired();
 
             modelBuilder.Entity<User>().Property(us => us.UserName)
 				.HasMaxLength(50)
@@ -114,7 +110,7 @@ namespace IMDB.Data.Context
 				.HasOne(rr => rr.Review)
 				.WithMany(r => r.ReviewRatings)
 				.OnDelete(DeleteBehavior.Restrict);
-			LoadJsonInDB(modelBuilder);
+
 
 			modelBuilder.Entity<MovieGenre>()
 				.HasKey(m => new { m.GenreID, m.MovieID });

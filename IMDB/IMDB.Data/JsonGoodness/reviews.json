@@ -6,6 +6,7 @@
 		"IsDeleted": false,
 		"MovieRating": 10,
 		"ReviewScore": 8.00,
+		"NumberOfVotes": 2,
 		"Text": "Mn qko piche"
 	},
 	{
@@ -15,6 +16,7 @@
 		"IsDeleted": false,
 		"MovieRating": 9.8,
 		"ReviewScore": 9.00,
+		"NumberOfVotes": 1,
 		"Text": "ba i qkiq film, a sym samo user"
 	},
 	{
@@ -24,6 +26,7 @@
 		"IsDeleted": false,
 		"MovieRating": 8.00,
 		"ReviewScore": 0.00,
+		"NumberOfVotes": 2,
 		"Text": "mn sex"
 	},
 	{

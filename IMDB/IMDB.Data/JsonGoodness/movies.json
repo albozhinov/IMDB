@@ -4,7 +4,8 @@
 		"Name": "Venom",
 		"MovieScore": 9.90,
 		"IsDeleted": false,
-		"DirectorID": 1
+		"DirectorID": 1,
+		"NumberOfVotes": 2
 	},
 	{
 		"ID": 2,
@@ -25,13 +26,15 @@
 		"Name": "Joker",
 		"MovieScore": 9.00,
 		"IsDeleted": false,
-		"DirectorID": 4
+		"DirectorID": 4,
+		"NumberOfVotes": 1
 	},
 	{
 		"ID": 5,
 		"Name": "A Simple Favor",
 		"MovieScore": 8.00,
 		"IsDeleted": false,
-		"DirectorID": 5
+		"DirectorID": 5,
+		"NumberOfVotes": 1
 	}
 ]

@@ -70,6 +70,7 @@ namespace IMDB.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     MovieScore = table.Column<double>(nullable: false),
+                    NumberOfVotes = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DirectorID = table.Column<int>(nullable: false)
                 },
@@ -119,6 +120,7 @@ namespace IMDB.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     MovieRating = table.Column<double>(nullable: false),
                     ReviewScore = table.Column<double>(nullable: false),
+                    NumberOfVotes = table.Column<int>(nullable: false),
                     Text = table.Column<string>(maxLength: 250, nullable: false)
                 },
                 constraints: table =>
@@ -163,6 +165,136 @@ namespace IMDB.Data.Migrations
                         principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Directors",
+                columns: new[] { "ID", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Ruben Fleischer" },
+                    { 2, "Bradley Cooper" },
+                    { 3, "Jeremy Saulnier" },
+                    { 4, "Todd Phillips" },
+                    { 5, "Paul Feig" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Genres",
+                columns: new[] { "ID", "GenreType" },
+                values: new object[,]
+                {
+                    { 16, "Saga" },
+                    { 17, "Satire" },
+                    { 19, "Social" },
+                    { 20, "Speculative" },
+                    { 21, "Thriller" },
+                    { 24, "Animation" },
+                    { 23, "Western" },
+                    { 15, "Romance" },
+                    { 25, "Live-action scripted" },
+                    { 26, "Live-action unscripted" },
+                    { 27, "Crime" },
+                    { 22, "Urban" },
+                    { 14, "Political" },
+                    { 18, "Sci-Fi" },
+                    { 12, "Paranoid Fiction" },
+                    { 13, "Philosophical" },
+                    { 2, "Adventure" },
+                    { 3, "Comedy" },
+                    { 4, "Crime" },
+                    { 5, "Drama" },
+                    { 6, "Fantasy" },
+                    { 1, "Action" },
+                    { 8, "Historical fiction" },
+                    { 9, "Horror" },
+                    { 10, "Magical realism" },
+                    { 11, "Mystery" },
+                    { 7, "Historical" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "ID", "Rank", "Text" },
+                values: new object[,]
+                {
+                    { 11, 2, "createmovie" },
+                    { 10, 2, "deletemovie" },
+                    { 9, 1, "logout" },
+                    { 8, 1, "deletereview" },
+                    { 7, 1, "ratereview" },
+                    { 4, 0, "searchmovie" },
+                    { 5, 0, "listmoviereviews" },
+                    { 3, 0, "checkmovie" },
+                    { 2, 0, "login" },
+                    { 1, 0, "register" },
+                    { 6, 1, "ratemovie" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "ID", "Password", "Rank", "UserName" },
+                values: new object[,]
+                {
+                    { 1, "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918", 2, "admin" },
+                    { 2, "325E7C598DE838FD1438C818A75E703FDDF7BA91C922EB68F2E0239705DFFA79", 1, "pesho" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Movies",
+                columns: new[] { "ID", "DirectorID", "IsDeleted", "MovieScore", "Name", "NumberOfVotes" },
+                values: new object[,]
+                {
+                    { 1, 1, false, 9.9, "Venom", 2 },
+                    { 2, 2, false, 0.0, "A Star Is Born", 0 },
+                    { 3, 3, false, 0.0, "Hold the Dark", 0 },
+                    { 4, 4, false, 9.0, "Joker", 1 },
+                    { 5, 5, false, 8.0, "A Simple Favor", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MovieGenres",
+                columns: new[] { "GenreID", "MovieID" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 11, 5 },
+                    { 5, 5 },
+                    { 4, 5 },
+                    { 3, 5 },
+                    { 5, 4 },
+                    { 4, 4 },
+                    { 21, 5 },
+                    { 21, 3 },
+                    { 5, 3 },
+                    { 2, 3 },
+                    { 15, 2 },
+                    { 5, 2 },
+                    { 18, 1 },
+                    { 11, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reviews",
+                columns: new[] { "ID", "IsDeleted", "MovieID", "MovieRating", "NumberOfVotes", "ReviewScore", "Text", "UserID" },
+                values: new object[,]
+                {
+                    { 4, false, 4, 9.0, 0, 5.0, "evalata", 1 },
+                    { 2, false, 1, 9.8, 1, 9.0, "ba i qkiq film, a sym samo user", 2 },
+                    { 1, false, 1, 10.0, 2, 8.0, "Mn qko piche", 1 },
+                    { 3, false, 5, 8.0, 2, 0.0, "mn sex", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ReviewRatings",
+                columns: new[] { "ID", "ReviewId", "ReviewRating", "UserId" },
+                values: new object[,]
+                {
+                    { 1, 1, 10.0, 1 },
+                    { 2, 1, 6.0, 2 },
+                    { 3, 2, 9.0, 1 },
+                    { 4, 3, 5.0, 1 },
+                    { 5, 3, 5.0, 2 }
                 });
 
             migrationBuilder.CreateIndex(
