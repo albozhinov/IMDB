@@ -20,17 +20,17 @@ namespace IMDB.Console
         {
             while (true)
             {
-                try
-                {
+                //try
+                //{
 					menu.WriteOptions();
                     var commandLine = reader.ReadLine();
                     var result = processor.ProcessCommand(commandLine);
                     writer.WriteLine(result);
-                }
+                /*}
                 catch(Exception e)
                 {
                     writer.WriteLine(e.Message);
-                }
+                }*/
             }
         }
     }

@@ -43,7 +43,7 @@ namespace IMDB.Data.Context
 			{
 				optionsBuilder
 					.UseLoggerFactory(loggerFactory)
-					.UseSqlServer(@"Server=ALEX-PC;Database=IMBD;Trusted_Connection=True;");
+					.UseSqlServer(@"Server=DESKTOP-4T206OM;Database=IMBD;Trusted_Connection=True;");
 			}
 		}
 		private void LoadJsonInDB(ModelBuilder modelBuilder)
