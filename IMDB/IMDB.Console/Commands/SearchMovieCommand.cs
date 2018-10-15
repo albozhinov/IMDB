@@ -20,12 +20,12 @@ namespace IMDB.Console.Commands
             Validator.IfNull<ArgumentNullException>(parameters, "Parameters cannot be null!");
 
             //if (parameters.Count != 3)
-                //return $"Wrong search parameters\n";
+            //return $"Wrong search parameters\n";
             string movieName, movieProducer, movieGenre;
 
-                movieName = parameters[0];
-                movieGenre = parameters[1];
-                movieProducer = parameters[2];
+            movieName = parameters[0];
+            movieGenre = parameters[1];
+            movieProducer = parameters[2];
 
             if (string.IsNullOrEmpty(movieName) || string.IsNullOrWhiteSpace(movieName))
             {
@@ -51,7 +51,7 @@ namespace IMDB.Console.Commands
                 }
             }
             else sb.AppendLine("No movies founded! \nProbably the movie doesn't exit in database\nOR\nthe input parameters are wrong!");
-            
+
 
             return sb.ToString();
         }

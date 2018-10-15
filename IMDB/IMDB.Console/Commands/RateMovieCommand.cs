@@ -35,7 +35,7 @@ namespace IMDB.Console.Commands
                 rating = Double.Parse(parameters[1]);
                 if (parameters.Count == 3)
                     text = parameters[2];
-            }catch (Exception e)
+            }catch (Exception)
             {
                 return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
             }

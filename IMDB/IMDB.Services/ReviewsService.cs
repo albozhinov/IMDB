@@ -39,7 +39,7 @@ namespace IMDB.Services
 
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
 
-            var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID);
+            var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID && m.IsDeleted == false);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
             {
@@ -89,7 +89,7 @@ namespace IMDB.Services
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} not found.");
             }
-
+            // Check logic!!!
             var reviewRatingToUpdate = foundReview.ReviewRatings
                                                   .FirstOrDefault(r => r.UserId == foundReview.UserID 
                                                                     && r.ReviewId == foundReview.ID);
@@ -133,6 +133,9 @@ namespace IMDB.Services
 
         public void DeleteReview(int reviewID)
         {
+            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
+                throw new NotEnoughPermissionException("Not enough permission bro.");
+
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
 
             var findReview = reviewRepo.All()
