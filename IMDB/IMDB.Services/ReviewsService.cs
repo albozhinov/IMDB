@@ -78,11 +78,11 @@ namespace IMDB.Services
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
             var foundReview = reviewRepo.All()
-                                         .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
-                                         .Include(r => r.User)
-                                         .Include(r => r.Movie)
-                                         .Include(r => r.ReviewRatings)
-                                         .FirstOrDefault();
+                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
+                                        .Include(r => r.User)
+                                        .Include(r => r.Movie)
+                                        .Include(r => r.ReviewRatings)
+                                        .FirstOrDefault();
 
             if (foundReview is null)
             {
@@ -133,14 +133,12 @@ namespace IMDB.Services
             var findReview = reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                        .Include(r => r.User)
-                                       .ToList()
                                        .FirstOrDefault();
 
             if (findReview is null)
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
             }
-
 
             if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
             {
