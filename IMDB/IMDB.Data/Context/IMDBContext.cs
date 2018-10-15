@@ -42,7 +42,7 @@ namespace IMDB.Data.Context
 			if (!optionsBuilder.IsConfigured)
 			{
 				optionsBuilder
-					.UseLoggerFactory(loggerFactory)
+					//.UseLoggerFactory(loggerFactory)
 					.UseSqlServer(@"Server=DESKTOP-4T206OM;Database=IMBD;Trusted_Connection=True;");
 			}
 		}

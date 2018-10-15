@@ -211,43 +211,40 @@ namespace IMDB.Services
             movieRepo.Update(foundMovie);
             movieRepo.Save();
         }
-        public ICollection<Movie> SearchMovies(string name, string genre, string producer)
+        public ICollection<MovieView> SearchMovie(string name, string genre, string producer)
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro");
-            IQueryable<Movie> movies = movieRepo.All().Select(m => new MovieView
+            IQueryable<MovieView> movies = movieRepo.All().Where(mov=>!mov.IsDeleted).Select(mov => new MovieView
             {
-                Name = m.Name,
-                Score = m.MovieScore,
-                Director = m.Director.Name,
-                Genres = m.MovieGenres.Select(mg => mg.Genre.GenreType).ToList(),
-                Top5Reviews =
-                });
+                Name = mov.Name,
+                Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
+                Top5Reviews = new List<ReviewView>(),
+                Score = mov.MovieScore,
+                Director = mov.Director.Name,
+                NumberOfVotes = mov.NumberOfVotes
+            });
 
             if (name != null)
             {
-                movies = movieRepo.All().Where(mov => mov.Name.Contains(name) && mov.IsDeleted == false);
-            }
-            else
-            {
-                movies = movieRepo.All().Where(mov => mov.IsDeleted == false);
+                movies = movies.Where(mov => mov.Name.Contains(name));
             }
             if (genre != null)
             {
 
                 movies = movies
-                    .Where(mov => mov.MovieGenres.Any(mg => mg.Genre.GenreType == genre));
+                    .Where(mov => mov.Genres.Contains(genre));
             }
             if (producer != null)
             {
-                movies = movies.Include(mov => mov.Director).Where(mov => mov.Director.Name.Equals(producer));
+                movies = movies.Where(mov => mov.Director.Contains(producer));
             }
-
-            if (movies.ToList() != null)
+            var findedMoies = movies.ToList();
+            if (findedMoies.Count == 0)
             {
-                return 
+                throw new MovieNotFoundException("Movie not found!");
             }
-            throw new MovieNotFoundException("Movie not found!");
+            return findedMoies;
 
         }
     }
