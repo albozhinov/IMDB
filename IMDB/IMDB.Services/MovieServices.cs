@@ -160,11 +160,13 @@ namespace IMDB.Services
                         Score = rev.ReviewScore,
                         MovieName = rev.Movie.Name,
                         Rating = rev.MovieRating,
-                        Text = rev.Text
+                        Text = rev.Text,
+						NumberOfVotes = rev.NumberOfVotes
                     })
                         .ToList(),
                     Score = mov.MovieScore,
-                    Director = mov.Director.Name
+                    Director = mov.Director.Name,
+					NumberOfVotes = mov.NumberOfVotes
                 })
                 .FirstOrDefault();
             if (foundMovie is null)
@@ -178,19 +180,20 @@ namespace IMDB.Services
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var foundMovie = movieRepo.All().FirstOrDefault(mov => mov.ID == movieID && !mov.IsDeleted);
+            var foundMovie = movieRepo.All().Include(m => m.Reviews).FirstOrDefault(mov => mov.ID == movieID && !mov.IsDeleted);
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
 
-            var reviewToAdd = reviewRepo.All().FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == loginSession.LoggedUserID);
+            var reviewToAdd = foundMovie.Reviews.FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == loginSession.LoggedUserID);
             if (reviewToAdd != null)
             {
-                foundMovie.MovieScore = CalcualteUpdateRating(foundMovie, rating, reviewToAdd.MovieRating);
-
-                reviewToAdd.IsDeleted = false;
+				foundMovie.Reviews.Remove(reviewToAdd);
+                foundMovie.MovieScore = ((double)(foundMovie.MovieScore * foundMovie.NumberOfVotes) - reviewToAdd.MovieRating) / (double)(foundMovie.NumberOfVotes - 1);
+				foundMovie.MovieScore += (rating - foundMovie.MovieScore) / foundMovie.NumberOfVotes;
+				reviewToAdd.IsDeleted = false;
                 reviewToAdd.Text = reviewText;
                 reviewToAdd.MovieRating = rating;
-                reviewRepo.Update(reviewToAdd);
+				foundMovie.Reviews.Add(reviewToAdd);
             }
             else
             {
@@ -201,26 +204,14 @@ namespace IMDB.Services
                     UserID = loginSession.LoggedUserID,
                     Text = reviewText
                 };
-                foundMovie.MovieScore = CalcualteNewRating(foundMovie, rating);
-                reviewRepo.Add(reviewToAdd);
+				foundMovie.NumberOfVotes++;
+				foundMovie.MovieScore += (rating - foundMovie.MovieScore) / foundMovie.NumberOfVotes;
+				foundMovie.Reviews.Add(reviewToAdd);
             }
-            reviewRepo.Save();
             movieRepo.Update(foundMovie);
             movieRepo.Save();
         }
-        private double CalcualteNewRating(Movie movie, double newRating)
-        {
-            int count = reviewRepo.All().Count(rev => rev.MovieID == movie.ID && !rev.IsDeleted);
-            double sumAllRatings = reviewRepo.All().Where(rev => rev.MovieID == movie.ID && !rev.IsDeleted).Sum(rev => rev.MovieRating);
-            return (sumAllRatings + newRating) / (count + 1);
-        }
-        private double CalcualteUpdateRating(Movie movie, double newRating, double oldRating)
-        {
-            int count = reviewRepo.All().Count(rev => rev.MovieID == movie.ID && !rev.IsDeleted);
-            double sumAllRatings = reviewRepo.All().Where(rev => rev.MovieID == movie.ID && !rev.IsDeleted).Sum(rev => rev.MovieRating) - oldRating;
-            return (sumAllRatings + newRating) / count;
-        }
-        public ICollection<MovieView> SearchMovie(string name, string genre, string producer)
+        public ICollection<Movie> SearchMovies(string name, string genre, string producer)
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro");

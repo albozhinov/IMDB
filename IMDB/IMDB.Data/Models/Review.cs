@@ -14,6 +14,7 @@ namespace IMDB.Data.Models
 		public bool IsDeleted { get; set; }
         public double MovieRating { get; set; }
         public double ReviewScore { get; set; }
+		public int NumberOfVotes { get; set; }
         [Required]
         [MaxLength(250)]
         public String Text { get; set; }

@@ -101,6 +101,8 @@ namespace IMDB.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<int>("NumberOfVotes");
+
                     b.HasKey("ID");
 
                     b.HasIndex("DirectorID");
@@ -108,11 +110,11 @@ namespace IMDB.Data.Migrations
                     b.ToTable("Movies");
 
                     b.HasData(
-                        new { ID = 1, DirectorID = 1, IsDeleted = false, MovieScore = 9.9, Name = "Venom" },
-                        new { ID = 2, DirectorID = 2, IsDeleted = false, MovieScore = 0.0, Name = "A Star Is Born" },
-                        new { ID = 3, DirectorID = 3, IsDeleted = false, MovieScore = 0.0, Name = "Hold the Dark" },
-                        new { ID = 4, DirectorID = 4, IsDeleted = false, MovieScore = 9.0, Name = "Joker" },
-                        new { ID = 5, DirectorID = 5, IsDeleted = false, MovieScore = 8.0, Name = "A Simple Favor" }
+                        new { ID = 1, DirectorID = 1, IsDeleted = false, MovieScore = 9.9, Name = "Venom", NumberOfVotes = 2 },
+                        new { ID = 2, DirectorID = 2, IsDeleted = false, MovieScore = 0.0, Name = "A Star Is Born", NumberOfVotes = 0 },
+                        new { ID = 3, DirectorID = 3, IsDeleted = false, MovieScore = 0.0, Name = "Hold the Dark", NumberOfVotes = 0 },
+                        new { ID = 4, DirectorID = 4, IsDeleted = false, MovieScore = 9.0, Name = "Joker", NumberOfVotes = 1 },
+                        new { ID = 5, DirectorID = 5, IsDeleted = false, MovieScore = 8.0, Name = "A Simple Favor", NumberOfVotes = 1 }
                     );
                 });
 
@@ -167,12 +169,13 @@ namespace IMDB.Data.Migrations
                         new { ID = 2, Rank = 0, Text = "login" },
                         new { ID = 3, Rank = 0, Text = "checkmovie" },
                         new { ID = 4, Rank = 0, Text = "searchmovie" },
-                        new { ID = 5, Rank = 0, Text = "showreviews" },
+                        new { ID = 5, Rank = 0, Text = "listmoviereviews" },
                         new { ID = 6, Rank = 1, Text = "ratemovie" },
                         new { ID = 7, Rank = 1, Text = "ratereview" },
                         new { ID = 8, Rank = 1, Text = "deletereview" },
-                        new { ID = 9, Rank = 2, Text = "deletemovie" },
-                        new { ID = 10, Rank = 2, Text = "createmovie" }
+                        new { ID = 9, Rank = 1, Text = "logout" },
+                        new { ID = 10, Rank = 2, Text = "deletemovie" },
+                        new { ID = 11, Rank = 2, Text = "createmovie" }
                     );
                 });
 
@@ -187,6 +190,8 @@ namespace IMDB.Data.Migrations
                     b.Property<int>("MovieID");
 
                     b.Property<double>("MovieRating");
+
+                    b.Property<int>("NumberOfVotes");
 
                     b.Property<double>("ReviewScore");
 
@@ -205,10 +210,10 @@ namespace IMDB.Data.Migrations
                     b.ToTable("Reviews");
 
                     b.HasData(
-                        new { ID = 1, IsDeleted = false, MovieID = 1, MovieRating = 10.0, ReviewScore = 8.0, Text = "Mn qko piche", UserID = 1 },
-                        new { ID = 2, IsDeleted = false, MovieID = 1, MovieRating = 9.8, ReviewScore = 9.0, Text = "ba i qkiq film, a sym samo user", UserID = 2 },
-                        new { ID = 3, IsDeleted = false, MovieID = 5, MovieRating = 8.0, ReviewScore = 0.0, Text = "mn sex", UserID = 1 },
-                        new { ID = 4, IsDeleted = false, MovieID = 4, MovieRating = 9.0, ReviewScore = 5.0, Text = "evalata", UserID = 1 }
+                        new { ID = 1, IsDeleted = false, MovieID = 1, MovieRating = 10.0, NumberOfVotes = 2, ReviewScore = 8.0, Text = "Mn qko piche", UserID = 1 },
+                        new { ID = 2, IsDeleted = false, MovieID = 1, MovieRating = 9.8, NumberOfVotes = 1, ReviewScore = 9.0, Text = "ba i qkiq film, a sym samo user", UserID = 2 },
+                        new { ID = 3, IsDeleted = false, MovieID = 5, MovieRating = 8.0, NumberOfVotes = 2, ReviewScore = 0.0, Text = "mn sex", UserID = 1 },
+                        new { ID = 4, IsDeleted = false, MovieID = 4, MovieRating = 9.0, NumberOfVotes = 0, ReviewScore = 5.0, Text = "evalata", UserID = 1 }
                     );
                 });
 
