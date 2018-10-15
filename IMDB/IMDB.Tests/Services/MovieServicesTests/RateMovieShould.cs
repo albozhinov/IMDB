@@ -107,27 +107,21 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var review1 = new Review { MovieID = movieID, MovieRating = r1rating, UserID = 123123123 };
             var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 12352315 };
             var review3Deleted = new Review { MovieID = movieID, MovieRating = r3DeleteDrating, IsDeleted = true };
-            var movie = new Movie
-            {
-                Name = "Stivi's adventure into unit testing of the underworld",
-                ID = movieID,
-                IsDeleted = false,
-                MovieScore = movieScore,
-                Reviews = new List<Review>() { review1, review2, review3Deleted }
+			var revireList = new List<Review>() { review1, review2, review3Deleted };
+			var movie = new Movie
+			{
+				Name = "Stivi's adventure into unit testing of the underworld",
+				ID = movieID,
+				IsDeleted = false,
+				MovieScore = movieScore,
+				Reviews = revireList,
+				NumberOfVotes = 2
             };
             movieRepoMock
                  .Setup(mr => mr.All())
                  .Returns(new List<Movie>() { movie }.AsQueryable());
 
             var reviewRepoMock = new Mock<IRepository<Review>>();
-            Review createdReviewBySut = null;
-            reviewRepoMock
-                .Setup(rr => rr.Add(It.IsAny<Review>()))
-                .Callback<Review>(r => createdReviewBySut = r);
-            reviewRepoMock
-                .Setup(rr => rr.All())
-                .Returns(new List<Review>() { review1, review2, review3Deleted }.AsQueryable());
-
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
@@ -145,14 +139,13 @@ namespace IMDB.Tests.Services.MovieServicesTests
             sut.RateMovie(movieID, ratingInput, textInput);
             //Assert
             //check if movie's score is updated should be 6
-            Assert.IsTrue(movie.MovieScore == (r1rating + r2rating + ratingInput) / 3);
-            Assert.IsTrue(createdReviewBySut.MovieID == movieID);
-            Assert.IsTrue(createdReviewBySut.MovieRating == ratingInput);
-            Assert.IsTrue(createdReviewBySut.UserID == loggedUserID);
-            Assert.IsTrue(createdReviewBySut.Text == textInput);
+            Assert.IsTrue(movie.MovieScore == (r1rating + r2rating + ratingInput) / movie.NumberOfVotes);
+            Assert.IsTrue(movie.Reviews.Last().MovieID == movieID);
+            Assert.IsTrue(movie.Reviews.Last().MovieRating == ratingInput);
+            Assert.IsTrue(movie.Reviews.Last().UserID == loggedUserID);
+            Assert.IsTrue(movie.Reviews.Last().Text == textInput);
             movieRepoMock.Verify(mr => mr.Update(movie));
             movieRepoMock.Verify(mr => mr.Save(), Times.Once);
-            reviewRepoMock.Verify(rrm => rrm.Save(), Times.Once);
             movieRepoMock.Verify(rrm => rrm.Save(), Times.Once);
         }
         [TestMethod]
@@ -173,23 +166,21 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var review1ToBeUpdated = new Review { MovieID = movieID, MovieRating = r1rating, UserID = loggedUserID };
             var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 124124 };
             var review3Deleted = new Review { MovieID = movieID, MovieRating = r3DeleteDrating, IsDeleted = true };
-            var movie = new Movie
-            {
-                Name = "Stivi's adventure into unit testing of the underworld",
-                ID = movieID,
-                IsDeleted = false,
-                MovieScore = movieScore,
-                Reviews = new List<Review>() { review1ToBeUpdated, review2, review3Deleted }
+			var reviewList = new List<Review>() { review1ToBeUpdated, review2, review3Deleted };
+			var movie = new Movie
+			{
+				Name = "Stivi's adventure into unit testing of the underworld",
+				ID = movieID,
+				IsDeleted = false,
+				MovieScore = movieScore,
+				Reviews = reviewList,
+				NumberOfVotes = 2
             };
             movieRepoMock
                  .Setup(mr => mr.All())
                  .Returns(new List<Movie>() { movie }.AsQueryable());
 
             var reviewRepoMock = new Mock<IRepository<Review>>();
-            reviewRepoMock
-                .Setup(rr => rr.All())
-                .Returns(new List<Review>() { review1ToBeUpdated, review2, review3Deleted }.AsQueryable());
-
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
@@ -207,15 +198,13 @@ namespace IMDB.Tests.Services.MovieServicesTests
             sut.RateMovie(movieID, ratingInput, textInput);
             //Assert
             //check if movie's score is updated should be 6
-            Assert.IsTrue(movie.MovieScore == (double)(r1rating - r1rating + r2rating + ratingInput) / 2);
+            Assert.IsTrue(movie.MovieScore == (double)(r1rating - r1rating + r2rating + ratingInput) / movie.NumberOfVotes);
             Assert.IsTrue(review1ToBeUpdated.MovieID == movieID);
             Assert.IsTrue(review1ToBeUpdated.MovieRating == ratingInput);
             Assert.IsTrue(review1ToBeUpdated.UserID == loggedUserID);
             Assert.IsTrue(review1ToBeUpdated.Text == textInput);
             movieRepoMock.Verify(mr => mr.Update(movie));
             movieRepoMock.Verify(mr => mr.Save(), Times.Once);
-            reviewRepoMock.Verify(mr => mr.Update(It.IsAny<Review>()), Times.Once);
-            reviewRepoMock.Verify(rrm => rrm.Save(), Times.Once);
         }
     }
 }

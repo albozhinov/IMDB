@@ -11,10 +11,11 @@ namespace IMDB.Data.Views
 		public string Director { get; set; }
 		public ICollection<string> Genres { get; set; }
 		public ICollection<ReviewView> Top5Reviews { get; set; }
+		public int NumberOfVotes { get; set; }
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"|Movie: {this.Name}| |Director: {this.Director}| |Movie Score: {this.Score}|");
+            sb.AppendLine($"|Movie: {this.Name}| |Director: {this.Director}| |Movie Score: {this.Score}| |{NumberOfVotes} Vote(s)");
             sb.AppendLine(" Genre: " + String.Join(", ", this.Genres));
             sb.AppendLine();
             sb.AppendLine("Top 5 reviews: ");
