@@ -116,32 +116,21 @@ namespace IMDB.Services
             //TODO delete all revies and their stuff
             var movieToDelete = movieRepo.All()
                                          .Where(mov => mov.ID == movieID && mov.IsDeleted == false)
-                                         .ToList()
+                                         .Include(m => m.Reviews)
                                          .FirstOrDefault();
             if (movieToDelete is null)
             {
                 throw new MovieNotFoundException("Movie not found!");
             }
-            else if ((int)loginSession.LoggedUserRole == adminRank)
-            {
-                movieToDelete.IsDeleted = true;
-                var reviews = reviewRepo.All()
-                                        .Where(rev => rev.MovieID == movieToDelete.ID && rev.IsDeleted == false)
-                                        .ToList();
 
-                foreach (var review in reviews)
-                {
-                    review.IsDeleted = true;
-                    reviewRepo.Update(review);
-                }
-                movieRepo.Update(movieToDelete);
-                movieRepo.Save();
-                reviewRepo.Save();
-            }
-            else
+            movieToDelete.IsDeleted = true;
+
+            foreach (var review in movieToDelete.Reviews)
             {
-                throw new NotEnoughPermissionException("Not enough permission bro");
+                review.IsDeleted = true;
             }
+            movieRepo.Update(movieToDelete);
+            movieRepo.Save();
         }
         public MovieView Check(int movieID)
         {
@@ -211,7 +200,7 @@ namespace IMDB.Services
             movieRepo.Update(foundMovie);
             movieRepo.Save();
         }
-        public ICollection<MovieView> SearchMovie(string name, string genre, string producer)
+        public ICollection<MovieView> SearchMovie(string name, string genre, string director)
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro");
@@ -231,13 +220,12 @@ namespace IMDB.Services
             }
             if (genre != null)
             {
-
                 movies = movies
-                    .Where(mov => mov.Genres.Contains(genre));
+                    .Where(mov => mov.Genres.Select(g => g.ToLower()).Contains(genre));
             }
-            if (producer != null)
+            if (director != null)
             {
-                movies = movies.Where(mov => mov.Director.Contains(producer));
+                movies = movies.Where(mov => mov.Director.ToLower() == director.ToLower());
             }
             var findedMoies = movies.ToList();
             if (findedMoies.Count == 0)
