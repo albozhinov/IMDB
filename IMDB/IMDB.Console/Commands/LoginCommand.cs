@@ -12,9 +12,8 @@ namespace IMDB.Console.Commands
 		private IUserServices userServices;
 		private const string FAILED_SYNTAX = "Wrong syntax of command";
 		private const string CMD_FORMAT = "register - <username> : <password>";
-		public LoginCommand(IUserServices userServices, ILoginSession session)
+		public LoginCommand(IUserServices userServices)
 		{
-			this.session = session;
 			this.userServices = userServices;
 		}
 		public string Run(IList<string> parameters)

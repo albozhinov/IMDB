@@ -19,7 +19,6 @@ namespace IMDB.Services
         private IRepository<Director> directorRepo;
         private IRepository<Movie> movieRepo;
         private ILoginSession loginSession;
-        private const int adminRank = 2;
 
         public MovieServices(
             IRepository<Review> reviewRepo,
@@ -130,7 +129,7 @@ namespace IMDB.Services
             movieRepo.Update(movieToDelete);
             movieRepo.Save();
         }
-        public MovieView Check(int movieID)
+        public MovieView CheckMovie(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
 

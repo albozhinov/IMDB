@@ -38,14 +38,19 @@ namespace IMDB.Tests.Console.CommandsTests
         [TestMethod]
         public void ReturnsSuccess_WhenArgumentsFormatIsCcorect()
         {
-            //Arrange
-            var movieServicesStub = new Mock<IMovieServices>();
+			const string arg1 = "arg1";
+			const string arg2 = "arg2";
+			const string arg3 = "arg3";
+			const string arg4 = "arg4";
+			//Arrange
+			var movieServicesMock = new Mock<IMovieServices>();
 
-            var sut = new CreateMovieCommand(movieServicesStub.Object);
+            var sut = new CreateMovieCommand(movieServicesMock.Object);
             //Act
-            var result = sut.Run(new List<string> {"t1", "t2", "t3"});
+            var result = sut.Run(new List<string> {arg1, arg2, arg3, arg4});
             //Assert
             Assert.IsTrue(result.Contains("success", StringComparison.CurrentCultureIgnoreCase));
+			movieServicesMock.Verify(msm => msm.CreateMovie(arg1, new List<string>() { arg3, arg4 }, arg2), Times.Once);
         }
     }
 }
