@@ -84,7 +84,7 @@ namespace IMDB.Services
             }
             // Check logic!!!
             var reviewRatingToUpdate = foundReview.ReviewRatings
-                                                  .FirstOrDefault(r => r.UserId == foundReview.UserID 
+                                                  .FirstOrDefault(r => r.UserId == loginSession.LoggedUserID 
                                                                     && r.ReviewId == foundReview.ID);
 
             if(reviewRatingToUpdate is null)
@@ -102,12 +102,19 @@ namespace IMDB.Services
 			}
             else
             {
-				foundReview.ReviewScore = ((double)(foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating) / (double)(foundReview.NumberOfVotes - 1);
-				foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
+                if (foundReview.NumberOfVotes == 1)
+                {
+                    foundReview.ReviewScore = rating;
+                }
+                else
+                {
+                    foundReview.ReviewScore = ((foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating) / (foundReview.NumberOfVotes - 1);
+                    foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
+                }
                 reviewRatingToUpdate.ReviewRating = rating;
-				reviewRepo.Update(foundReview);
 			}
-       
+
+            reviewRepo.Update(foundReview);
             reviewRepo.Save();
 
             var revView = new ReviewView()
@@ -145,7 +152,8 @@ namespace IMDB.Services
             if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
             {
                 findReview.IsDeleted = true;
-				findReview.Movie.NumberOfVotes--;
+                findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
+                findReview.Movie.NumberOfVotes--;
                 reviewRepo.Update(findReview);
             }
             else

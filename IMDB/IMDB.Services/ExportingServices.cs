@@ -30,6 +30,7 @@ namespace IMDB.Services
 				.OrderByDescending(m => m.MovieScore)
 				.Select(mov => new MovieView
 				{
+                    ID = mov.ID,
 					Name = mov.Name,
 					Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
 					Top5Reviews = mov.Reviews.OrderByDescending(rev => rev.ReviewScore).Select(rev => new ReviewView

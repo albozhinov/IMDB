@@ -22,7 +22,6 @@ namespace IMDB.Services
 		private const int MAX_USERNAME_LENGTH = 23;
 		private const int MIN_USERNAME_LENGTH = 5;
 
-		private const int GUEST_ID = 0;
 		public UserServices(ILoginSession loginSession, IRepository<User> userRepo, IRepository<Permissions> permoRepo)
 		{
             this.permoRepo = permoRepo;
@@ -59,7 +58,6 @@ namespace IMDB.Services
                 throw new NotEnoughPermissionException("How exactly did you get the idea of logout when you have not logged in?");
 			this.loginSession.LoggedUserPermissions = GetPermissions((int)UserRoles.Guest);
 			this.loginSession.LoggedUserRole = UserRoles.Guest;
-            this.loginSession.LoggedUserID = GUEST_ID;
 		}
 
 		public void Register(string userName, string password)

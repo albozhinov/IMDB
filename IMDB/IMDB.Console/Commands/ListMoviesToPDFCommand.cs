@@ -16,9 +16,11 @@ namespace IMDB.Console.Commands
 		}
 		public string Run(IList<string> parameters)
 		{
+			Validator.IfNull<ArgumentNullException>(parameters, "Parameters cannot be null!");
+
 			exportingServices.ListMoviesToPDF();
 
-			return "Suceessfully created pdf listing all the movies!";
+			return "Successfully created pdf listing all movies!";
 		}
 	}
 }

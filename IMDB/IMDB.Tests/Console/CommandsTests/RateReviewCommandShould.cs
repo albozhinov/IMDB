@@ -56,15 +56,15 @@ namespace IMDB.Tests.Console.CommandsTests
             const string successMessage = "The rated review for movie";
             const int reviewId = 1;
             const double rating = 9.00;
-            var reviewView = new ReviewView() { MovieName = "XXX" };
-            reviewService.Setup(r => r.RateReview(reviewId, rating)).Returns(reviewView);
+            var reviewViewMock = new Mock<ReviewView>();
+            reviewService.Setup(r => r.RateReview(reviewId, rating)).Returns(reviewViewMock.Object);
 
             // Act 
             var result = rateReviewCommand.Run(parameters);
 
             // Assert 
             Assert.IsTrue(result.Contains(successMessage));
-            Assert.IsTrue(result.Contains(reviewView.MovieName));
+            reviewViewMock.Verify(rvm => rvm.ToString(), Times.Once);
             reviewService.Verify(r => r.RateReview(reviewId, rating), Times.Once);
         }
 

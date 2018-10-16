@@ -13,7 +13,7 @@ namespace IMDB.Services
 {
     public sealed class MovieServices : IMovieServices
     {
-        private IRepository<Review> reviewRepo;
+        private readonly IRepository<Review> reviewRepo;
         private IRepository<MovieGenre> movieGenreRepo;
         private IRepository<Genre> genreRepo;
         private IRepository<Director> directorRepo;
@@ -52,10 +52,8 @@ namespace IMDB.Services
                 movieToAdd = new Movie()
                 {
                     Name = name,
-                    DirectorID = directorToAdd.ID
+                    Director = directorToAdd
                 };
-                directorRepo.Add(directorToAdd);
-                directorRepo.Save();
                 movieRepo.Add(movieToAdd);
                 movieRepo.Save();
             }
@@ -137,9 +135,10 @@ namespace IMDB.Services
                 .Where(mov => mov.ID == movieID && !mov.IsDeleted)
                 .Select(mov => new MovieView
                 {
+                    ID = mov.ID,
                     Name = mov.Name,
                     Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
-                    Top5Reviews = mov.Reviews.OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
+                    Top5Reviews = mov.Reviews.Where(r => !r.IsDeleted).OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
                     {
                         ReviewID = rev.ID,
                         ByUser = rev.User.UserName,
@@ -147,12 +146,12 @@ namespace IMDB.Services
                         MovieName = rev.Movie.Name,
                         Rating = rev.MovieRating,
                         Text = rev.Text,
-						NumberOfVotes = rev.NumberOfVotes
+                        NumberOfVotes = rev.NumberOfVotes
                     })
                         .ToList(),
                     Score = mov.MovieScore,
                     Director = mov.Director.Name,
-					NumberOfVotes = mov.NumberOfVotes
+                    NumberOfVotes = mov.NumberOfVotes
                 })
                 .FirstOrDefault();
             if (foundMovie is null)
@@ -173,13 +172,20 @@ namespace IMDB.Services
             var reviewToAdd = foundMovie.Reviews.FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == loginSession.LoggedUserID);
             if (reviewToAdd != null)
             {
-				foundMovie.Reviews.Remove(reviewToAdd);
-                foundMovie.MovieScore = ((double)(foundMovie.MovieScore * foundMovie.NumberOfVotes) - reviewToAdd.MovieRating) / (double)(foundMovie.NumberOfVotes - 1);
-				foundMovie.MovieScore += (rating - foundMovie.MovieScore) / foundMovie.NumberOfVotes;
-				reviewToAdd.IsDeleted = false;
+                foundMovie.Reviews.Remove(reviewToAdd);
+                if (foundMovie.NumberOfVotes == 1)
+                {
+                    foundMovie.MovieScore = rating;
+                }
+                else
+                {
+                    foundMovie.MovieScore = ((double)(foundMovie.MovieScore * foundMovie.NumberOfVotes) - reviewToAdd.MovieRating) / (double)(foundMovie.NumberOfVotes - 1);
+                    foundMovie.MovieScore += (rating - foundMovie.MovieScore) / foundMovie.NumberOfVotes;
+                }
+                reviewToAdd.IsDeleted = false;
                 reviewToAdd.Text = reviewText;
                 reviewToAdd.MovieRating = rating;
-				foundMovie.Reviews.Add(reviewToAdd);
+                foundMovie.Reviews.Add(reviewToAdd);
             }
             else
             {
@@ -190,9 +196,9 @@ namespace IMDB.Services
                     UserID = loginSession.LoggedUserID,
                     Text = reviewText
                 };
-				foundMovie.NumberOfVotes++;
-				foundMovie.MovieScore += (rating - foundMovie.MovieScore) / foundMovie.NumberOfVotes;
-				foundMovie.Reviews.Add(reviewToAdd);
+                foundMovie.NumberOfVotes++;
+                foundMovie.MovieScore += (rating - foundMovie.MovieScore) / foundMovie.NumberOfVotes;
+                foundMovie.Reviews.Add(reviewToAdd);
             }
             movieRepo.Update(foundMovie);
             movieRepo.Save();
@@ -201,8 +207,9 @@ namespace IMDB.Services
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
                 throw new NotEnoughPermissionException("Not enough permission bro");
-            IQueryable<MovieView> movies = movieRepo.All().Where(mov=>!mov.IsDeleted).Select(mov => new MovieView
+            IQueryable<MovieView> movies = movieRepo.All().Where(mov => !mov.IsDeleted).Select(mov => new MovieView
             {
+                ID = mov.ID,
                 Name = mov.Name,
                 Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
                 Top5Reviews = new List<ReviewView>(),

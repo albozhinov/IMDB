@@ -2,7 +2,7 @@
 
 namespace IMDB.Data.Views
 {
-	public sealed class ReviewView
+	public class ReviewView
 	{
         public int ReviewID { get; set; }
 		public double Rating { get; set; }

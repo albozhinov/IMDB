@@ -37,45 +37,36 @@ namespace IMDB.Tests.Console.CommandsTests
 			Assert.IsTrue(result.Contains("wrong", StringComparison.CurrentCultureIgnoreCase));
 		}
 		[TestMethod]
-		public void ReturnsServiceResultAsString_WhenArgumentsFormatIsCcorect()
+		public void CallsToStringOnView_WhenArgumentsFormatIsCcorect()
 		{
 			//Arrange
-			const string movieName = "somestring";
-			const string movieDirector = "director";
-			const string genre1 = "genre1";
-			const string genre2 = "genre2";
-			const int score = 8;
-			const int numberOfVotes = 92;
-			const int reviewRating = 7;
-			const string reviewText = "t1";
-			var reviewView = new ReviewView { Rating = reviewRating, Text = reviewText };
-			var movieView = new MovieView()
-			{
-				Name = movieName,
-				Director = movieDirector,
-				Genres = new List<string> { genre1, genre2 },
-				Score = score,
-				NumberOfVotes = numberOfVotes,
-				Top5Reviews = new List<ReviewView> { reviewView } 
-			};
+            var movieViewMock = new Mock<MovieView>(); 
 			var movieServicesMock = new Mock<IMovieServices>();
 			movieServicesMock
 				.Setup(msm => msm.CheckMovie(It.IsAny<int>()))
-				.Returns(movieView);
+				.Returns(movieViewMock.Object);
 
 			var sut = new CheckMovieCommand(movieServicesMock.Object);
 			//Act
 			var result = sut.Run(new List<string> { "1" });
 			//Assert
-			Assert.IsTrue(result.Contains(movieName, StringComparison.CurrentCultureIgnoreCase));
-			Assert.IsTrue(result.Contains(movieDirector, StringComparison.CurrentCultureIgnoreCase));
-			Assert.IsTrue(result.Contains(genre1, StringComparison.CurrentCultureIgnoreCase));
-			Assert.IsTrue(result.Contains(genre2, StringComparison.CurrentCultureIgnoreCase));
-			Assert.IsTrue(result.Contains(reviewText, StringComparison.CurrentCultureIgnoreCase));
-			Assert.IsTrue(result.Contains(reviewRating.ToString(), StringComparison.CurrentCultureIgnoreCase));
-			Assert.IsTrue(result.Contains(numberOfVotes.ToString(), StringComparison.CurrentCultureIgnoreCase));
-			Assert.IsTrue(result.Contains(score.ToString(), StringComparison.CurrentCultureIgnoreCase));
-			movieServicesMock.Verify(msm => msm.CheckMovie(1), Times.Once);
+            movieViewMock.Verify(mvm => mvm.ToString(), Times.Once);
 		}
+        [TestMethod]
+        public void CallsService_WhenArgumentsFormatIsCorrect()
+        {
+            //Arrange
+            var movieViewMock = new Mock<MovieView>();
+            var movieServicesMock = new Mock<IMovieServices>();
+            movieServicesMock
+                .Setup(msm => msm.CheckMovie(It.IsAny<int>()))
+                .Returns(movieViewMock.Object);
+
+            var sut = new CheckMovieCommand(movieServicesMock.Object);
+            //Act
+            var result = sut.Run(new List<string> { "1" });
+            //Assert
+            movieServicesMock.Verify(msm => msm.CheckMovie(1), Times.Once);
+        }
 	}
 }

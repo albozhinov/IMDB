@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using IMDB.Console.Contracts;
 using IMDB.Services.Contracts;
 using IMDB.Services.Providers;

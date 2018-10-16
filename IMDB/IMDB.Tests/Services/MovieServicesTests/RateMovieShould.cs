@@ -107,15 +107,15 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var review1 = new Review { MovieID = movieID, MovieRating = r1rating, UserID = 123123123 };
             var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 12352315 };
             var review3Deleted = new Review { MovieID = movieID, MovieRating = r3DeleteDrating, IsDeleted = true };
-			var revireList = new List<Review>() { review1, review2, review3Deleted };
-			var movie = new Movie
-			{
-				Name = "Stivi's adventure into unit testing of the underworld",
-				ID = movieID,
-				IsDeleted = false,
-				MovieScore = movieScore,
-				Reviews = revireList,
-				NumberOfVotes = 2
+            var revireList = new List<Review>() { review1, review2, review3Deleted };
+            var movie = new Movie
+            {
+                Name = "Stivi's adventure into unit testing of the underworld",
+                ID = movieID,
+                IsDeleted = false,
+                MovieScore = movieScore,
+                Reviews = revireList,
+                NumberOfVotes = 2
             };
             movieRepoMock
                  .Setup(mr => mr.All())
@@ -166,15 +166,15 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var review1ToBeUpdated = new Review { MovieID = movieID, MovieRating = r1rating, UserID = loggedUserID };
             var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 124124 };
             var review3Deleted = new Review { MovieID = movieID, MovieRating = r3DeleteDrating, IsDeleted = true };
-			var reviewList = new List<Review>() { review1ToBeUpdated, review2, review3Deleted };
-			var movie = new Movie
-			{
-				Name = "Stivi's adventure into unit testing of the underworld",
-				ID = movieID,
-				IsDeleted = false,
-				MovieScore = movieScore,
-				Reviews = reviewList,
-				NumberOfVotes = 2
+            var reviewList = new List<Review>() { review1ToBeUpdated, review2, review3Deleted };
+            var movie = new Movie
+            {
+                Name = "Stivi's adventure into unit testing of the underworld",
+                ID = movieID,
+                IsDeleted = false,
+                MovieScore = movieScore,
+                Reviews = reviewList,
+                NumberOfVotes = 2
             };
             movieRepoMock
                  .Setup(mr => mr.All())

@@ -62,7 +62,7 @@ namespace IMDB.Tests.Console.CommandsTests
         }
 
         [TestMethod]
-        public void ListMovieReviews_WhenParameterIsCorrect()
+        public void CallsToStringOnReviewView_WhenParameterIsCorrect()
         {
             // Arrange
             var reviewServices = new Mock<IReviewsServices>();
@@ -70,22 +70,34 @@ namespace IMDB.Tests.Console.CommandsTests
             const int Id = 1;
             var parameters = new List<string>() { "1" };
 
-            var reviewViewStub = new ReviewView() { ReviewID = 1, Rating = 8.88, Score = 7.77, ByUser = "Stamat", NumberOfVotes = 33, MovieName = "Catch me if you can", Text = "Mnogo hubav film" };
+            var reviewViewMock = new Mock<ReviewView>();
 
-            reviewServices.Setup(r => r.ListMovieReviews(Id)).Returns(new List<ReviewView>() { reviewViewStub });
+            reviewServices.Setup(r => r.ListMovieReviews(Id)).Returns(new List<ReviewView>() { reviewViewMock.Object });
+
+            // Act 
+            var result = listMovieReviewCommand.Run(parameters);
+
+            // Assert
+            reviewViewMock.Verify(rvm => rvm.ToString(), Times.Once);
+        }
+        [TestMethod]
+        public void CallsService_WhenParameterIsCorrect()
+        {
+            // Arrange
+            var reviewServices = new Mock<IReviewsServices>();
+            var listMovieReviewCommand = new ListMovieReviewsCommand(reviewServices.Object);
+            const int Id = 1;
+            var parameters = new List<string>() { "1" };
+
+            var reviewViewMock = new Mock<ReviewView>();
+
+            reviewServices.Setup(r => r.ListMovieReviews(Id)).Returns(new List<ReviewView>() { reviewViewMock.Object });
 
             // Act 
             var result = listMovieReviewCommand.Run(parameters);
 
             // Assert
             reviewServices.Verify(r => r.ListMovieReviews(Id), Times.Once);
-            Assert.IsTrue(result.Contains(reviewViewStub.ReviewID.ToString()));
-            Assert.IsTrue(result.Contains(reviewViewStub.Rating.ToString()));
-            Assert.IsTrue(result.Contains(reviewViewStub.Score.ToString()));
-            Assert.IsTrue(result.Contains(reviewViewStub.ByUser));
-            Assert.IsTrue(result.Contains(reviewViewStub.NumberOfVotes.ToString()));
-            Assert.IsTrue(result.Contains(reviewViewStub.MovieName));
-            Assert.IsTrue(result.Contains(reviewViewStub.Text));
         }
     }
 }
