@@ -177,8 +177,9 @@ namespace IMDB.Data.Migrations
                         new { ID = 8, Rank = 1, Text = "deletereview" },
                         new { ID = 9, Rank = 1, Text = "logout" },
                         new { ID = 10, Rank = 2, Text = "deletemovie" },
-                        new { ID = 11, Rank = 2, Text = "createmovie" }
-                    );
+                        new { ID = 11, Rank = 2, Text = "createmovie" },
+                        new { ID = 12, Rank = 2, Text = "listmoviestopdf" }
+					);
                 });
 
             modelBuilder.Entity("IMDB.Data.Models.Review", b =>
