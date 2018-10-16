@@ -35,8 +35,6 @@ namespace IMDB.Services
             this.directorRepo = directorRepo;
             this.movieRepo = movieRepo;
             this.loginSession = loginSession;
-
-            //TODO add permissions for all services if the user is authorizied
         }
         public void CreateMovie(string name, ICollection<string> genres, string director)
         {
