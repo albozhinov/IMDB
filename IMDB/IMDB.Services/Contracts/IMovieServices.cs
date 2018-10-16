@@ -38,6 +38,7 @@ namespace IMDB.Services.Contracts
         /// <param name="genre"></param>
         /// <param name="producer"></param>
         /// <returns></returns>
-        ICollection<Movie> SearchMovies(string name, string genre, string producer); 
-	}
+        ICollection<MovieView> SearchMovie(string name, string genre, string producer);
+
+    }
 }

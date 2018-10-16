@@ -42,8 +42,8 @@ namespace IMDB.Data.Context
 			if (!optionsBuilder.IsConfigured)
 			{
 				optionsBuilder
-					.UseLoggerFactory(loggerFactory)
-					.UseSqlServer(@"Server=DESKTOP-UQ2T66F\MSSQLSERVER01;Database=IMBD;Trusted_Connection=True;");
+					//.UseLoggerFactory(loggerFactory)
+					.UseSqlServer(@"Server=DESKTOP-4T206OM;Database=IMBD;Trusted_Connection=True;");
 			}
 		}
 		private void LoadJsonInDB(ModelBuilder modelBuilder)
