@@ -32,7 +32,7 @@ namespace IMDB.Console.Commands
 			{
 				return $"{FAILED_SYNTAX}\nTry: {CMD_FORMAT}";
 			}
-			var movieView = movieServices.Check(movieID);
+			var movieView = movieServices.CheckMovie(movieID);
 
 			return movieView.ToString();
 		}

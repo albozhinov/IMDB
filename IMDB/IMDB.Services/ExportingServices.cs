@@ -5,33 +5,19 @@ using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using SautinSoft.Document;
 using System.Linq;
-using System.Text;
 
 namespace IMDB.Services
 {
 	public sealed class ExportingServices : IExportingServices
 	{
 
-		private IRepository<Review> reviewRepo;
-		private IRepository<MovieGenre> movieGenreRepo;
-		private IRepository<Genre> genreRepo;
-		private IRepository<Director> directorRepo;
 		private IRepository<Movie> movieRepo;
 		private ILoginSession loginSession;
-		private const int adminRank = 2;
 
 		public ExportingServices(
-			IRepository<Review> reviewRepo,
 			IRepository<Movie> movieRepo,
-			IRepository<Director> directorRepo,
-			IRepository<Genre> genreRepo,
-			IRepository<MovieGenre> movieGenreRepo,
 			ILoginSession loginSession)
 		{
-			this.reviewRepo = reviewRepo;
-			this.movieGenreRepo = movieGenreRepo;
-			this.genreRepo = genreRepo;
-			this.directorRepo = directorRepo;
 			this.movieRepo = movieRepo;
 			this.loginSession = loginSession;
 		}

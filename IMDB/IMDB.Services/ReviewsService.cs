@@ -63,13 +63,6 @@ namespace IMDB.Services
             return reviewsQuery;
         }
 
-        private double CalcualteRating(Review review, double newRating)
-        {
-            int count = reviewRatingsRepo.All().Count(rev => rev.ReviewId == review.ID);
-            double sumAllRatings = reviewRatingsRepo.All().Where(rev => rev.ReviewId == review.ID).Sum(rev => rev.ReviewRating);
-            return (sumAllRatings + newRating) / (count + 1);
-        }
-
         public ReviewView RateReview(int reviewID, double rating)
         {
             if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))

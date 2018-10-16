@@ -12,7 +12,7 @@ using System.Linq;
 namespace IMDB.Tests.Services.MovieServicesTests
 {
     [TestClass]
-    public class CheckShould
+    public class CheckMovieShould
     {
         [DataTestMethod]
         [DataRow(0)]
@@ -30,7 +30,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
             // Act & Assert
-            Assert.ThrowsException<ArgumentException>(() => sut.Check(movieID));
+            Assert.ThrowsException<ArgumentException>(() => sut.CheckMovie(movieID));
         }
         [TestMethod]
         public void ReturnMoiewViewOfFoundMovie_WhenSuchIsValid()
@@ -81,7 +81,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var loginSessionStub = new Mock<ILoginSession>();
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
             //Act
-            var result = sut.Check(1);
+            var result = sut.CheckMovie(1);
             //Assert
             Assert.IsTrue(result.Director == directorName);
             Assert.IsTrue(result.Name == movieName);
@@ -121,7 +121,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var loginSessionStub = new Mock<ILoginSession>();
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
             //Act & Assert
-            Assert.ThrowsException<MovieNotFoundException>(() => sut.Check(52));
+            Assert.ThrowsException<MovieNotFoundException>(() => sut.CheckMovie(52));
         }
         [TestMethod]
         public void ThrowMovieNotFoundException_WhenMovieIsDeleted()
@@ -146,7 +146,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var loginSessionStub = new Mock<ILoginSession>();
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
             //Act & Assert
-            Assert.ThrowsException<MovieNotFoundException>(() => sut.Check(1));
+            Assert.ThrowsException<MovieNotFoundException>(() => sut.CheckMovie(1));
         }
     }
 }
