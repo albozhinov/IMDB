@@ -82,7 +82,10 @@ namespace IMDB.Tests.Services.MovieServicesTests
                 .SetupGet(ls => ls.LoggedUserPermissions)
                 .Returns(new List<string>() { "cmd0", "cmd1", "deletemovie" });
 
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, 
+                movieRepoMock.Object, directorRepoStub.Object, 
+                genreRepoStub.Object, movieGenreRepoStub.Object, 
+                loginSessionStub.Object);
             // Act & Assert
             Assert.ThrowsException<MovieNotFoundException>(() => sut.DeleteMovie(12312));
         }
