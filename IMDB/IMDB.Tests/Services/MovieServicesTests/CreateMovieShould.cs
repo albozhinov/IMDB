@@ -113,11 +113,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
                 .Callback<Movie>(m => movieCreatedBySut = m);
 
             var directorRepoMock = new Mock<IRepository<Director>>();
-            Director createdDirectorBySut = null;
-            directorRepoMock
-                .Setup(dr => dr.Add(It.IsAny<Director>()))
-                .Callback<Director>(d => createdDirectorBySut = d);
-
             var genreRepoMock = new Mock<IRepository<Genre>>();
             var genreList = new List<Genre>();
             genreList.Add(new Genre { GenreType = gentre1, ID = gentre1ID });
@@ -142,13 +137,11 @@ namespace IMDB.Tests.Services.MovieServicesTests
             // Act 
             sut.CreateMovie(movieName, new List<string>() { gentre1, gentre2 }, directorName);
             //Assert
-            Assert.IsTrue(createdDirectorBySut.Name == directorName);
+            Assert.IsTrue(movieCreatedBySut.Director.Name == directorName);
             Assert.IsTrue(movieCreatedBySut.Name == movieName);
-            Assert.IsTrue(movieCreatedBySut.DirectorID == createdDirectorBySut.ID);
             Assert.IsTrue(movieGenresCreatedBySut.Count == 2);
             Assert.IsTrue(movieGenresCreatedBySut.Any(mg => mg.GenreID == gentre1ID && mg.MovieID == movieCreatedBySut.ID));
             Assert.IsTrue(movieGenresCreatedBySut.Any(mg => mg.GenreID == gentre2ID && mg.MovieID == movieCreatedBySut.ID));
-            directorRepoMock.Verify(drm => drm.Add(createdDirectorBySut), Times.Once);
             movieRepoMock.Verify(mm => mm.Add(movieCreatedBySut), Times.Once);
             movieGenreRepoMock.Verify(mgm => mgm.Add(It.IsAny<MovieGenre>()), Times.Exactly(2));
         }

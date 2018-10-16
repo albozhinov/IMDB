@@ -32,7 +32,6 @@ namespace IMDB.Tests.Services.UserServicesTests
         public void Logout_WhenPermissionsSuffice()
         {
             // Arrange
-            const int GuestID = 0;
             const string p0Text = "p0";
 
             var loginSessionMock = new Mock<ILoginSession>();
@@ -55,7 +54,6 @@ namespace IMDB.Tests.Services.UserServicesTests
             //Assert
             loginSessionMock.VerifySet(ls => ls.LoggedUserPermissions = new List<string> { p0Text });
             loginSessionMock.VerifySet(ls => ls.LoggedUserRole = UserRoles.Guest);
-            loginSessionMock.VerifySet(ls => ls.LoggedUserID = GuestID);
         }
     }
 }

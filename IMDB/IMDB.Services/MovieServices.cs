@@ -229,7 +229,7 @@ namespace IMDB.Services
             }
             if (director != null)
             {
-                movies = movies.Where(mov => mov.Director.ToLower() == director.ToLower());
+                movies = movies.Where(mov => mov.Director.ToLower().Contains(director.ToLower()));
             }
             var findedMoies = movies.ToList();
             if (findedMoies.Count == 0)
@@ -237,7 +237,6 @@ namespace IMDB.Services
                 throw new MovieNotFoundException("Movie not found!");
             }
             return findedMoies;
-
         }
     }
 }
