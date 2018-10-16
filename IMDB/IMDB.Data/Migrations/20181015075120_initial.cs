@@ -219,6 +219,7 @@ namespace IMDB.Data.Migrations
                 values: new object[,]
                 {
                     { 11, 2, "createmovie" },
+                    { 12, 2, "listmoviestopdf" },
                     { 10, 2, "deletemovie" },
                     { 9, 1, "logout" },
                     { 8, 1, "deletereview" },

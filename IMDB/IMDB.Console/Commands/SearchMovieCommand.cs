@@ -47,7 +47,7 @@ namespace IMDB.Console.Commands
                 sb.AppendLine("Finded movies:");
                 foreach (var item in movieView)
                 {
-                    sb.AppendLine(item.ToString());
+                    sb.Append(item.ToString().Remove(item.ToString().IndexOf("Top")));
                 }
             }
             else sb.AppendLine("No movies founded! \nProbably the movie doesn't exit in database\nOR\nthe input parameters are wrong!");

@@ -27,7 +27,6 @@ namespace IMDB.Services
 				throw new NotEnoughPermissionException("Not enough permission bro");
 
 			var movies = movieRepo.All()
-				.OrderByDescending(m => m.MovieScore)
 				.Select(mov => new MovieView
 				{
                     ID = mov.ID,
@@ -48,7 +47,8 @@ namespace IMDB.Services
 					Director = mov.Director.Name,
 					NumberOfVotes = mov.NumberOfVotes
 				})
-				.ToList();
+                .OrderByDescending(m => m.Score)
+                .ToList();
 
 			DocumentCore dc = new DocumentCore();
 			dc.Content.End.Insert("Movie list: " + '\n', new CharacterFormat() { FontName = "Verdana", Size = 35.5f, FontColor = Color.Orange });
