@@ -112,7 +112,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var user = new User()
             {
                 Id = "10",
-                Rank = 1, // Rank = 1 = User => Can deleted his reviews!; Rank = 2 = Admin => Can deleted all reviews!
                 UserName = "Stamat"
             };
 
