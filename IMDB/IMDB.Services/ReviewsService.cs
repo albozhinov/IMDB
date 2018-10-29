@@ -34,11 +34,6 @@ namespace IMDB.Services
 
         public IEnumerable<ReviewView> ListMovieReviews(int movieID)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro.");
-
-            Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
-
             var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID && m.IsDeleted == false);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
@@ -65,9 +60,6 @@ namespace IMDB.Services
 
         public ReviewView RateReview(int reviewID, double rating)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro.");
-
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
@@ -133,9 +125,6 @@ namespace IMDB.Services
 
         public void DeleteReview(int reviewID)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro.");
-
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
 
             var findReview = reviewRepo.All()
@@ -149,7 +138,7 @@ namespace IMDB.Services
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
             }
 
-            if (findReview.User.ID == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
+            if (findReview.User.Id == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
             {
                 findReview.IsDeleted = true;
                 findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);

@@ -28,9 +28,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
-            loginSessionStub
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "deletemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
             // Act & Assert
@@ -53,9 +50,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "butnotdeletemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoStub.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
             // Act & Assert
@@ -78,9 +72,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
-            loginSessionStub
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "deletemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, 
                 movieRepoMock.Object, directorRepoStub.Object, 
@@ -106,9 +97,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
-            loginSessionStub
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "deletemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
             // Act & Assert
@@ -139,9 +127,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
-            loginSessionStub
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "deletemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
             // Act

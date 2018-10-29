@@ -15,7 +15,7 @@ namespace IMDB.Console.ConsoleProviders
 		public void WriteOptions()
 		{
 			writer.WriteLine("Avaliable commands: ");
-			writer.WriteLine(string.Join(' ', session.LoggedUserPermissions));
+			//writer.WriteLine(string.Join(' ', session.LoggedUserPermissions));
 		}
 	}
 }

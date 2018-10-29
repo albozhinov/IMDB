@@ -25,7 +25,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewStub = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "cmd0", "cmd1", "listmoviereviews" });
 
             var movieMock = new Movie()
             {
@@ -52,7 +51,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewStub = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "Not", "Enough", "Permission" });
 
             var movieMock = new Movie()
             {
@@ -80,7 +78,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewStub = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "some", "things", "listmoviereviews" });
 
             var movieMock = new Movie()
             {
@@ -107,7 +104,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "some", "things", "listmoviereviews" });
 
             var movieMock = new Movie(){ ID = 1, Name = "Rambo", IsDeleted = false };
             var allMoviesMock = new List<Movie>() { movieMock }.AsQueryable();

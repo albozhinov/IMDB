@@ -25,7 +25,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "some", "things", "deletereview" });
 
             var reviewMock = new Review()
             {
@@ -53,7 +52,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "some", "things", "deletereview" });
 
             var reviewMock = new Review()
             {
@@ -81,7 +79,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "Not", "Enough", "Permission" });
 
             var reviewMock = new Review()
             {
@@ -111,13 +108,10 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "some", "things", "deletereview" });
-            loginStub.Setup(l => l.LoggedUserID).Returns(userID);
-            loginStub.Setup(l => l.LoggedUserRole).Returns(role);
 
             var user = new User()
             {
-                ID = 10,
+                Id = "10",
                 Rank = 1, // Rank = 1 = User => Can deleted his reviews!; Rank = 2 = Admin => Can deleted all reviews!
                 UserName = "Stamat"
             };
@@ -134,7 +128,7 @@ namespace IMDB.Tests.Services.ReviewServicesTests
                 ID = 1,
                 IsDeleted = deletedFlag,
                 Text = "Mnogo qk Unit Test!",
-                UserID = user.ID,
+                UserID = user.Id,
                 User = user,
                 Movie = movie
             };

@@ -37,8 +37,6 @@ namespace IMDB.Services
         }
         public void CreateMovie(string name, ICollection<string> genres, string director)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro");
             Validator.IfNull<ArgumentNullException>(genres);
             Validator.IfNull<ArgumentNullException>(name);
             Validator.IfNull<ArgumentNullException>(director);
@@ -104,8 +102,6 @@ namespace IMDB.Services
 
         public void DeleteMovie(int movieID)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro");
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
 
             //TODO delete all revies and their stuff
@@ -160,8 +156,6 @@ namespace IMDB.Services
         }
         public void RateMovie(int movieID, double rating, string reviewText)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro");
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
@@ -205,8 +199,6 @@ namespace IMDB.Services
         }
         public ICollection<MovieView> SearchMovie(string name, string genre, string director)
         {
-            if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-                throw new NotEnoughPermissionException("Not enough permission bro");
             IQueryable<MovieView> movies = movieRepo.All().Where(mov => !mov.IsDeleted).Select(mov => new MovieView
             {
                 ID = mov.ID,

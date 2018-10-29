@@ -25,9 +25,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "butnotcmdratemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
             // Act & Assert
@@ -49,9 +46,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "ratemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
             // Act & Assert
@@ -81,9 +75,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "ratemovie" });
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
             // Act & Assert
@@ -104,8 +95,8 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
 
             var movieRepoMock = new Mock<IRepository<Movie>>();
-            var review1 = new Review { MovieID = movieID, MovieRating = r1rating, UserID = 123123123 };
-            var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 12352315 };
+            var review1 = new Review { MovieID = movieID, MovieRating = r1rating, UserID = "123123123" };
+            var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = "12352315" };
             var review3Deleted = new Review { MovieID = movieID, MovieRating = r3DeleteDrating, IsDeleted = true };
             var revireList = new List<Review>() { review1, review2, review3Deleted };
             var movie = new Movie
@@ -127,12 +118,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "ratemovie" });
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserID)
-                .Returns(loggedUserID);
 
             var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
             // Act
@@ -142,7 +127,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             Assert.IsTrue(movie.MovieScore == (r1rating + r2rating + ratingInput) / movie.NumberOfVotes);
             Assert.IsTrue(movie.Reviews.Last().MovieID == movieID);
             Assert.IsTrue(movie.Reviews.Last().MovieRating == ratingInput);
-            Assert.IsTrue(movie.Reviews.Last().UserID == loggedUserID);
             Assert.IsTrue(movie.Reviews.Last().Text == textInput);
             movieRepoMock.Verify(mr => mr.Update(movie));
             movieRepoMock.Verify(mr => mr.Save(), Times.Once);
@@ -153,7 +137,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
         {
             // Arrange
             const int movieID = 2;
-            const int loggedUserID = 12;
+            const string loggedUserID = "12";
             const int ratingInput = 8;
             const string textInput = "pishki";
             const int r1rating = 7;
@@ -164,7 +148,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var movieRepoMock = new Mock<IRepository<Movie>>();
             var review1ToBeUpdated = new Review { MovieID = movieID, MovieRating = r1rating, UserID = loggedUserID };
-            var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = 124124 };
+            var review2 = new Review { MovieID = movieID, MovieRating = r2rating, UserID = "124124" };
             var review3Deleted = new Review { MovieID = movieID, MovieRating = r3DeleteDrating, IsDeleted = true };
             var reviewList = new List<Review>() { review1ToBeUpdated, review2, review3Deleted };
             var movie = new Movie
@@ -186,12 +170,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "ratemovie" });
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserID)
-                .Returns(loggedUserID);
 
             var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
             // Act

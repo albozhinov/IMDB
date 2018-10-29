@@ -23,9 +23,6 @@ namespace IMDB.Services
 		}
 		public void ListMoviesToPDF()
 		{
-			if (!loginSession.LoggedUserPermissions.Contains(System.Reflection.MethodBase.GetCurrentMethod().Name.ToLower()))
-				throw new NotEnoughPermissionException("Not enough permission bro");
-
 			var movies = movieRepo.All()
 				.Select(mov => new MovieView
 				{

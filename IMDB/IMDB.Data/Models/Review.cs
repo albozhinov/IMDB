@@ -10,7 +10,7 @@ namespace IMDB.Data.Models
         [Required]
         public int MovieID { get; set; }
         [Required]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 		public bool IsDeleted { get; set; }
         public double MovieRating { get; set; }
         public double ReviewScore { get; set; }

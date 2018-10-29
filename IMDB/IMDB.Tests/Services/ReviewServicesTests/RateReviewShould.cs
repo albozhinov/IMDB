@@ -25,7 +25,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "Not", "Enough", "Permission" });
 
             var reviewMock = new Review()
             {
@@ -55,7 +54,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "cmd0", "cmd1", "ratereview" });
 
             var reviewMock = new Review()
             {
@@ -83,7 +81,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "cmd0", "cmd1", "ratereview" });
 
             var reviewMock = new Review()
             {
@@ -111,13 +108,12 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
             var loginStub = new Mock<ILoginSession>();
-            loginStub.Setup(l => l.LoggedUserPermissions).Returns(new List<string>() { "cmd0", "cmd1", "ratereview" });
 
-            var user = new User() { ID = 1, UserName = "Gosho" };
+            var user = new User() { Id = "1", UserName = "Gosho" };
             var movie = new Movie() { Name = "Mecho Puh" };
-            var reviewRating = new ReviewRatings() { ID = 1, ReviewId = 1, UserId = 1, ReviewRating = 5 };
+            var reviewRating = new ReviewRatings() { ID = 1, ReviewId = 1, UserId = "1", ReviewRating = 5 };
 
-            var reviewMock = new Review() { ID = 1, IsDeleted = false, Text = "Text", Movie = movie, User = user, UserID = user.ID, MovieID = movie.ID, ReviewRatings = new List<ReviewRatings>() { reviewRating }, NumberOfVotes = 10, MovieRating = 9.95, ReviewScore = 7.77 };
+            var reviewMock = new Review() { ID = 1, IsDeleted = false, Text = "Text", Movie = movie, User = user, UserID = user.Id, MovieID = movie.ID, ReviewRatings = new List<ReviewRatings>() { reviewRating }, NumberOfVotes = 10, MovieRating = 9.95, ReviewScore = 7.77 };
 
             var allReviews = new List<Review>() { reviewMock }.AsQueryable();
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);

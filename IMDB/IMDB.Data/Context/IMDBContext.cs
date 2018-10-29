@@ -1,57 +1,32 @@
 ﻿using IMDB.Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace IMDB.Data.Context
 {
-	public class IMDBContext : DbContext
+	public class IMDBContext : IdentityDbContext<User>
 	{
-		private static readonly LoggerFactory loggerFactory;
-		static IMDBContext()
-        {
-			var loggerProviders = new List<ILoggerProvider>()
-			{
-				new ConsoleLoggerProvider(
-						(category, level) =>
-							category == DbLoggerCategory.Database.Command.Name &&
-							level == LogLevel.Information,
-						includeScopes: true
-				)
-			};
-
-			loggerFactory = new LoggerFactory(loggerProviders);
-		}
-
-
 		public DbSet<Genre> Genres { get; set; }
 		public DbSet<Movie> Movies { get; set; }
-		public DbSet<Permissions> Permissions { get; set; }
 		public DbSet<MovieGenre> MovieGenres { get; set; }
 		public DbSet<Review> Reviews { get; set; }
-		public DbSet<User> Users { get; set; }
 		public DbSet<ReviewRatings> ReviewRatings { get; set; }
 		public DbSet<Director> Directors { get; set; }
 
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+		public IMDBContext(DbContextOptions<IMDBContext> options)
+			: base(options)
 		{
-			if (!optionsBuilder.IsConfigured)
-			{
-				optionsBuilder
-					//.UseLoggerFactory(loggerFactory)
-					.UseSqlServer(@"Server=ALEX-PC;Database=IMBD;Trusted_Connection=True;");
-			}
 		}
+
 		private void LoadJsonInDB(ModelBuilder modelBuilder)
 		{
 			try
 			{
 				var genresAsJson = File.ReadAllText(@"..\IMDB.Data\JsonGoodness\genres.json");
-				var permissionsAsJson = File.ReadAllText(@"..\IMDB.Data\JsonGoodness\permissions.json");
 				var moviesAsJson = File.ReadAllText(@"..\IMDB.Data\JsonGoodness\movies.json");
 				var movieGenresAsJson = File.ReadAllText(@"..\IMDB.Data\JsonGoodness\movieGenres.json");
 				var usersAsJson = File.ReadAllText(@"..\IMDB.Data\JsonGoodness\users.json");
@@ -60,7 +35,6 @@ namespace IMDB.Data.Context
 				var directorsAsJson = File.ReadAllText(@"..\IMDB.Data\JsonGoodness\directors.json");
 
 				var genres = JsonConvert.DeserializeObject<Genre[]>(genresAsJson);
-				var permissions = JsonConvert.DeserializeObject<Permissions[]>(permissionsAsJson);
 				var movies = JsonConvert.DeserializeObject<Movie[]>(moviesAsJson);
 				var movieGenres = JsonConvert.DeserializeObject<MovieGenre[]>(movieGenresAsJson);
 				var users = JsonConvert.DeserializeObject<User[]>(usersAsJson);
@@ -69,7 +43,6 @@ namespace IMDB.Data.Context
 				var directors = JsonConvert.DeserializeObject<Director[]>(directorsAsJson);
 
 				modelBuilder.Entity<Genre>().HasData(genres);
-				modelBuilder.Entity<Permissions>().HasData(permissions);
 				modelBuilder.Entity<Movie>().HasData(movies);
 				modelBuilder.Entity<MovieGenre>().HasData(movieGenres);
 				modelBuilder.Entity<User>().HasData(users);
@@ -92,15 +65,6 @@ namespace IMDB.Data.Context
 				.HasMaxLength(50);
 			modelBuilder.Entity<Movie>().Property(mov => mov.DirectorID)
 				.IsRequired();
-
-            modelBuilder.Entity<User>().Property(us => us.UserName)
-				.HasMaxLength(50)
-				.IsRequired();
-			modelBuilder.Entity<User>().Property(us => us.Password)
-				.IsRequired();
-			modelBuilder.Entity<User>().Property(us => us.Rank)
-				.IsRequired();
-
 
 			modelBuilder.Entity<ReviewRatings>()
 				.HasOne(rr => rr.User)

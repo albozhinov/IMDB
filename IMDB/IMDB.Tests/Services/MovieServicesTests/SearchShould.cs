@@ -94,9 +94,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
                 .Returns(new List<Movie> { Venom, TheMovie23 }.AsQueryable());
 
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "searchmovie" });
 
             var sut = new MovieServices(reviewRepoMock.Object,
                 movieRepoMock.Object, directorRepoMock.Object,
@@ -124,9 +121,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
                 .Returns(new List<Movie> { Venom, TheMovie23 }.AsQueryable());
 
             var loginSessionMock = new Mock<ILoginSession>();
-            loginSessionMock
-                .SetupGet(ls => ls.LoggedUserPermissions)
-                .Returns(new List<string>() { "cmd0", "cmd1", "searchmovie" });
 
             var sut = new MovieServices(reviewRepoMock.Object,
                 movieRepoMock.Object, directorRepoMock.Object,

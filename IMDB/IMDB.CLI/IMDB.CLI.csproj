@@ -10,8 +10,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\IMDB.Console\IMDB.Console.csproj" />
-  </ItemGroup>
-
 </Project>

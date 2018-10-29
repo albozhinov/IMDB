@@ -23,9 +23,6 @@ namespace IMDB.Tests.Services.ExportingServicesTest
 				.Returns(new List<Movie>() { new Movie { ID = 123, IsDeleted = false } }.AsQueryable());
 
 			var loginSessionMock = new Mock<ILoginSession>();
-			loginSessionMock
-				.SetupGet(ls => ls.LoggedUserPermissions)
-				.Returns(new List<string>() { "cmd0", "cmd1", "butnotlistmoviestopdf" });
 
 			var sut = new ExportingServices(movieRepoStub.Object, loginSessionMock.Object);
 			// Act & Assert
