@@ -41,7 +41,7 @@ namespace IMDB.Web.Controllers
 		}
 		[HttpDelete]
 		[Route("~/{id}")]
-		[Authorize("Admin")]//?? policy or role
+		//[Authorize("Admin")]//?? policy or role
 		public IActionResult DeleteMovie(int id)
 		{
 			//return single detailed movie view

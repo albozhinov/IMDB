@@ -126,35 +126,45 @@ namespace IMDB.Services
             movieRepo.Update(movieToDelete);
             movieRepo.Save();
         }
-        public MovieView CheckMovie(int movieID)
+        public Movie CheckMovie(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
 
-            var foundMovie = movieRepo.All()
+            Movie foundMovie = movieRepo.All()
                 .Where(mov => mov.ID == movieID && !mov.IsDeleted)
-                .Select(mov => new MovieView
-                {
-                    ID = mov.ID,
-                    Name = mov.Name,
-                    Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
-                    Top5Reviews = mov.Reviews.Where(r => !r.IsDeleted).OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
-                    {
-                        ReviewID = rev.ID,
-                        ByUser = rev.User.UserName,
-                        Score = rev.ReviewScore,
-                        MovieName = rev.Movie.Name,
-                        Rating = rev.MovieRating,
-                        Text = rev.Text,
-                        NumberOfVotes = rev.NumberOfVotes
-                    })
-                        .ToList(),
-                    Score = mov.MovieScore,
-                    Director = mov.Director.Name,
-                    NumberOfVotes = mov.NumberOfVotes
-                })
-                .FirstOrDefault();
+                .Include(movG => movG.MovieGenres)
+                    .ThenInclude(g => g.Genre)
+                .Include(movR => movR.Reviews.Where(r => !r.IsDeleted)
+                                             .OrderByDescending(r => r.ReviewScore)
+                                             .Take(5))
+                                                .ThenInclude(rev => rev.User)
+                .Include(movD => movD.Director)
+                .SingleOrDefault();
+
+                //.Select(mov => new MovieView
+                //{
+                //    ID = mov.ID,
+                //    Name = mov.Name,
+                //    Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
+                //    Top5Reviews = mov.Reviews.Where(r => !r.IsDeleted).OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
+                //    {
+                //        ReviewID = rev.ID,
+                //        ByUser = rev.User.UserName,
+                //        Score = rev.ReviewScore,
+                //        MovieName = rev.Movie.Name,
+                //        Rating = rev.MovieRating,
+                //        Text = rev.Text,
+                //        NumberOfVotes = rev.NumberOfVotes
+                //    })
+                //        .ToList(),
+                //    Score = mov.MovieScore,
+                //    Director = mov.Director.Name,
+                //    NumberOfVotes = mov.NumberOfVotes
+                //})
+                //.FirstOrDefault();
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
+
             return foundMovie;
         }
         public void RateMovie(int movieID, double rating, string reviewText)

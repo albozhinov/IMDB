@@ -30,7 +30,7 @@ namespace IMDB.Services.Contracts
         /// </summary>
         /// <param name="movieID"></param>
         /// <returns></returns>
-		MovieView CheckMovie(int movieID);
+		Movie CheckMovie(int movieID);
         /// <summary>
         /// Searches for movie via name and/or genre or/and producer. Specify with null if a parameter is not included.
         /// </summary>
