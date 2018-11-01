@@ -182,10 +182,10 @@ namespace IMDB.Data.Migrations
                     b.ToTable("Reviews");
 
                     b.HasData(
-                        new { ID = 1, IsDeleted = false, MovieID = 1, MovieRating = 10.0, NumberOfVotes = 2, ReviewScore = 8.0, Text = "Mn qko piche", UserID = "1" },
-                        new { ID = 2, IsDeleted = false, MovieID = 1, MovieRating = 9.8, NumberOfVotes = 1, ReviewScore = 9.0, Text = "ba i qkiq film, a sym samo user", UserID = "2" },
-                        new { ID = 3, IsDeleted = false, MovieID = 5, MovieRating = 8.0, NumberOfVotes = 2, ReviewScore = 0.0, Text = "mn sex", UserID = "1" },
-                        new { ID = 4, IsDeleted = false, MovieID = 4, MovieRating = 9.0, NumberOfVotes = 0, ReviewScore = 5.0, Text = "evalata", UserID = "1" }
+                        new { ID = 1, IsDeleted = false, MovieID = 1, MovieRating = 10.0, NumberOfVotes = 2, ReviewScore = 8.0, Text = "Mn qko piche", UserID = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 2, IsDeleted = false, MovieID = 1, MovieRating = 9.8, NumberOfVotes = 1, ReviewScore = 9.0, Text = "ba i qkiq film, a sym samo user", UserID = "3ccbce59-fa31-4292-900c-b9f927c3bae6" },
+                        new { ID = 3, IsDeleted = false, MovieID = 5, MovieRating = 8.0, NumberOfVotes = 2, ReviewScore = 0.0, Text = "mn sex", UserID = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 4, IsDeleted = false, MovieID = 4, MovieRating = 9.0, NumberOfVotes = 0, ReviewScore = 5.0, Text = "evalata", UserID = "676ce4b1-6641-4909-a478-11b173180b3c" }
                     );
                 });
 
@@ -210,11 +210,11 @@ namespace IMDB.Data.Migrations
                     b.ToTable("ReviewRatings");
 
                     b.HasData(
-                        new { ID = 1, ReviewId = 1, ReviewRating = 10.0, UserId = "1" },
-                        new { ID = 2, ReviewId = 1, ReviewRating = 6.0, UserId = "2" },
-                        new { ID = 3, ReviewId = 2, ReviewRating = 9.0, UserId = "1" },
-                        new { ID = 4, ReviewId = 3, ReviewRating = 5.0, UserId = "1" },
-                        new { ID = 5, ReviewId = 3, ReviewRating = 5.0, UserId = "2" }
+                        new { ID = 1, ReviewId = 1, ReviewRating = 10.0, UserId = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 2, ReviewId = 1, ReviewRating = 6.0, UserId = "3ccbce59-fa31-4292-900c-b9f927c3bae6" },
+                        new { ID = 3, ReviewId = 2, ReviewRating = 9.0, UserId = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 4, ReviewId = 3, ReviewRating = 5.0, UserId = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 5, ReviewId = 3, ReviewRating = 5.0, UserId = "3ccbce59-fa31-4292-900c-b9f927c3bae6" }
                     );
                 });
 
@@ -249,8 +249,6 @@ namespace IMDB.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<int>("Rank");
-
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -271,8 +269,8 @@ namespace IMDB.Data.Migrations
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
-                        new { Id = "1", AccessFailedCount = 0, ConcurrencyStamp = "d7e696ff-861f-4eb6-a335-9958ccd27f33", EmailConfirmed = false, LockoutEnabled = false, PhoneNumberConfirmed = false, Rank = 2, TwoFactorEnabled = false, UserName = "admin" },
-                        new { Id = "2", AccessFailedCount = 0, ConcurrencyStamp = "929d4903-c343-4e61-813f-511d20069299", EmailConfirmed = false, LockoutEnabled = false, PhoneNumberConfirmed = false, Rank = 1, TwoFactorEnabled = false, UserName = "pesho" }
+                        new { Id = "676ce4b1-6641-4909-a478-11b173180b3c", AccessFailedCount = 0, ConcurrencyStamp = "13e8f9aa-0f6b-46e8-acd1-65dd9ceffe17", Email = "admin@porn.bg", EmailConfirmed = false, LockoutEnabled = false, NormalizedEmail = "ADMIN@PORN.BG", NormalizedUserName = "ADMIN@PORN.BG", PasswordHash = "AQAAAAEAACcQAAAAELA1iavMGFwvWsLgwRbMIKvkYmxTxUxJEWgQKTJnyYaSyDidI9/FVdDg3mbqXB++Fg==", PhoneNumberConfirmed = false, SecurityStamp = "NL3NHSV53KAQ25IHMAR6B42WGI53HKCY", TwoFactorEnabled = false, UserName = "admin@porn.bg" },
+                        new { Id = "3ccbce59-fa31-4292-900c-b9f927c3bae6", AccessFailedCount = 0, ConcurrencyStamp = "8e38f2f1-5f7a-465c-9bab-9a552ce12cd3", Email = "pesho@porn.bg", EmailConfirmed = false, LockoutEnabled = false, NormalizedEmail = "PESHO@PORN.BG", NormalizedUserName = "PESHO@PORN.BG", PasswordHash = "AQAAAAEAACcQAAAAEJt8CwoO+qkgaaa/l+VY1EVz+CH0be0kXBHROfTYZQ38MHV5JMTl25QhQwYoc4CpeQ==", PhoneNumberConfirmed = false, SecurityStamp = "MR4D3LBVUTWTFR567JX6IVOKN37YDNIX", TwoFactorEnabled = false, UserName = "pesho@porn.bg" }
                     );
                 });
 

@@ -105,10 +105,10 @@ namespace IMDB.Services
 				.Include(m => m.Director)
 				.Include(m => m.MovieGenres)
 					.ThenInclude(mg => mg.Genre)
-				.Include(m => m.Reviews.OrderByDescending(r => r.MovieRating).Take(5))
+				.Include(m => m.Reviews)
 					.ThenInclude(r => r.User)
 				.ToList();
-		}
+        }
         public void DeleteMovie(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");

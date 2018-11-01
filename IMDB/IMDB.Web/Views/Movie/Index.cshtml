@@ -1,5 +1,20 @@
-﻿
+﻿@model ICollection<MovieViewModel>
 @{
-	ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index";
 }
-
+@foreach (var movie in Model)
+{
+    <h3>@movie.Name</h3>
+    <h6>By @movie.Director</h6>
+    <br />
+    <h5>Genre: @String.Join(", ", movie.Genres)</h5>
+    <h5>Score: @movie.Score by @movie.NumberOfVotes user(s)</h5>
+    <br />
+    @foreach (var review in movie.Top5Reviews)
+    {
+        <h5>@review.Rating / 10 by @review.User</h5>
+        <h6>Rated @review.Score by @review.NumberOfVotes user(s)</h6>
+        <p>@review.Text</p>
+        <br />
+    }
+}

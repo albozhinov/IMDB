@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IMDB.Data.Migrations
 {
-    public partial class intiial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,8 +40,7 @@ namespace IMDB.Data.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    Rank = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -287,11 +286,11 @@ namespace IMDB.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Rank", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "2", 0, "929d4903-c343-4e61-813f-511d20069299", null, false, false, null, null, null, null, null, false, 1, null, false, "pesho" },
-                    { "1", 0, "d7e696ff-861f-4eb6-a335-9958ccd27f33", null, false, false, null, null, null, null, null, false, 2, null, false, "admin" }
+                    { "3ccbce59-fa31-4292-900c-b9f927c3bae6", 0, "8e38f2f1-5f7a-465c-9bab-9a552ce12cd3", "pesho@porn.bg", false, false, null, "PESHO@PORN.BG", "PESHO@PORN.BG", "AQAAAAEAACcQAAAAEJt8CwoO+qkgaaa/l+VY1EVz+CH0be0kXBHROfTYZQ38MHV5JMTl25QhQwYoc4CpeQ==", null, false, "MR4D3LBVUTWTFR567JX6IVOKN37YDNIX", false, "pesho@porn.bg" },
+                    { "676ce4b1-6641-4909-a478-11b173180b3c", 0, "13e8f9aa-0f6b-46e8-acd1-65dd9ceffe17", "admin@porn.bg", false, false, null, "ADMIN@PORN.BG", "ADMIN@PORN.BG", "AQAAAAEAACcQAAAAELA1iavMGFwvWsLgwRbMIKvkYmxTxUxJEWgQKTJnyYaSyDidI9/FVdDg3mbqXB++Fg==", null, false, "NL3NHSV53KAQ25IHMAR6B42WGI53HKCY", false, "admin@porn.bg" }
                 });
 
             migrationBuilder.InsertData(
@@ -379,10 +378,10 @@ namespace IMDB.Data.Migrations
                 columns: new[] { "ID", "IsDeleted", "MovieID", "MovieRating", "NumberOfVotes", "ReviewScore", "Text", "UserID" },
                 values: new object[,]
                 {
-                    { 4, false, 4, 9.0, 0, 5.0, "evalata", "1" },
-                    { 2, false, 1, 9.8, 1, 9.0, "ba i qkiq film, a sym samo user", "2" },
-                    { 1, false, 1, 10.0, 2, 8.0, "Mn qko piche", "1" },
-                    { 3, false, 5, 8.0, 2, 0.0, "mn sex", "1" }
+                    { 4, false, 4, 9.0, 0, 5.0, "evalata", "676ce4b1-6641-4909-a478-11b173180b3c" },
+                    { 2, false, 1, 9.8, 1, 9.0, "ba i qkiq film, a sym samo user", "3ccbce59-fa31-4292-900c-b9f927c3bae6" },
+                    { 1, false, 1, 10.0, 2, 8.0, "Mn qko piche", "676ce4b1-6641-4909-a478-11b173180b3c" },
+                    { 3, false, 5, 8.0, 2, 0.0, "mn sex", "676ce4b1-6641-4909-a478-11b173180b3c" }
                 });
 
             migrationBuilder.InsertData(
@@ -390,11 +389,11 @@ namespace IMDB.Data.Migrations
                 columns: new[] { "ID", "ReviewId", "ReviewRating", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 1, 10.0, "1" },
-                    { 2, 1, 6.0, "2" },
-                    { 3, 2, 9.0, "1" },
-                    { 4, 3, 5.0, "1" },
-                    { 5, 3, 5.0, "2" }
+                    { 1, 1, 10.0, "676ce4b1-6641-4909-a478-11b173180b3c" },
+                    { 2, 1, 6.0, "3ccbce59-fa31-4292-900c-b9f927c3bae6" },
+                    { 3, 2, 9.0, "676ce4b1-6641-4909-a478-11b173180b3c" },
+                    { 4, 3, 5.0, "676ce4b1-6641-4909-a478-11b173180b3c" },
+                    { 5, 3, 5.0, "3ccbce59-fa31-4292-900c-b9f927c3bae6" }
                 });
 
             migrationBuilder.CreateIndex(
