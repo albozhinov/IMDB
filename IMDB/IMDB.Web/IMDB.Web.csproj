@@ -12,10 +12,12 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Views\Movie\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IMDB.Data\IMDB.Data.csproj" />
+    <ProjectReference Include="..\IMDB.Services\IMDB.Services.csproj" />
   </ItemGroup>
 
 </Project>

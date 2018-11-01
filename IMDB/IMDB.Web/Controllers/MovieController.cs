@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IMDB.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,16 @@ namespace IMDB.Web.Controllers
 {
     public class MovieController : Controller
     {
-        public IActionResult Index()
+		private readonly IMovieServices movieServices;
+
+		public MovieController(IMovieServices movieServices)
+		{
+			this.movieServices = movieServices;
+		}
+
+		public IActionResult Index()
         {
-			//show all movies
+			var movies = movieServices.GetAllMovies();
             return View();
         }
 		[HttpPost]

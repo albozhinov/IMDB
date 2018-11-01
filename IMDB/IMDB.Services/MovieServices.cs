@@ -99,7 +99,10 @@ namespace IMDB.Services
                 movieGenreRepo.Save();
             }
         }
-
+		public ICollection<Movie> GetAllMovies()
+		{
+			return movieRepo.All().ToList();
+		}
         public void DeleteMovie(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
