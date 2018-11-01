@@ -57,7 +57,6 @@ namespace IMDB.Services
 			// Save a document to a file in PDF format.
 			string filePath = @"Result.pdf";
 			dc.Save(filePath);
-
 			// Open the result for demonstation purposes.
 			System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath) { UseShellExecute = true });
 		}
