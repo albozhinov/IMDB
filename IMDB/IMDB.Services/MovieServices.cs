@@ -101,7 +101,13 @@ namespace IMDB.Services
         }
 		public ICollection<Movie> GetAllMovies()
 		{
-			return movieRepo.All().ToList();
+			return movieRepo.All()
+				.Include(m => m.Director)
+				.Include(m => m.MovieGenres)
+					.ThenInclude(mg => mg.Genre)
+				.Include(m => m.Reviews.OrderByDescending(r => r.MovieRating).Take(5))
+					.ThenInclude(r => r.User)
+				.ToList();
 		}
         public void DeleteMovie(int movieID)
         {
