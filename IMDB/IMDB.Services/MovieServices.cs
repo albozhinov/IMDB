@@ -35,7 +35,7 @@ namespace IMDB.Services
             this.movieRepo = movieRepo;
             this.loginSession = loginSession;
         }
-        public void CreateMovie(string name, ICollection<string> genres, string director)
+        public Movie CreateMovie(string name, ICollection<string> genres, string director)
         {
             Validator.IfNull<ArgumentNullException>(genres);
             Validator.IfNull<ArgumentNullException>(name);
@@ -80,14 +80,14 @@ namespace IMDB.Services
                         foundMovie.IsDeleted = false;
                         movieRepo.Update(foundMovie);
                         movieRepo.Save();
-                        return;
+                        return foundMovie;
                     }
                     else throw new MovieExistsException("Movie already exists!");
                 }
             }
             var foundGenres = genreRepo.All()
                 .Include(gr => gr.MovieGenres)
-                .Where(genre => genres.Any(genreTypes => genreTypes == genre.GenreType));
+                .Where(genre => genres.Any(genreTypes => genreTypes.ToLower() == genre.GenreType.ToLower()));
             foreach (var genre in foundGenres)
             {
                 var movieGenreToAdd = new MovieGenre
@@ -98,7 +98,12 @@ namespace IMDB.Services
                 movieGenreRepo.Add(movieGenreToAdd);
                 movieGenreRepo.Save();
             }
-        }
+			return movieToAdd;
+		}
+		public ICollection<Genre> GetGenres()
+		{
+			return genreRepo.All().ToList();
+		}
 		public ICollection<Movie> GetAllMovies()
 		{
 			return movieRepo.All()
