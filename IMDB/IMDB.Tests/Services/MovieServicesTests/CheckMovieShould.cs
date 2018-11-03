@@ -28,7 +28,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
 
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
             Assert.ThrowsException<ArgumentException>(() => sut.CheckMovie(movieID));
         }
@@ -79,7 +79,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             //Act
             var result = sut.CheckMovie(1);
             //Assert
@@ -119,7 +119,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             //Act & Assert
             Assert.ThrowsException<MovieNotFoundException>(() => sut.CheckMovie(52));
         }
@@ -144,7 +144,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
             var loginSessionStub = new Mock<ILoginSession>();
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             //Act & Assert
             Assert.ThrowsException<MovieNotFoundException>(() => sut.CheckMovie(1));
         }

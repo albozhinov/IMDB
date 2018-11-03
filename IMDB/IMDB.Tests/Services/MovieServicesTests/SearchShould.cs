@@ -97,8 +97,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var sut = new MovieServices(reviewRepoMock.Object,
                 movieRepoMock.Object, directorRepoMock.Object,
-                genreRepoStub.Object, movieGenreRepoStub.Object,
-                loginSessionMock.Object);
+                genreRepoStub.Object, movieGenreRepoStub.Object);
 
             //Act
             var result = sut.SearchMovie("Venom", "porn", "thebsetdirector");
@@ -124,8 +123,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var sut = new MovieServices(reviewRepoMock.Object,
                 movieRepoMock.Object, directorRepoMock.Object,
-                genreRepoStub.Object, movieGenreRepoStub.Object,
-                loginSessionMock.Object);
+                genreRepoStub.Object, movieGenreRepoStub.Object);
 
             //Act
             var result = sut.SearchMovie("GoshoPansa", "NemaTakivJanr", "Bay Pesho");

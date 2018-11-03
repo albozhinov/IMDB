@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMDB.Data.Migrations
 {
     [DbContext(typeof(IMDBContext))]
-    [Migration("20181101194501_initial")]
-    partial class initial
+    [Migration("20181103110508_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

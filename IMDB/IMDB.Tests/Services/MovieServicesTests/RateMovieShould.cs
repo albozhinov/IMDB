@@ -26,7 +26,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var loginSessionMock = new Mock<ILoginSession>();
 
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
             Assert.ThrowsException<NotEnoughPermissionException>(() => sut.RateMovie(1, 1.0, "pishki"));
         }
@@ -47,7 +47,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var loginSessionMock = new Mock<ILoginSession>();
 
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
             Assert.ThrowsException<ArgumentException>(() => sut.RateMovie(movieID, rating, "pishki"));
         }
@@ -76,7 +76,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var loginSessionMock = new Mock<ILoginSession>();
 
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
             Assert.ThrowsException<MovieNotFoundException>(() => sut.RateMovie(movieID, 5, "pishki"));
         }
@@ -119,7 +119,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var loginSessionMock = new Mock<ILoginSession>();
 
-            var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
+            var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act
             sut.RateMovie(movieID, ratingInput, textInput);
             //Assert
@@ -171,7 +171,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var loginSessionMock = new Mock<ILoginSession>();
 
-            var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionMock.Object);
+            var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act
             sut.RateMovie(movieID, ratingInput, textInput);
             //Assert
