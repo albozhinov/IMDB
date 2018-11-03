@@ -18,22 +18,19 @@ namespace IMDB.Services
         private IRepository<Genre> genreRepo;
         private IRepository<Director> directorRepo;
         private IRepository<Movie> movieRepo;
-        private ILoginSession loginSession;
 
         public MovieServices(
             IRepository<Review> reviewRepo,
             IRepository<Movie> movieRepo,
             IRepository<Director> directorRepo,
             IRepository<Genre> genreRepo,
-            IRepository<MovieGenre> movieGenreRepo,
-            ILoginSession loginSession)
+            IRepository<MovieGenre> movieGenreRepo)
         {
             this.reviewRepo = reviewRepo;
             this.movieGenreRepo = movieGenreRepo;
             this.genreRepo = genreRepo;
             this.directorRepo = directorRepo;
             this.movieRepo = movieRepo;
-            this.loginSession = loginSession;
         }
         public void CreateMovie(string name, ICollection<string> genres, string director)
         {
@@ -99,16 +96,16 @@ namespace IMDB.Services
                 movieGenreRepo.Save();
             }
         }
-		public ICollection<Movie> GetAllMovies()
-		{
-			return movieRepo.All()
-				.Include(m => m.Director)
-				.Include(m => m.MovieGenres)
-					.ThenInclude(mg => mg.Genre)
-				.Include(m => m.Reviews.OrderByDescending(r => r.MovieRating).Take(5))
-					.ThenInclude(r => r.User)
-				.ToList();
-		}
+        public ICollection<Movie> GetAllMovies()
+        {
+            return movieRepo.All()
+                .Include(m => m.Director)
+                .Include(m => m.MovieGenres)
+                    .ThenInclude(mg => mg.Genre)
+                .Include(m => m.Reviews.OrderByDescending(r => r.MovieRating).Take(5))
+                    .ThenInclude(r => r.User)
+                .ToList();
+        }
         public void DeleteMovie(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
@@ -140,34 +137,12 @@ namespace IMDB.Services
                 .Where(mov => mov.ID == movieID && !mov.IsDeleted)
                 .Include(movG => movG.MovieGenres)
                     .ThenInclude(g => g.Genre)
-                .Include(movR => movR.Reviews.Where(r => !r.IsDeleted)
-                                             .OrderByDescending(r => r.ReviewScore)
-                                             .Take(5))
-                                                .ThenInclude(rev => rev.User)
+                .Include(movR => movR.Reviews)
+                    .ThenInclude(rev => rev.User)
                 .Include(movD => movD.Director)
+
                 .SingleOrDefault();
 
-                //.Select(mov => new MovieView
-                //{
-                //    ID = mov.ID,
-                //    Name = mov.Name,
-                //    Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
-                //    Top5Reviews = mov.Reviews.Where(r => !r.IsDeleted).OrderByDescending(rev => rev.ReviewScore).Take(5).Select(rev => new ReviewView
-                //    {
-                //        ReviewID = rev.ID,
-                //        ByUser = rev.User.UserName,
-                //        Score = rev.ReviewScore,
-                //        MovieName = rev.Movie.Name,
-                //        Rating = rev.MovieRating,
-                //        Text = rev.Text,
-                //        NumberOfVotes = rev.NumberOfVotes
-                //    })
-                //        .ToList(),
-                //    Score = mov.MovieScore,
-                //    Director = mov.Director.Name,
-                //    NumberOfVotes = mov.NumberOfVotes
-                //})
-                //.FirstOrDefault();
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
 
@@ -182,7 +157,7 @@ namespace IMDB.Services
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
 
-            var reviewToAdd = foundMovie.Reviews.FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == loginSession.LoggedUserID);
+            var reviewToAdd = foundMovie.Reviews.FirstOrDefault(rev => rev.MovieID == movieID);
             if (reviewToAdd != null)
             {
                 foundMovie.Reviews.Remove(reviewToAdd);
@@ -206,7 +181,6 @@ namespace IMDB.Services
                 {
                     MovieID = movieID,
                     MovieRating = rating,
-                    UserID = loginSession.LoggedUserID,
                     Text = reviewText
                 };
                 foundMovie.NumberOfVotes++;

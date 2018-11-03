@@ -14,6 +14,7 @@ namespace IMDB.Web.Models
 			this.UserID = review.User.Id;
 			this.MovieName = review.Movie.Name;
 			this.NumberOfVotes = review.NumberOfVotes;
+            this.User = review.User.UserName;
 		}
 		public int ReviewID { get; set; }
 		public double Rating { get; set; }

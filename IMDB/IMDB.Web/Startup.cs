@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using IMDB.Data.Context;
 using IMDB.Data.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using IMDB.Services.Contracts;
+using IMDB.Services;
+using IMDB.Data.Repository;
 
 namespace IMDB.Web
 {
@@ -37,6 +40,10 @@ namespace IMDB.Web
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IMDBContext>();
 
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));           
+
+            services.AddScoped<IMovieServices, MovieServices>();
+            services.AddScoped<IReviewsServices, ReviewsService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
