@@ -1,4 +1,5 @@
 ﻿using IMDB.Data.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,6 +8,10 @@ namespace IMDB.Web.Models
 {
 	public class MovieViewModel
 	{
+		public MovieViewModel()
+		{
+
+		}
 		public MovieViewModel(Movie movie)
 		{            
 			this.ID = movie.ID;
@@ -31,6 +36,7 @@ namespace IMDB.Web.Models
 		public double Score { get; set; }
 		public string Director { get; set; }
 		public ICollection<string> Genres { get; set; }
+		public IEnumerable<SelectListItem> GenreList { get; set; }
 		public ICollection<ReviewViewModel> Top5Reviews { get; set; }
 		public int NumberOfVotes { get; set; }
 	}

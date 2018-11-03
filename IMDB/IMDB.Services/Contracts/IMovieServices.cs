@@ -12,7 +12,7 @@ namespace IMDB.Services.Contracts
 		/// <param name="name"></param>
 		/// <param name="genre"></param>
 		/// <param name="producer"></param>
-		void CreateMovie(string name, ICollection<string> genre, string producer);
+		Movie CreateMovie(string name, ICollection<string> genre, string producer);
 		/// <summary>
 		/// Deletes movie via its ID
 		/// </summary>
@@ -39,7 +39,15 @@ namespace IMDB.Services.Contracts
         /// <param name="producer"></param>
         /// <returns></returns>
         ICollection<MovieView> SearchMovie(string name, string genre, string producer);
+		/// <summary>
+		/// Returns all movies.
+		/// </summary>
+		/// <returns></returns>
 		ICollection<Movie> GetAllMovies();
-
+		/// <summary>
+		/// Returns all movie genres
+		/// </summary>
+		/// <returns></returns>
+		ICollection<Genre> GetGenres();
 	}
 }

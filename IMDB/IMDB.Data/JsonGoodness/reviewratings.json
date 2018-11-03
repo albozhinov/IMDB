@@ -1,32 +1,32 @@
 [
-	{
-		"ID": 1,
-		"ReviewID": 1,
-		"UserID": 1,
-		"ReviewRating": 10.00
-	},
-	{
-		"ID": 2,
-		"ReviewID": 1,
-		"UserID": 2,
-		"ReviewRating": 6.00
-	},
-	{
-		"ID": 3,
-		"ReviewID": 2,
-		"UserID": 1,
-		"ReviewRating": 9.00
-	},
-	{
-		"ID": 4,
-		"ReviewID": 3,
-		"UserID": 1,
-		"ReviewRating": 5.00
-	},
-	{
-		"ID": 5,
-		"ReviewID": 3,
-		"UserID": 2,
-		"ReviewRating": 5.00
-	}
+  {
+    "ID": 1,
+    "ReviewID": 1,
+    "UserID": "676ce4b1-6641-4909-a478-11b173180b3c",
+    "ReviewRating": 10.00
+  },
+  {
+    "ID": 2,
+    "ReviewID": 1,
+    "UserID": "3ccbce59-fa31-4292-900c-b9f927c3bae6",
+    "ReviewRating": 6.00
+  },
+  {
+    "ID": 3,
+    "ReviewID": 2,
+    "UserID": "676ce4b1-6641-4909-a478-11b173180b3c",
+    "ReviewRating": 9.00
+  },
+  {
+    "ID": 4,
+    "ReviewID": 3,
+    "UserID": "676ce4b1-6641-4909-a478-11b173180b3c",
+    "ReviewRating": 5.00
+  },
+  {
+    "ID": 5,
+    "ReviewID": 3,
+    "UserID": "3ccbce59-fa31-4292-900c-b9f927c3bae6",
+    "ReviewRating": 5.00
+  }
 ]

@@ -32,7 +32,7 @@ namespace IMDB.Services
             this.directorRepo = directorRepo;
             this.movieRepo = movieRepo;
         }
-        public void CreateMovie(string name, ICollection<string> genres, string director)
+        public Movie CreateMovie(string name, ICollection<string> genres, string director)
         {
             Validator.IfNull<ArgumentNullException>(genres);
             Validator.IfNull<ArgumentNullException>(name);
@@ -77,14 +77,14 @@ namespace IMDB.Services
                         foundMovie.IsDeleted = false;
                         movieRepo.Update(foundMovie);
                         movieRepo.Save();
-                        return;
+                        return foundMovie;
                     }
                     else throw new MovieExistsException("Movie already exists!");
                 }
             }
             var foundGenres = genreRepo.All()
                 .Include(gr => gr.MovieGenres)
-                .Where(genre => genres.Any(genreTypes => genreTypes == genre.GenreType));
+                .Where(genre => genres.Any(genreTypes => genreTypes.ToLower() == genre.GenreType.ToLower()));
             foreach (var genre in foundGenres)
             {
                 var movieGenreToAdd = new MovieGenre
@@ -95,16 +95,21 @@ namespace IMDB.Services
                 movieGenreRepo.Add(movieGenreToAdd);
                 movieGenreRepo.Save();
             }
-        }
-        public ICollection<Movie> GetAllMovies()
-        {
-            return movieRepo.All()
-                .Include(m => m.Director)
-                .Include(m => m.MovieGenres)
-                    .ThenInclude(mg => mg.Genre)
-                .Include(m => m.Reviews.OrderByDescending(r => r.MovieRating).Take(5))
-                    .ThenInclude(r => r.User)
-                .ToList();
+			return movieToAdd;
+		}
+		public ICollection<Genre> GetGenres()
+		{
+			return genreRepo.All().ToList();
+		}
+		public ICollection<Movie> GetAllMovies()
+		{
+			return movieRepo.All()
+				.Include(m => m.Director)
+				.Include(m => m.MovieGenres)
+					.ThenInclude(mg => mg.Genre)
+				.Include(m => m.Reviews)
+					.ThenInclude(r => r.User)
+				.ToList();
         }
         public void DeleteMovie(int movieID)
         {

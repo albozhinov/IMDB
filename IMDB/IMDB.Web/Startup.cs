@@ -9,9 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using IMDB.Data.Context;
 using IMDB.Data.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using IMDB.Services.Contracts;
-using IMDB.Services;
 using IMDB.Data.Repository;
+using IMDB.Services;
+using IMDB.Services.Contracts;
+using System;
 
 namespace IMDB.Web
 {
@@ -72,8 +73,8 @@ namespace IMDB.Web
 			{
 				routes.MapRoute(
 					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}");
-			});
+					template: "{controller=Movie}/{action=Index}/{id?}");
+            });
 		}
 	}
 }
