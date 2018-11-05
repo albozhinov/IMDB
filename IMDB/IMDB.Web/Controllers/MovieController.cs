@@ -30,7 +30,7 @@ namespace IMDB.Web.Controllers
 			return View(movies);
 		}
 		[HttpGet]
-		//[Authorize(Roles = "Administrator")]
+		[Authorize(Roles = "Administrator")]
 		public IActionResult Create()
 		{
 			var newMovie = new MovieViewModel

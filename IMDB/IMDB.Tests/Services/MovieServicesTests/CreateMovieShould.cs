@@ -14,22 +14,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
     [TestClass]
     public class CreateMovieShould
     {
-        [TestMethod]
-        public void ThrowNotEnoughPermissionsException_WhenUserIsNotAuthorized()
-        {
-            // Arrange
-            var reviewRepoStub = new Mock<IRepository<Review>>();
-            var movieRepoMock = new Mock<IRepository<Movie>>();
-            var directorRepoStub = new Mock<IRepository<Director>>();
-            var genreRepoStub = new Mock<IRepository<Genre>>();
-            var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
-
-            var loginSessionMock = new Mock<ILoginSession>();
-
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
-            // Act & Assert
-            Assert.ThrowsException<NotEnoughPermissionException>(() => sut.CreateMovie("pishki", new List<string>() { "pulen s pishki" }, "pishkoglav"));
-        }
         [DataTestMethod]
         [DataRow(null, "valid")]
         [DataRow("valid", null)]

@@ -24,7 +24,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoStub = new Mock<IRepository<Movie>>();
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var reviewMock = new Review()
             {
@@ -36,10 +35,26 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allReviews = new List<Review>() { reviewMock }.AsQueryable();
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => reviewServices.DeleteReview(reviewId));
+            Assert.ThrowsException<ArgumentException>(() => reviewServices.DeleteReview(reviewId, "dawda", "somerole"));
+        }
+
+        [DataTestMethod]
+        [DataRow(null, "not null")]
+        [DataRow("not null", null)]
+        public void ThrowArgumentNullException_WhenParementersAreNull(string id, string role)
+        {
+            // Arrange
+            var movieRepoStub = new Mock<IRepository<Movie>>();
+            var reviewRepoMock = new Mock<IRepository<Review>>();
+            var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
+
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
+
+            // Act and Assert
+            Assert.ThrowsException<ArgumentNullException>(() => reviewServices.DeleteReview(12, id, role));
         }
 
         [DataTestMethod]
@@ -51,7 +66,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoStub = new Mock<IRepository<Movie>>();
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var reviewMock = new Review()
             {
@@ -63,43 +77,16 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allReviews = new List<Review>() { reviewMock }.AsQueryable();
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act and Assert
-            Assert.ThrowsException<ReviewNotFoundException>(() => reviewServices.DeleteReview(reviewId));
-        }
-
-        [TestMethod]
-        public void ThrowNotEnoughPermissionException_WhenUserHasNotLoggedIn()
-        {
-            // Arrange
-            const int reviewId = 1;
-            const bool deletedFlag = true;
-            var movieRepoStub = new Mock<IRepository<Movie>>();
-            var reviewRepoMock = new Mock<IRepository<Review>>();
-            var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
-
-            var reviewMock = new Review()
-            {
-                ID = 1,
-                IsDeleted = deletedFlag,
-                Text = "Mnogo qk Unit Test!"
-            };
-
-            var allReviews = new List<Review>() { reviewMock }.AsQueryable();
-            reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
-
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
-
-            // Act and Assert
-            Assert.ThrowsException<NotEnoughPermissionException>(() => reviewServices.DeleteReview(reviewId));
+            Assert.ThrowsException<ReviewNotFoundException>(() => reviewServices.DeleteReview(reviewId, "someID", "someRole"));
         }
 
         [DataTestMethod]
-        [DataRow(10, UserRoles.User)]
-        [DataRow(5, UserRoles.Admin)]
-        public void DeletedReview_WhenUserHasPermission(int userID, UserRoles role)
+        [DataRow("5", "Administrator")]
+        [DataRow("10", "User")]
+        public void DeletedReview_WhenUserHasPermission(string userID, string role)
         {
             // Arrange
             const int reviewId = 1;
@@ -107,7 +94,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoStub = new Mock<IRepository<Movie>>();
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var user = new User()
             {
@@ -135,9 +121,9 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allReviews = new List<Review>() { reviewMock }.AsQueryable();
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
             // Act
-            reviewServices.DeleteReview(reviewId);
+            reviewServices.DeleteReview(reviewId, userID, role);
 
             // Assert
             Assert.IsTrue(reviewMock.IsDeleted == true);

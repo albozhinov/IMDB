@@ -14,22 +14,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
     [TestClass]
     public class RateMovieShould
     {
-        [TestMethod]
-        public void ThrowNotEnoughPermissionsException_WhenUserIsNotAuthorized()
-        {
-            // Arrange
-            var reviewRepoStub = new Mock<IRepository<Review>>();
-            var movieRepoMock = new Mock<IRepository<Movie>>();
-            var directorRepoStub = new Mock<IRepository<Director>>();
-            var genreRepoStub = new Mock<IRepository<Genre>>();
-            var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
-
-            var loginSessionMock = new Mock<ILoginSession>();
-
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
-            // Act & Assert
-            Assert.ThrowsException<NotEnoughPermissionException>(() => sut.RateMovie(1, 1.0, "pishki"));
-        }
         [DataTestMethod]
         [DataRow(-1, 1)]
         [DataRow(0, 1)]
@@ -49,7 +33,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
-            Assert.ThrowsException<ArgumentException>(() => sut.RateMovie(movieID, rating, "pishki"));
+            Assert.ThrowsException<ArgumentException>(() => sut.RateMovie(movieID, rating, "pishki", "randomUserId"));
         }
         [DataTestMethod]
         [DataRow(1, true)]
@@ -78,16 +62,16 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
-            Assert.ThrowsException<MovieNotFoundException>(() => sut.RateMovie(movieID, 5, "pishki"));
+            Assert.ThrowsException<MovieNotFoundException>(() => sut.RateMovie(movieID, 5, "pishki", "randomUseRId"));
         }
         [TestMethod]
         public void UpdateMovieScoreCreatingReview_WhenParametersAreCorrect()
         {
             // Arrange
             const int movieID = 2;
-            const int loggedUserID = 12;
             const int ratingInput = 8;
             const string textInput = "pishki";
+            const string userId = "213qwas";
             const int r1rating = 7;
             const int r2rating = 3;
             const int r3DeleteDrating = 3;
@@ -121,7 +105,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act
-            sut.RateMovie(movieID, ratingInput, textInput);
+            sut.RateMovie(movieID, ratingInput, textInput, userId);
             //Assert
             //check if movie's score is updated should be 6
             Assert.IsTrue(movie.MovieScore == (r1rating + r2rating + ratingInput) / movie.NumberOfVotes);
@@ -137,7 +121,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
         {
             // Arrange
             const int movieID = 2;
-            const string loggedUserID = "12";
+            const string loggedUserID = "12123123";
             const int ratingInput = 8;
             const string textInput = "pishki";
             const int r1rating = 7;
@@ -173,7 +157,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
 
             var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act
-            sut.RateMovie(movieID, ratingInput, textInput);
+            sut.RateMovie(movieID, ratingInput, textInput, loggedUserID);
             //Assert
             //check if movie's score is updated should be 6
             Assert.IsTrue(movie.MovieScore == (double)(r1rating - r1rating + r2rating + ratingInput) / movie.NumberOfVotes);

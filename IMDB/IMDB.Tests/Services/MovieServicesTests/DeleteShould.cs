@@ -34,28 +34,6 @@ namespace IMDB.Tests.Services.MovieServicesTests
             Assert.ThrowsException<ArgumentException>(() => sut.DeleteMovie(movieID));
         }
         [TestMethod]
-        public void ThrowNotEnoughPermissionsException_WhenTheUserIsNotAuthorized()
-        {
-            // Arrange
-            const int movieID = 1;
-
-            var reviewRepoStub = new Mock<IRepository<Review>>();
-
-            var movieRepoStub = new Mock<IRepository<Movie>>();
-            movieRepoStub
-                .Setup(mr => mr.All())
-                .Returns(new List<Movie>() { new Movie { ID = movieID, IsDeleted = false } }.AsQueryable());
-
-            var directorRepoStub = new Mock<IRepository<Director>>();
-            var genreRepoStub = new Mock<IRepository<Genre>>();
-            var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
-            var loginSessionMock = new Mock<ILoginSession>();
-
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoStub.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
-            // Act & Assert
-            Assert.ThrowsException<NotEnoughPermissionException>(() => sut.DeleteMovie(movieID));
-        }
-        [TestMethod]
         public void ThrowsMovieNotFoundException_WhenMovieDoesNotExist()
         {
             // Arrange
