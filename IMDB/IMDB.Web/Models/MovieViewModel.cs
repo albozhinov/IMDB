@@ -22,13 +22,18 @@ namespace IMDB.Web.Models
 				.MovieGenres
 				.Select(x => x.Genre.GenreType)
 				.ToList();
-			this.Top5Reviews = movie
-				.Reviews
-                .Where(r => !r.IsDeleted)
-				.OrderByDescending(r => r.ReviewScore)
-				.Take(5)
-				.Select(r => new ReviewViewModel(r))
-				.ToList();
+            if (movie.Reviews is null)
+                this.Top5Reviews = new List<ReviewViewModel>();
+            else
+            {
+                this.Top5Reviews = movie
+                    .Reviews
+                    .Where(r => !r.IsDeleted)
+                    .OrderByDescending(r => r.ReviewScore)
+                    .Take(5)
+                    .Select(r => new ReviewViewModel(r))
+                    .ToList();
+            }
             this.NumberOfVotes = movie.NumberOfVotes;
 		}        
         public int ID { get; set; }
