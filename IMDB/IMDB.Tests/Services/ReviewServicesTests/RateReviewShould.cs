@@ -15,33 +15,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
     [TestClass]
     public class RateReviewShould
     {
-        [TestMethod]
-        public void ThrowNotEnoughPermissionsException_WhenUserHasNotLoggedIn()
-        {
-            // Arrange
-            int movieId = 1;
-            double rating = 5.00;
-            var movieRepoStub = new Mock<IRepository<Movie>>();
-            var reviewRepoMock = new Mock<IRepository<Review>>();
-            var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
-
-            var reviewMock = new Review()
-            {
-                ID = 1,
-                IsDeleted = false,
-                Text = "Text",
-            };
-
-            var allReviews = new List<Review>() { reviewMock }.AsQueryable();
-            reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
-
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
-
-            // Act and Assert
-            Assert.ThrowsException<NotEnoughPermissionException>(() => reviewServices.RateReview(movieId, rating));
-        }
-
         [DataTestMethod]
         [DataRow(0, 9.00)]
         [DataRow(null, 9.00)]
@@ -53,7 +26,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoStub = new Mock<IRepository<Movie>>();
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var reviewMock = new Review()
             {
@@ -65,10 +37,10 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allReviews = new List<Review>() { reviewMock }.AsQueryable();
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => reviewServices.RateReview(reviewId, rating));
+            Assert.ThrowsException<ArgumentException>(() => reviewServices.RateReview(reviewId, rating, "randomUserId"));
         }
 
         [DataTestMethod]
@@ -80,7 +52,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoStub = new Mock<IRepository<Movie>>();
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var reviewMock = new Review()
             {
@@ -92,10 +63,10 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allReviews = new List<Review>() { reviewMock }.AsQueryable();
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act and Assert
-            Assert.ThrowsException<ReviewNotFoundException>(() => reviewServices.RateReview(reviewId, 9D));
+            Assert.ThrowsException<ReviewNotFoundException>(() => reviewServices.RateReview(reviewId, 9D, "randomUserId"));
         }
 
         [TestMethod]
@@ -103,35 +74,31 @@ namespace IMDB.Tests.Services.ReviewServicesTests
         {
             // Arrange    
             const int reviewID = 1;
-            const double rating = 8.88;
+            const double rating = 5;
             var movieRepoStub = new Mock<IRepository<Movie>>();
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var user = new User() { Id = "1", UserName = "Gosho" };
             var movie = new Movie() { Name = "Mecho Puh" };
-            var reviewRating = new ReviewRatings() { ID = 1, ReviewId = 1, UserId = "1", ReviewRating = 5 };
+            var reviewRating = new ReviewRatings() { ID = 1, ReviewId = 1, UserId = "1", ReviewRating = 6 }; //thats gonna change to 5
+            var reviewRating2 = new ReviewRatings() { ID = 2, ReviewId = 1, UserId = "2", ReviewRating = 4 };
 
-            var reviewMock = new Review() { ID = 1, IsDeleted = false, Text = "Text", Movie = movie, User = user, UserID = user.Id, MovieID = movie.ID, ReviewRatings = new List<ReviewRatings>() { reviewRating }, NumberOfVotes = 10, MovieRating = 9.95, ReviewScore = 7.77 };
+            var reviewMock = new Review() { ID = 1, IsDeleted = false, Text = "Text", Movie = movie, User = user, UserID = user.Id, MovieID = movie.ID, ReviewRatings = new List<ReviewRatings>() { reviewRating, reviewRating2 }, NumberOfVotes = 2, MovieRating = 9.95, ReviewScore = 5 }; //The review score is 5 = (6 + 4)/ 2
 
             var allReviews = new List<Review>() { reviewMock }.AsQueryable();
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act
-            var result = reviewServices.RateReview(reviewID, rating);
+            var result = reviewServices.RateReview(reviewID, rating, "1");
 
             // Assert
             reviewRepoMock.Verify(revRepo => revRepo.Save(), Times.Once);
             reviewRepoMock.Verify(revRepo => revRepo.Update(reviewMock), Times.Once);
-            Assert.IsTrue(result.ByUser == reviewMock.User.UserName);
-            Assert.IsTrue(result.MovieName == reviewMock.Movie.Name);
-            Assert.IsTrue(result.NumberOfVotes == reviewMock.NumberOfVotes);
-            Assert.IsTrue(result.Rating == reviewMock.MovieRating);
-            Assert.IsTrue(result.ReviewID == reviewMock.ID);            
-            Assert.IsTrue(result.Text == reviewMock.Text);
+            Assert.AreSame(result, reviewMock);
+            Assert.IsTrue(reviewMock.ReviewScore == 4.5); //the rating for userID 1 has changed from 6 to 5, hence now the score should be (4 + 5) / 2 = 4.5
         }        
     }
 }

@@ -296,6 +296,11 @@ namespace IMDB.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new { Id = "959596e5-93e4-4272-8cfb-6e71a4254370", ConcurrencyStamp = "20d35162-b35c-4b2e-80c1-81a15bc1b2f3", Name = "Administrator", NormalizedName = "ADMINISTRATOR" },
+                        new { Id = "5197310d-5d42-4337-bb59-2fd06e6a8fcd", ConcurrencyStamp = "a3bc9d45-276b-442f-bc6b-b1a5763df30d", Name = "User", NormalizedName = "USER" }
+                    );
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -367,6 +372,11 @@ namespace IMDB.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new { UserId = "676ce4b1-6641-4909-a478-11b173180b3c", RoleId = "959596e5-93e4-4272-8cfb-6e71a4254370" },
+                        new { UserId = "3ccbce59-fa31-4292-900c-b9f927c3bae6", RoleId = "5197310d-5d42-4337-bb59-2fd06e6a8fcd" }
+                    );
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

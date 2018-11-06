@@ -17,23 +17,21 @@ namespace IMDB.Services
         private IRepository<ReviewRatings> reviewRatingsRepo;
         private IRepository<Movie> movieRepo;
         private IRepository<Review> reviewRepo;
-        private ILoginSession loginSession;
-        private const int adminRank = 2;
+        private const string adminRole = "Administrator";
 
         public ReviewsService(
             IRepository<Review> reviewRepo, 
             IRepository<Movie> movieRepo,
-            IRepository<ReviewRatings> reviewRatingsRepo,
-            ILoginSession login)
+            IRepository<ReviewRatings> reviewRatingsRepo)
         {
             this.reviewRatingsRepo = reviewRatingsRepo;
             this.movieRepo = movieRepo;
             this.reviewRepo = reviewRepo;
-            loginSession = login;
         }
 
         public IEnumerable<ReviewView> ListMovieReviews(int movieID)
         {
+            Validator.IfIsNotPositive(movieID, "ReviewID cannot be negative or 0.");
             var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID && m.IsDeleted == false);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
@@ -58,7 +56,7 @@ namespace IMDB.Services
             return reviewsQuery;
         }
 
-        public ReviewView RateReview(int reviewID, double rating)
+        public Review RateReview(int reviewID, double rating, string currentUserID)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
@@ -76,7 +74,7 @@ namespace IMDB.Services
             }
             // Check logic!!!
             var reviewRatingToUpdate = foundReview.ReviewRatings
-                                                  .FirstOrDefault(r => r.UserId == loginSession.LoggedUserID 
+                                                  .FirstOrDefault(r => r.UserId == currentUserID
                                                                     && r.ReviewId == foundReview.ID);
 
             if(reviewRatingToUpdate is null)
@@ -84,7 +82,7 @@ namespace IMDB.Services
                 var reviewRatingToAdd = new ReviewRatings()
                 {
                     ReviewId = foundReview.ID,
-                    UserId = loginSession.LoggedUserID,
+                    UserId = currentUserID,
                     ReviewRating = rating,
                 };
 
@@ -109,23 +107,14 @@ namespace IMDB.Services
             reviewRepo.Update(foundReview);
             reviewRepo.Save();
 
-            var revView = new ReviewView()
-            {
-                ReviewID = foundReview.ID,
-                Rating = foundReview.MovieRating,
-                Score = foundReview.ReviewScore,
-                ByUser = foundReview.User.UserName,
-                MovieName = foundReview.Movie.Name,
-                Text = foundReview.Text,
-				NumberOfVotes = foundReview.NumberOfVotes
-            };
-
-            return revView;
+            return foundReview;
         }
 
-        public void DeleteReview(int reviewID)
+        public void DeleteReview(int reviewID, string curentUserId, string curentUserRole)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
+            Validator.IfNull<ArgumentNullException>(curentUserRole, "Current user role cannot be null!");
+            Validator.IfNull<ArgumentNullException>(curentUserId, "Current user id cannot be null!");
 
             var findReview = reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
@@ -138,7 +127,7 @@ namespace IMDB.Services
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
             }
 
-            if (findReview.User.Id == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
+            if (findReview.User.Id == curentUserId || curentUserRole == adminRole)
             {
                 findReview.IsDeleted = true;
                 findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
