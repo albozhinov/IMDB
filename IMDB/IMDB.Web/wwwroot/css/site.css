@@ -36,28 +36,62 @@ body {
     }
 }
 /* Movie details */
-.badge-primary{
+.badge-primary {
     background-color: #007bff;
 }
+
 .font-italic {
     border: 1px solid lightgray;
-    border-radius: 5px 5px;
-    padding: 5px 5px;
-    background-color: #F1F1F1;
+    border-radius: 25px 25px;
+    padding: 5px 15px;
+    background-color: #f1f1f1;
     font-size: 16px;
     color: black;
+    font-family: Courier New, Courier, monospace;
 }
-.checked{
+
+.checked {
     color: orange;
 }
-.heading{
+
+.heading {
     font-weight: bold;
 }
-.director{
+
+.movieDetailsDirector {
+    font-weight: bold;
+}
+
+.directorTextType {
     text-shadow: 1px 1px gray;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
 }
-.ratingText{
+
+.reviewTitle {
+    font-size: 30px;
+    font-weight: bold;
+}
+.ratingText {
     font-weight: bold;
 }
 
+/*Movie index*/
+.indexDirector {
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+}
 
+.movieName {
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+}
+.badge-info {
+    margin-left: 200px;
+    margin-top: 70px;
+    font-size: 16px;
+    width: 40%;
+    height: 35px;
+    border-radius: 30px 30px;
+    padding: 10px 5px;
+}
