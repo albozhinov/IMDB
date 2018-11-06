@@ -2,19 +2,63 @@
 @{
     ViewData["Title"] = "Index";
 }
-@foreach (var movie in Model)
-{
-    <h3>@movie.Name</h3>
-    <h6>By @movie.Director</h6>
-    <br />
-    <h5>Genre: @String.Join(", ", movie.Genres)</h5>
-    <h5>Score: @movie.Score by @movie.NumberOfVotes user(s)</h5>
-    <br />
-    @foreach (var review in movie.Top5Reviews)
+
+@{
+    int separeteCounter = 0;
+    foreach (var movie in Model.OrderByDescending(m => m.Score))
     {
-        <h5>@review.Rating / 10 by @review.User</h5>
-        <h6>Rated @review.Score by @review.NumberOfVotes user(s)</h6>
-        <p>@review.Text</p>
-        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-8">
+
+                    <h3 class="movieName">@movie.Name</h3>
+                    <h6>By <span class="indexDirector">@movie.Director</span></h6>
+                    <p>
+                        <span class="heading">User Rating</span>
+                        @{
+                            double colorStars = Math.Round(movie.Score / 2);
+
+                            for (int i = 1; i <= 5; i++)
+                            {
+                                if (colorStars >= i)
+                                {
+                                    <span class="fa fa-star checked"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                            }
+                        }
+                        <br />
+                        <span class="ratingText">@movie.Score average based on @movie.NumberOfVotes reviews</span>
+                    </p>
+
+                    <p>
+                        <span style="font-weight: bold">Genres:</span>
+                        <br />
+                        @{
+                            int ganresCounter = 0;
+                            foreach (var genre in movie.Genres)
+                            {
+                                <span class="badge badge-primary">@genre</span>
+                                ganresCounter++;
+                                if (ganresCounter % 3 == 0)
+                                {
+                                    <br />
+                                }
+                            }}
+                    </p>
+                </div>
+                <div class="col-6 col-md-4">
+                    <a href="#" class="badge badge-info" style="background-color: limegreen;">Details</a>
+                </div>
+            </div>
+            @if (separeteCounter != Model.Count - 1)
+            {
+                <hr />
+            }
+        </div>
+        separeteCounter++;
     }
 }

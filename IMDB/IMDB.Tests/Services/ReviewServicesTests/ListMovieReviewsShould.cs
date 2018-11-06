@@ -24,7 +24,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoMock = new Mock<IRepository<Movie>>();           
             var reviewStub = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var movieMock = new Movie()
             {
@@ -36,36 +35,10 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allMoviesMock = new List<Movie>() { movieMock }.AsQueryable();   
             movieRepoMock.Setup(m => m.All()).Returns(allMoviesMock);
 
-            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object, loginStub.Object); 
+            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object); 
 
             // Act and Assert
             Assert.ThrowsException<MovieNotFoundException>(() => reviewServices.ListMovieReviews(movieId)); 
-        }
-
-        [DataTestMethod]
-        [DataRow(5)]
-        public void ThrowNotEnoughPermissionsException_WhenUserHasNotLoggedIn(int movieId)
-        {
-            // Arrange
-            var movieRepoMock = new Mock<IRepository<Movie>>();
-            var reviewStub = new Mock<IRepository<Review>>();
-            var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
-
-            var movieMock = new Movie()
-            {
-                ID = 1,
-                Name = "Rambo",
-                IsDeleted = true
-            };
-
-            var allMoviesMock = new List<Movie>() { movieMock }.AsQueryable();
-            movieRepoMock.Setup(m => m.All()).Returns(allMoviesMock);
-
-            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object, loginStub.Object);
-
-            // Act and Assert
-            Assert.ThrowsException<NotEnoughPermissionException>(() => reviewServices.ListMovieReviews(movieId));
         }
 
         [DataTestMethod]
@@ -77,7 +50,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoMock = new Mock<IRepository<Movie>>();
             var reviewStub = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var movieMock = new Movie()
             {
@@ -89,7 +61,7 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allMoviesMock = new List<Movie>() { movieMock }.AsQueryable();
             movieRepoMock.Setup(m => m.All()).Returns(allMoviesMock);
 
-            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewStub.Object, movieRepoMock.Object, reviewRatingsStub.Object);
 
             // Act and Assert
             Assert.ThrowsException<ArgumentException>(() => reviewServices.ListMovieReviews(movieId));
@@ -103,7 +75,6 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var movieRepoStub = new Mock<IRepository<Movie>>();
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var reviewRatingsStub = new Mock<IRepository<ReviewRatings>>();
-            var loginStub = new Mock<ILoginSession>();
 
             var movieMock = new Movie(){ ID = 1, Name = "Rambo", IsDeleted = false };
             var allMoviesMock = new List<Movie>() { movieMock }.AsQueryable();
@@ -119,7 +90,7 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             var allReviews = new List<Review>() { review1, review2 }.AsQueryable();
             reviewRepoMock.Setup(r => r.All()).Returns(allReviews);
 
-            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object, loginStub.Object);
+            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act 
             var result = reviewServices.ListMovieReviews(movieID);

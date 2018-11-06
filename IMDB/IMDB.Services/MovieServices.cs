@@ -4,27 +4,30 @@ using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Services.Providers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace IMDB.Services
 {
     public sealed class MovieServices : IMovieServices
     {
         private readonly IRepository<Review> reviewRepo;
-        private IRepository<MovieGenre> movieGenreRepo;
-        private IRepository<Genre> genreRepo;
-        private IRepository<Director> directorRepo;
-        private IRepository<Movie> movieRepo;
+        private readonly IRepository<MovieGenre> movieGenreRepo;
+        private readonly IRepository<Genre> genreRepo;
+        private readonly IRepository<Director> directorRepo;
+        private readonly IRepository<Movie> movieRepo;
 
         public MovieServices(
             IRepository<Review> reviewRepo,
             IRepository<Movie> movieRepo,
             IRepository<Director> directorRepo,
             IRepository<Genre> genreRepo,
-            IRepository<MovieGenre> movieGenreRepo)
+            IRepository<MovieGenre> movieGenreRepo
+            )
         {
             this.reviewRepo = reviewRepo;
             this.movieGenreRepo = movieGenreRepo;
@@ -145,7 +148,6 @@ namespace IMDB.Services
                 .Include(movR => movR.Reviews)
                     .ThenInclude(rev => rev.User)
                 .Include(movD => movD.Director)
-
                 .SingleOrDefault();
 
             if (foundMovie is null)
@@ -153,7 +155,7 @@ namespace IMDB.Services
 
             return foundMovie;
         }
-        public void RateMovie(int movieID, double rating, string reviewText)
+        public void RateMovie(int movieID, double rating, string reviewText, string curentUserId)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
@@ -162,7 +164,7 @@ namespace IMDB.Services
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
 
-            var reviewToAdd = foundMovie.Reviews.FirstOrDefault(rev => rev.MovieID == movieID);
+            var reviewToAdd = foundMovie.Reviews.FirstOrDefault(rev => rev.MovieID == movieID && rev.UserID == curentUserId);
             if (reviewToAdd != null)
             {
                 foundMovie.Reviews.Remove(reviewToAdd);
@@ -186,6 +188,7 @@ namespace IMDB.Services
                 {
                     MovieID = movieID,
                     MovieRating = rating,
+                    UserID = curentUserId,
                     Text = reviewText
                 };
                 foundMovie.NumberOfVotes++;

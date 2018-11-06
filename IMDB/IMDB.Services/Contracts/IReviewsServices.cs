@@ -1,4 +1,5 @@
-﻿using IMDB.Data.Views;
+﻿using IMDB.Data.Models;
+using IMDB.Data.Views;
 using System.Collections.Generic;
 
 namespace IMDB.Services.Contracts
@@ -17,11 +18,11 @@ namespace IMDB.Services.Contracts
         /// <param name="reviewID"></param>
         /// <param name="socre"></param>
         /// <returns></returns>
-        ReviewView RateReview(int reviewID, double socre);
+        Review RateReview(int reviewID, double rating, string currentUserID);
         /// <summary>
         /// Deltes a review (just a flag)
         /// </summary>
         /// <param name="reviewID"></param>
-        void DeleteReview(int reviewID);
+        void DeleteReview(int reviewID, string curentUserId, string curentUserRole);
     }
 }

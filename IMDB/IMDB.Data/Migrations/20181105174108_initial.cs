@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IMDB.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -285,6 +285,15 @@ namespace IMDB.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "5197310d-5d42-4337-bb59-2fd06e6a8fcd", "a3bc9d45-276b-442f-bc6b-b1a5763df30d", "User", "USER" },
+                    { "959596e5-93e4-4272-8cfb-6e71a4254370", "20d35162-b35c-4b2e-80c1-81a15bc1b2f3", "Administrator", "ADMINISTRATOR" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
@@ -298,11 +307,11 @@ namespace IMDB.Data.Migrations
                 columns: new[] { "ID", "Name" },
                 values: new object[,]
                 {
-                    { 5, "Paul Feig" },
                     { 1, "Ruben Fleischer" },
-                    { 3, "Jeremy Saulnier" },
                     { 2, "Bradley Cooper" },
-                    { 4, "Todd Phillips" }
+                    { 3, "Jeremy Saulnier" },
+                    { 4, "Todd Phillips" },
+                    { 5, "Paul Feig" }
                 });
 
             migrationBuilder.InsertData(
@@ -310,6 +319,7 @@ namespace IMDB.Data.Migrations
                 columns: new[] { "ID", "GenreType" },
                 values: new object[,]
                 {
+                    { 1, "Action" },
                     { 27, "Crime" },
                     { 26, "Live-action unscripted" },
                     { 25, "Live-action scripted" },
@@ -323,7 +333,7 @@ namespace IMDB.Data.Migrations
                     { 17, "Satire" },
                     { 16, "Saga" },
                     { 14, "Political" },
-                    { 13, "Philosophical" },
+                    { 12, "Paranoid Fiction" },
                     { 11, "Mystery" },
                     { 10, "Magical realism" },
                     { 9, "Horror" },
@@ -334,9 +344,17 @@ namespace IMDB.Data.Migrations
                     { 4, "Crime" },
                     { 3, "Comedy" },
                     { 2, "Adventure" },
-                    { 1, "Action" },
                     { 15, "Romance" },
-                    { 12, "Paranoid Fiction" }
+                    { 13, "Philosophical" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[,]
+                {
+                    { "676ce4b1-6641-4909-a478-11b173180b3c", "959596e5-93e4-4272-8cfb-6e71a4254370" },
+                    { "3ccbce59-fa31-4292-900c-b9f927c3bae6", "5197310d-5d42-4337-bb59-2fd06e6a8fcd" }
                 });
 
             migrationBuilder.InsertData(
