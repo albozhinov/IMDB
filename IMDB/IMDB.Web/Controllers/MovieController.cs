@@ -64,6 +64,10 @@ namespace IMDB.Web.Controllers
             {
                 return this.NotFound();
             }
+            catch(ArgumentException)
+            {
+                return this.NotFound();
+            }
         }
         [HttpDelete("[controller]/Details/{id}")]
 		[Authorize(Roles = "Administration")]

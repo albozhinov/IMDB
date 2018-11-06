@@ -54,12 +54,19 @@
     <div class="row col-md-6">
 
         <h2 class="reviewTitle">Reviews</h2>
-        @{ foreach (var review in Model.Top5Reviews)
+        @{ foreach (var review in Model.Top6Reviews.Take(5))
             {
                 <div>
-                    <p class="reviewUser">User: @review.User | Review Rating: @review.Score (@review.NumberOfVotes votes) </p>
+                    <p class="reviewUser">User: @review.User | Review Rating: @review.Score (@review.NumberOfVotes votes) <a class="btn btn-rateReview">Rate Review</a></p>
                     <p class="font-italic">@review.Text</p>
                 </div>
+                <hr />
+            }
+        }
+        @{
+            if (Model.Top6Reviews.Count > 5)
+            {
+                <a asp-area="" asp-controller="Review" asp-action="AllReviews" asp-route-id="@Model.ID" class="btn btn-showAllReviews">Show All Reviews</a>
             }
         }
     </div>

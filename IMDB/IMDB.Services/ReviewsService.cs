@@ -29,9 +29,9 @@ namespace IMDB.Services
             this.reviewRepo = reviewRepo;
         }
 
-        public IEnumerable<ReviewView> ListMovieReviews(int movieID)
+        public ICollection<Review> ListMovieReviews(int movieID)
         {
-            Validator.IfIsNotPositive(movieID, "ReviewID cannot be negative or 0.");
+            Validator.IfIsNotPositive(movieID, "Movie ID cannot be negative or 0.");
             var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID && m.IsDeleted == false);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
@@ -40,19 +40,8 @@ namespace IMDB.Services
             }
             var reviewsQuery = reviewRepo.All()
                                     .Where(r => r.MovieID == movieID && r.IsDeleted == false)
-                                    .Select(rev => new ReviewView()
-                                    {
-                                        ReviewID = rev.ID,
-                                        Rating = rev.MovieRating,
-                                        Score = rev.ReviewScore,
-                                        Text = rev.Text,
-                                        ByUser = rev.User.UserName,
-                                        MovieName = rev.Movie.Name,
-										NumberOfVotes = rev.NumberOfVotes
-                                    })
-                                    .OrderByDescending(rev => rev.Score)
-                                    .ToList();
-
+                                    .Include(revUser => revUser.User)
+                                    .ToList();            
             return reviewsQuery;
         }
 

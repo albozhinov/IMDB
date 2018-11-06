@@ -141,6 +141,7 @@ namespace IMDB.Services
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
 
+            // How can take only 6 Review?!
             Movie foundMovie = movieRepo.All()
                 .Where(mov => mov.ID == movieID && !mov.IsDeleted)
                 .Include(movG => movG.MovieGenres)

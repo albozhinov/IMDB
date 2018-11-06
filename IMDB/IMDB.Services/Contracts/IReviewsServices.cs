@@ -11,7 +11,7 @@ namespace IMDB.Services.Contracts
         /// </summary>
         /// <param name="movieId"></param>
         /// <returns></returns>
-        IEnumerable<ReviewView> ListMovieReviews(int movieId);
+        ICollection<Review> ListMovieReviews(int movieId);
         /// <summary>
         /// Rates review, updadtes the score, and returns it to be seen (updadtes it)
         /// </summary>

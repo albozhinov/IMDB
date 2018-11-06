@@ -1,0 +1,23 @@
+﻿@model ICollection<ReviewViewModel>
+
+
+@{
+    ViewData["Title"] = "AllReviews";
+}
+
+<h1 class="movieName">@Model.FirstOrDefault()?.MovieName</h1>
+<div class="clearfix">
+    <div class="row col-md-6">
+        <h2 class="reviewTitle">All Reviews</h2>
+        @{ foreach (var review in Model)
+            {
+                <div>
+                    <p class="reviewUser">User: @review.User | Review Rating: @review.Score (@review.NumberOfVotes votes) <a class="btn btn-rateReview">Rate Review</a></p>
+                    <p class="font-italic">@review.Text</p>
+                </div>
+                <hr />
+            }
+        }
+    </div>    
+</div>
+

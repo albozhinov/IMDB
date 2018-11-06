@@ -22,11 +22,11 @@ namespace IMDB.Web.Models
 				.MovieGenres
 				.Select(x => x.Genre.GenreType)
 				.ToList();
-			this.Top5Reviews = movie
+			this.Top6Reviews = movie
 				.Reviews
                 .Where(r => !r.IsDeleted)
+                .Take(6)
 				.OrderByDescending(r => r.ReviewScore)
-				.Take(5)
 				.Select(r => new ReviewViewModel(r))
 				.ToList();
             this.NumberOfVotes = movie.NumberOfVotes;
@@ -37,7 +37,7 @@ namespace IMDB.Web.Models
 		public string Director { get; set; }
 		public ICollection<string> Genres { get; set; }
 		public IEnumerable<SelectListItem> GenreList { get; set; }
-		public ICollection<ReviewViewModel> Top5Reviews { get; set; }
+		public ICollection<ReviewViewModel> Top6Reviews { get; set; }
 		public int NumberOfVotes { get; set; }
 	}
 }

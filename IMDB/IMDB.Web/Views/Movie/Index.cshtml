@@ -51,7 +51,7 @@
                     </p>
                 </div>
                 <div class="col-6 col-md-4">
-                    <a href="#" class="badge badge-info" style="background-color: limegreen;">Details</a>
+                    <a asp-area="" asp-controller="Movie" asp-action="Details" asp-route-id="@movie.ID"  class="btn btn-movieDetails">Details</a>
                 </div>
             </div>
             @if (separeteCounter != Model.Count - 1)
