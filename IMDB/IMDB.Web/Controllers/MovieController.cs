@@ -76,22 +76,37 @@ namespace IMDB.Web.Controllers
 			//return single detailed movie view
 			return View();
 		}
-		[HttpGet]
-		public IActionResult Search()
+
+		[HttpPost]
+		public IActionResult Search(SearchViewModel searchView)
 		{
-			return View();
+            var movieName = searchView.Name;
+            var movieGenre = searchView.Genres;
+            var movieDirector = searchView.Director;
+            var movies = movieServices
+                .SearchMovie(movieName, movieGenre, movieDirector)
+                .Select(mov=>new MovieViewModel(mov));
+            return View("SearchResult", movies.ToList());
+            //return SearchResault(movies.ToList());
 		}
-		//[HttpPost("[controller]/search")]
-		//public IActionResult SearchMovie(SearchViewModel searchView)
-		//{
-		//	//redirect to search result
-		//	return View();
-		//}
-		//public IActionResult SearchResult(SearchResultViewModel searchResultView)
-		//{
-		//	return View();
-		//}
-		[HttpGet("[controller]/{id}/[action]")]
+
+        public IActionResult Search()
+        {
+            return View();
+        }
+        /*[HttpGet]
+        private IActionResult SearchResault(ICollection <MovieViewModel> movies)
+        {
+            return View(movies);
+        }*/
+        //[HttpPost("[controller]/search")]
+        //public IActionResult SearchMovie(SearchViewModel searchView)
+        //{
+        //	//redirect to search result
+        //	return View();
+        //}
+
+        [HttpGet("[controller]/{id}/[action]")]
 		public IActionResult Rate(int id)
 		{
 			return View();

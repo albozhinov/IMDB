@@ -199,31 +199,26 @@ namespace IMDB.Services
             movieRepo.Update(foundMovie);
             movieRepo.Save();
         }
-        public ICollection<MovieView> SearchMovie(string name, string genre, string director)
+        public ICollection<Movie> SearchMovie(string name, string genre, string director)
         {
-            IQueryable<MovieView> movies = movieRepo.All().Where(mov => !mov.IsDeleted).Select(mov => new MovieView
-            {
-                ID = mov.ID,
-                Name = mov.Name,
-                Genres = mov.MovieGenres.Select(movG => movG.Genre.GenreType).ToList(),
-                Top5Reviews = new List<ReviewView>(),
-                Score = mov.MovieScore,
-                Director = mov.Director.Name,
-                NumberOfVotes = mov.NumberOfVotes
-            });
+            IQueryable<Movie> movies = movieRepo.All()
+                .Where(mov => !mov.IsDeleted)
+                .Include(mov => mov.MovieGenres)
+                .ThenInclude(mg => mg.Genre)
+                .Include(mov => mov.Director);
 
             if (name != null)
             {
                 movies = movies.Where(mov => mov.Name.Contains(name));
             }
-            if (genre != null)
+            if (!string.IsNullOrEmpty(genre))
             {
                 movies = movies
-                    .Where(mov => mov.Genres.Select(g => g.ToLower()).Contains(genre));
+                    .Where(mov => mov.MovieGenres.Select(g => g.Genre.GenreType.ToLower()).Contains(genre));
             }
-            if (director != null)
+            if (!string.IsNullOrEmpty(director))
             {
-                movies = movies.Where(mov => mov.Director.ToLower().Contains(director.ToLower()));
+                movies = movies.Where(mov => mov.Director.Name.ToLower().Contains(director.ToLower()));
             }
             var findedMoies = movies.ToList();
             if (findedMoies.Count == 0)
