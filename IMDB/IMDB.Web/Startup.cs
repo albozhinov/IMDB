@@ -69,9 +69,13 @@ namespace IMDB.Web
 
 			app.UseAuthentication();
 
-			app.UseMvc(routes =>
+            app.UseMvc(routes =>
 			{
-				routes.MapRoute(
+                routes.MapRoute(
+                    name: "adminArea",
+                    template: "{area:exists}/{controller=Users}/{action=Index}/{id?}");
+
+                routes.MapRoute(
 					name: "default",
 					template: "{controller=Movie}/{action=Index}/{id?}");
             });
