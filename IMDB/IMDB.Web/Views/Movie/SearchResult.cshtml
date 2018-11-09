@@ -10,7 +10,7 @@
     <h5>Genre: @String.Join(", ", movie.Genres)</h5>
     <h5>Score: @movie.Score by @movie.NumberOfVotes user(s)</h5>
     <br />
-    @foreach (var review in movie.Top6Reviews)
+    @foreach (var review in movie.Top5Reviews)
     {
         <h5>@review.Rating / 10 by @review.User</h5>
         <h6>Rated @review.Score by @review.NumberOfVotes user(s)</h6>

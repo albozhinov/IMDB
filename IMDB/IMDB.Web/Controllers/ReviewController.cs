@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace IMDB.Web.Controllers
 {
@@ -40,6 +42,14 @@ namespace IMDB.Web.Controllers
             {
                 return this.NotFound();
             }
+        }
+        [HttpPost("[controller]/[action]/{id}")]
+        [Authorize(Roles = "Administrator")]
+        public IActionResult DeleteReview(int id)
+        {           
+            this.reviewsServices.DeleteReview(id);
+            this.TempData["Succes-Message"] = "You deleted a review with ID: " + id;
+            return RedirectToAction("Index", "Movie");
         }
     }
 }
