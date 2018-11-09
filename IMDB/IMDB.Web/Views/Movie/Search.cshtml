@@ -4,34 +4,42 @@
 }
 
 <h2>Search</h2>
-<form asp-controller="Movie" asp-action="Search" method="post">
-    <table>
-        <th>
+<table>
+    <th>
+        <form asp-controller="Movie" asp-action="Search" method="post">
+            <table>
+                <tr>
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="form-group">
+                        <label asp-for="Genres"></label>
+                        <input asp-for="Genres" class="form-control" />
+                        <span asp-validation-for="Genres" class="text-danger"></span>
+                    </div>
+                </tr>
+                <tr>
+                    <div class="form-group">
+                        <label asp-for="Director"></label>
+                        <input asp-for="Director" class="form-control" />
+                        <span asp-validation-for="Director" class="text-danger"></span>
+                    </div>
+                </tr>
+            </table>
             <div class="form-group">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <button type="submit" class="btn btn-default" style="float: right;">Search </button>
+                <br>
             </div>
-        </th>
-        <th>
-            <div class="form-group">
-                <label asp-for="Genres"></label>
-                <input asp-for="Genres" class="form-control" />
-                <span asp-validation-for="Genres" class="text-danger"></span>
-            </div>
-        </th>
-        <th>
-            <div class="form-group">
-                <label asp-for="Director"></label>
-                <input asp-for="Director" class="form-control" />
-                <span asp-validation-for="Director" class="text-danger"></span>
-            </div>
-        </th>
-    </table>
-    <right>
-        <div class="form-group">
-            <button type="submit" class="btn btn-default">Search</button>
-        </div>
-    </right>
-</form>
-    
+        </form>
+    </th>
+
+    <th>
+    </th>
+</table>
+
+
+

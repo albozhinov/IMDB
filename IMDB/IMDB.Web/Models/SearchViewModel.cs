@@ -11,6 +11,7 @@ namespace IMDB.Web.Models
         public string Name { get; set; }
         public string Director { get; set; }
         public string Genres { get; set; }
+        public IEnumerable<SelectListItem> GenreList { get; set; }
     }
     
 }
