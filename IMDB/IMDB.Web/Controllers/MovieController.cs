@@ -33,6 +33,7 @@ namespace IMDB.Web.Controllers
 		[Authorize(Roles = "Administrator")]
 		public IActionResult Create()
 		{
+            //cache this
 			var newMovie = new MovieViewModel
 			{
 				GenreList = movieServices.GetGenres().Select(g => new SelectListItem(g.GenreType, g.GenreType))
