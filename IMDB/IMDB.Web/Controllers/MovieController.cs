@@ -40,8 +40,7 @@ namespace IMDB.Web.Controllers
 			return View(newMovie);
 		}
 		[HttpPost]
-		//[Authorize(Roles = "Administrator")]
-		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Administrator")]
 		public IActionResult Create(MovieViewModel movieViewModel)
 		{
 			if (!this.ModelState.IsValid)
@@ -51,7 +50,7 @@ namespace IMDB.Web.Controllers
 			var newMovie = movieServices.CreateMovie(movieViewModel.Name, movieViewModel.Genres, movieViewModel.Director);
 			return this.RedirectToAction("Details", "Players", new { id = newMovie.ID });
 		}
-        [HttpGet("[controller]/[action]/{id}")]
+        [HttpGet("[controller]/[action]/{id}")]        
         public IActionResult Details(int id)
         {
             //return single detailed movie view            
@@ -70,7 +69,7 @@ namespace IMDB.Web.Controllers
             }
         }
         [HttpDelete("[controller]/Details/{id}")]
-		[Authorize(Roles = "Administration")]
+		[Authorize(Roles = "Administrator")]
 		public IActionResult DeleteMovie(int id)
 		{
 			//return single detailed movie view

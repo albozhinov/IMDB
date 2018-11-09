@@ -1,11 +1,14 @@
 ﻿@model MovieViewModel
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Details";}
 
+<br />
+<div class="row col-md-6" id="rateArea">
+    <h1 class="movieName">@Model.Name</h1>
 
-<h1 class="movieName">@Model.Name</h1>
-<div class="row col-md-3">
     <p>
         <span class="heading">User Rating</span>
         @{
@@ -15,20 +18,32 @@
             {
                 if (colorStars >= i)
                 {
-                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked" id="filledStar"></span>
                 }
                 else
                 {
-                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star" id="emptyStar"></span>
                 }
             }
         }
+        <span class="ratingSlash">/</span>
+
+        @{
+            if (this.User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-rateMovie"><span class="fa fa-star">Rate</span></a>
+            }
+            else
+            {
+                <a class="btn btn-rateMovie" data-toggle="modal" data-target="#rateMovieModal"><span class="fa fa-star">Rate</span></a>
+            }
+        }
     </p>
-    <p class="ratingText">@Model.Score average based on @Model.NumberOfVotes reviews</p>
+    <p class="ratingText"><span class="avgMovieScor">@Model.Score</span>/10 average based on @Model.NumberOfVotes reviews</p>
 </div>
-
-
-<div style="font-weight: bold">
+<div class="clearfix"></div>
+<div class="genreTitle">
+    <br />
     Genres:
     <br />
     <p>
@@ -52,22 +67,144 @@
 <div class="clearfix">
 
     <div class="row col-md-6">
+        <h2 class="reviewTitle">
+            Reviews
+            @{
+                if (this.User.Identity.IsAuthenticated)
+                {
+                    <a class="btn btn-addReview">Add Review</a>
+                }
+                else
+                {
+                    <a class="btn btn-addReview" data-toggle="modal" data-target="#addReviewModal">Add Review</a>
+                }
+            }
+        </h2>
 
-        <h2 class="reviewTitle">Reviews</h2>
-        @{ foreach (var review in Model.Top6Reviews.Take(5))
+
+        @{ foreach (var review in Model.Top5Reviews)
             {
                 <div>
-                    <p class="reviewUser">User: @review.User | Review Rating: @review.Score (@review.NumberOfVotes votes) <a class="btn btn-rateReview">Rate Review</a></p>
+                    <div class="reviewUser">
+                        User: @review.User | Review Rating: @review.Score (@review.NumberOfVotes votes)
+                        @{
+                            if (User.IsInRole("Administrator"))
+                            {
+                                <a class="btn btn-deleteReview" data-toggle="modal" data-target="#delete">Delete</a>
+                                <!-- Modal -->
+                                <div id="delete" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Are you sure to delete this review?</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>You are about to delete this review, are you sure?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form asp-area="" asp-controller="Review" asp-action="DeleteReview" method="post">
+                                                    <input type="hidden" name="Id" value="@review.ReviewID" />
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="btn btn-rateReview" style="margin-left: 0%">Rate Review</a>
+                            }
+                            else
+                            {
+                                if (this.User.Identity.IsAuthenticated && review.User == this.User.Identity.Name)
+                                {
+                                    <a class="btn btn-deleteReview" data-toggle="modal" data-target="#delete">Delete</a>
+                                    <a class="btn btn-rateReview">Rate Review</a>
+
+                                }
+                                else if (this.User.Identity.IsAuthenticated)
+                                {
+                                    <a class="btn btn-rateReview">Rate Review</a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-rateReview" data-toggle="modal" data-target="#rateReviewModal">Rate Review</a>
+                                }
+                            }
+                        }
+                    </div>
+                    <p></p>
                     <p class="font-italic">@review.Text</p>
                 </div>
                 <hr />
             }
         }
         @{
-            if (Model.Top6Reviews.Count > 5)
+            if (Model.More5Reviews)
             {
                 <a asp-area="" asp-controller="Review" asp-action="AllReviews" asp-route-id="@Model.ID" class="btn btn-showAllReviews">Show All Reviews</a>
             }
         }
     </div>
 </div>
+
+<!-- Modal -->
+<div id="addReviewModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Want to add review to this movie?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Login if you want to add review to this movie.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="rateReviewModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Want to rate review?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Login if you want to rate review.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="rateMovieModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Want to rate this movie?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Login if you want to rate this movie.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

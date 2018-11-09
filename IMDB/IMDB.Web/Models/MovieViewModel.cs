@@ -22,22 +22,36 @@ namespace IMDB.Web.Models
 				.MovieGenres
 				.Select(x => x.Genre.GenreType)
 				.ToList();
-			this.Top6Reviews = movie
+			this.Top5Reviews = movie
 				.Reviews
                 .Where(r => !r.IsDeleted)
-                .Take(6)
+                .Take(5)
 				.OrderByDescending(r => r.ReviewScore)
 				.Select(r => new ReviewViewModel(r))
 				.ToList();
+            if (movie.Reviews.Count > 5)
+            {
+                this.More5Reviews = true;
+            }
+            else
+            {
+                this.More5Reviews = false;
+            }
             this.NumberOfVotes = movie.NumberOfVotes;
 		}        
         public int ID { get; set; }
+        [Required]
+        [StringLength(50, ErrorMessage = "The movie name must be between 3 and 50 symbols", MinimumLength = 4)]
 		public string Name { get; set; }
 		public double Score { get; set; }
-		public string Director { get; set; }
+        [Required]
+        [StringLength(25, ErrorMessage = "The movie name must be between 3 and 25 symbols", MinimumLength = 4)]
+        public string Director { get; set; }
+        [Required]
 		public ICollection<string> Genres { get; set; }
 		public IEnumerable<SelectListItem> GenreList { get; set; }
-		public ICollection<ReviewViewModel> Top6Reviews { get; set; }
-		public int NumberOfVotes { get; set; }
+		public ICollection<ReviewViewModel> Top5Reviews { get; set; }
+        public bool More5Reviews { get; set; }
+        public int NumberOfVotes { get; set; }
 	}
 }

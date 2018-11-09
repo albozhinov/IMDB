@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -72,6 +73,15 @@ namespace IMDB.Data.Context
                 .HasMaxLength(50);
             modelBuilder.Entity<Movie>().Property(mov => mov.DirectorID)
                 .IsRequired();
+            modelBuilder.Entity<Director>().Property(d => d.Name)
+                .IsRequired()
+                .HasMaxLength(25);
+            modelBuilder.Entity<User>().Property(u => u.UserName)
+                .IsRequired()
+                .HasMaxLength(25);
+            modelBuilder.Entity<User>().Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(25);
 
             modelBuilder.Entity<ReviewRatings>()
                 .HasOne(rr => rr.User)
@@ -82,11 +92,10 @@ namespace IMDB.Data.Context
                 .WithMany(r => r.ReviewRatings)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<MovieGenre>()
                 .HasKey(m => new { m.GenreID, m.MovieID });
             base.OnModelCreating(modelBuilder);
-        }
+        }      
 
     }
 }
