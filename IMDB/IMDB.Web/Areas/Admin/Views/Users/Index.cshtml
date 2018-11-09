@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Index";
 }
+@using X.PagedList.Mvc.Core
+
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 
 <div class="panel-body">
@@ -26,6 +28,9 @@
         </tbody>
     </table>
 </div>
+<br />
+Page @(Model.Users.PageCount < Model.Users.PageNumber ? 0 : Model.Users.PageNumber) of @Model.Users.PageCount
+@Html.PagedListPager(Model.Users, page => Url.Action("Index", new { page }))
 
 <div class="modal" id="my_modal">
     <div class="modal-dialog">

@@ -14,6 +14,7 @@ namespace IMDB.Web.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly int PAGE_SIZE = 25;
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -23,9 +24,9 @@ namespace IMDB.Web.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            var indexViewModel = new IndexViewModel(_userManager.Users);
+            var indexViewModel = new IndexViewModel(_userManager.Users, (page ?? 1), PAGE_SIZE);
             indexViewModel.StatusMessage = StatusMessage;
             return View(indexViewModel);
         }
