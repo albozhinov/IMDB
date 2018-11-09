@@ -23,7 +23,7 @@ namespace IMDB.Web.Models
 				.Select(x => x.Genre.GenreType)
 				.ToList();
 			this.Top6Reviews = movie
-				.Reviews
+				.Reviews?
                 .Where(r => !r.IsDeleted)
                 .Take(6)
 				.OrderByDescending(r => r.ReviewScore)
