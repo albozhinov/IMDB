@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace IMDB.Data.Models
 {
 	public class Movie
 	{
-		public int ID { get; set; }
+		public int ID { get; set; }        
 		public String Name { get; set; }
 		public double MovieScore { get; set; }
 		public int NumberOfVotes { get; set; }

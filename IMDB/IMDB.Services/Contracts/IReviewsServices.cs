@@ -23,6 +23,6 @@ namespace IMDB.Services.Contracts
         /// Deltes a review (just a flag)
         /// </summary>
         /// <param name="reviewID"></param>
-        void DeleteReview(int reviewID, string curentUserId, string curentUserRole);
+        void DeleteReview(int reviewID);
     }
 }

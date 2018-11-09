@@ -2,11 +2,53 @@
 @{
     ViewData["Title"] = "Index";
 }
+@using X.PagedList.Mvc.Core
+
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 
-@foreach (var user in Model.Users)
-{
-    <h3>@user.ID</h3>
-    <h4>@user.UserName</h4>
-    <h5>@user.Email</h5>
+<div class="panel-body">
+    <table class="table  table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>UsernameName</th>
+                <th>Email</th>
+                <th>Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+
+                <tr onclick="myFunction('@user.ID')">
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td data-user-id="@user.ID"> @user.ID </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+Page @(Model.Users.PageCount < Model.Users.PageNumber ? 0 : Model.Users.PageNumber) of @Model.Users.PageCount
+@Html.PagedListPager(Model.Users, page => Url.Action("Index", new { page }))
+
+<div class="modal" id="my_modal">
+    <div class="modal-dialog">
+        <partial name="_UserModal" model="null" />
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        //Towa mi wze dushata
+        var userId;
+        function myFunction(id) {
+            userId = id;
+            $('#my_modal').modal('show');
+        }
+        $('#my_modal').on('show.bs.modal', function (e) {
+            $(e.currentTarget).find('input[name="ID"]').val(userId);
+        })
+    </script>
+    <partial name="_ValidationScriptsPartial" />
 }

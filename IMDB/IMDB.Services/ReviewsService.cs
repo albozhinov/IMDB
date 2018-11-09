@@ -20,7 +20,7 @@ namespace IMDB.Services
         private const string adminRole = "Administrator";
 
         public ReviewsService(
-            IRepository<Review> reviewRepo, 
+            IRepository<Review> reviewRepo,
             IRepository<Movie> movieRepo,
             IRepository<ReviewRatings> reviewRatingsRepo)
         {
@@ -41,7 +41,7 @@ namespace IMDB.Services
             var reviewsQuery = reviewRepo.All()
                                     .Where(r => r.MovieID == movieID && r.IsDeleted == false)
                                     .Include(revUser => revUser.User)
-                                    .ToList();            
+                                    .ToList();
             return reviewsQuery;
         }
 
@@ -66,7 +66,7 @@ namespace IMDB.Services
                                                   .FirstOrDefault(r => r.UserId == currentUserID
                                                                     && r.ReviewId == foundReview.ID);
 
-            if(reviewRatingToUpdate is null)
+            if (reviewRatingToUpdate is null)
             {
                 var reviewRatingToAdd = new ReviewRatings()
                 {
@@ -75,10 +75,10 @@ namespace IMDB.Services
                     ReviewRating = rating,
                 };
 
-				foundReview.NumberOfVotes++;
-				foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
+                foundReview.NumberOfVotes++;
+                foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
                 foundReview.ReviewRatings.Add(reviewRatingToAdd);
-			}
+            }
             else
             {
                 if (foundReview.NumberOfVotes == 1)
@@ -91,7 +91,7 @@ namespace IMDB.Services
                     foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
                 }
                 reviewRatingToUpdate.ReviewRating = rating;
-			}
+            }
 
             reviewRepo.Update(foundReview);
             reviewRepo.Save();
@@ -99,16 +99,14 @@ namespace IMDB.Services
             return foundReview;
         }
 
-        public void DeleteReview(int reviewID, string curentUserId, string curentUserRole)
+        public void DeleteReview(int reviewID)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
-            Validator.IfNull<ArgumentNullException>(curentUserRole, "Current user role cannot be null!");
-            Validator.IfNull<ArgumentNullException>(curentUserId, "Current user id cannot be null!");
 
             var findReview = reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                        .Include(r => r.User)
-									   .Include(r => r.Movie)
+                                       .Include(r => r.Movie)
                                        .FirstOrDefault();
 
             if (findReview is null)
@@ -116,17 +114,10 @@ namespace IMDB.Services
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
             }
 
-            if (findReview.User.Id == curentUserId || curentUserRole == adminRole)
-            {
-                findReview.IsDeleted = true;
-                findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
-                findReview.Movie.NumberOfVotes--;
-                reviewRepo.Update(findReview);
-            }
-            else
-            {
-                throw new NotEnoughPermissionException("Not enough permission bro.");
-            }
+            findReview.IsDeleted = true;
+            findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
+            findReview.Movie.NumberOfVotes--;
+            reviewRepo.Update(findReview);
 
             reviewRepo.Save();
         }

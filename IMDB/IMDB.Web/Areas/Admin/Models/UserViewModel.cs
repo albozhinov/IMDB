@@ -18,5 +18,6 @@ namespace IMDB.Web.Areas.Admin.Models
         public string Email { get; set; }
         [Required]
         public string ID { get; set; }
+
     }
 }

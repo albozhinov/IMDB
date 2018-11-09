@@ -95,15 +95,15 @@ namespace IMDB.Tests.Services.ReviewServicesTests
             // Act 
             var result = reviewServices.ListMovieReviews(movieID);
 
-            // Assert
-            /*Assert.IsTrue(result.Count() == 1);
-            Assert.IsTrue(result.First().ByUser == review1.User.UserName);
-            Assert.IsTrue(result.First().ReviewID == review1.ID);
-            Assert.IsTrue(result.First().Rating == review1.MovieRating);
-            Assert.IsTrue(result.First().Score == review1.ReviewScore);
-            Assert.IsTrue(result.First().Text == review1.Text);
-            Assert.IsTrue(result.First().MovieName == review1.Movie.Name);
-            Assert.IsTrue(result.First().NumberOfVotes == review1.NumberOfVotes);*/
+            //Assert
+            //Assert.IsTrue(result.Count() == 1);
+            //Assert.IsTrue(result.First().ByUser == review1.User.UserName);
+            //Assert.IsTrue(result.First().ReviewID == review1.ID);
+            //Assert.IsTrue(result.First().Rating == review1.MovieRating);
+            //Assert.IsTrue(result.First().Score == review1.ReviewScore);
+            //Assert.IsTrue(result.First().Text == review1.Text);
+            //Assert.IsTrue(result.First().MovieName == review1.Movie.Name);
+            //Assert.IsTrue(result.First().NumberOfVotes == review1.NumberOfVotes);
         }
     }
 }
