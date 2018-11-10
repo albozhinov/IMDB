@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IMDB.Data.Models;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Web.Models;
+using IMDB.Web.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,10 +16,13 @@ namespace IMDB.Web.Controllers
 {
 	public class MovieController : Controller
 	{
-		private readonly IMemoryCache _memoryCache;
+        private readonly IUserManager<User> _userManager;
+        private readonly IMemoryCache _memoryCache;
 		private readonly IMovieServices movieServices;
-		public MovieController(IMovieServices movieServices, IMemoryCache memoryCache)
+
+		public MovieController(IMovieServices movieServices, IMemoryCache memoryCache, IUserManager<User> userManager)
 		{
+            this._userManager = userManager;
 			this._memoryCache = memoryCache;
 			this.movieServices = movieServices;
 		}
@@ -36,6 +41,19 @@ namespace IMDB.Web.Controllers
 
 			return View(cachedTopMovies);
 		}
+        public async Task<IActionResult> Top5Movies()
+        {
+            var cachedTop5Movies = await _memoryCache.GetOrCreateAsync("TopMovies", async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(2);
+                var movies = await movieServices.GetAllMoviesAsync();
+                return movies.OrderByDescending(m => m.MovieScore)
+                                    .Take(5)
+                                    .Select(m => new MovieViewModel(m))
+                                    .ToList();
+            });
+            return View(cachedTop5Movies);
+        }
 		[HttpGet]
 		[Authorize(Roles = "Administrator")]
 		public async Task<IActionResult> Create()

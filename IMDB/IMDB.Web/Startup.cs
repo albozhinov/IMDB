@@ -13,6 +13,7 @@ using IMDB.Data.Repository;
 using IMDB.Services;
 using IMDB.Services.Contracts;
 using System;
+using IMDB.Web.Providers;
 
 namespace IMDB.Web
 {
@@ -43,7 +44,9 @@ namespace IMDB.Web
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IMDBContext>();
 
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));           
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));  
+            services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
+
 
             services.AddScoped<IMovieServices, MovieServices>();
             services.AddScoped<IReviewsServices, ReviewsService>();
@@ -80,7 +83,7 @@ namespace IMDB.Web
 
                 routes.MapRoute(
 					name: "default",
-					template: "{controller=Movie}/{action=Index}/{id?}");
+					template: "{controller=Home}/{action=Index}/{id?}");
             });
 		}
 	}
