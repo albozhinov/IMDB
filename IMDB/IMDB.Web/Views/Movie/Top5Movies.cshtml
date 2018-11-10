@@ -1,0 +1,68 @@
+﻿@model ICollection<MovieViewModel>
+@{
+    ViewData["Title"] = "Top5Movies";
+}
+
+@{
+    int separeteCounter = 0;
+    foreach (var movie in Model.OrderByDescending(m => m.Score))
+    {
+        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-8">
+                    <div class="col-md-6" id="rateArea">
+                        <h3 class="movieName">@movie.Name</h3>
+                        <h6><span class="indexDirector">By @movie.Director</span></h6>
+                        <p>
+                            <span class="heading">User Rating</span>
+                            @{
+                                double colorStars = Math.Round(movie.Score / 2);
+
+                                for (int i = 1; i <= 5; i++)
+                                {
+                                    if (colorStars >= i)
+                                    {
+                                        <span class="fa fa-star checked" id="filledStar"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fa fa-star" id="emptyStar"></span>
+                                    }
+                                }
+                            }
+                            <br />
+                            <span class="ratingText"><span class="avgMovieScor">@movie.Score</span>/10 average based on @movie.NumberOfVotes reviews</span>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    <p>
+                        <br />
+                        <span style="font-weight: bold">Genres:</span>
+                        <br />
+                        @{
+                            int ganresCounter = 0;
+                            foreach (var genre in movie.Genres)
+                            {
+                                <span class="badge badge-primary">@genre</span>
+                                ganresCounter++;
+                                if (ganresCounter % 3 == 0)
+                                {
+                                    <br />
+                                }
+                            }}
+                    </p>
+                </div>
+                <div class="col-6 col-md-4">
+                    <a asp-area="" asp-controller="Movie" asp-action="Details" asp-route-id="@movie.ID" class="btn btn-movieDetails">Details</a>
+                </div>
+            </div>
+            @if (separeteCounter != Model.Count - 1)
+            {
+                <hr />
+            }
+        </div>
+        separeteCounter++;
+    }
+}
+
