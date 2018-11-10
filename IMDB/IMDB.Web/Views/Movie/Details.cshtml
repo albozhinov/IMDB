@@ -107,6 +107,7 @@
                                                 <form asp-area="" asp-controller="Review" asp-action="DeleteReview" method="post">
                                                     <input type="hidden" name="id" value="@review.ReviewID" />
                                                     <input type="hidden" name="action" , value="Details" />
+                                                    <input type="hidden" name="controller" value="Movie" />
                                                     <input type="hidden" name="movieId" value="@Model.ID" />
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -125,6 +126,8 @@
                                                     <input type="hidden" name="id" value="@review.ReviewID" />
                                                     <input type="hidden" name="rate" value="@i" />
                                                     <input type="hidden" name="movieId" value="@Model.ID" />
+                                                    <input type="hidden" name="action" value="Details" />
+                                                    <input type="hidden" name="controller" value="Movie" />
                                                     <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
                                                 </form>
                                             }
@@ -152,8 +155,9 @@
                                                 <div class="modal-footer">
                                                     <form asp-area="" asp-controller="Review" asp-action="DeleteReview" method="post">
                                                         <input type="hidden" name="id" value="@review.ReviewID" />
-                                                        <input type="hidden" name="action", value="Details"/>
-                                                        <input type="hidden" name="movieId" value="@Model.ID"/>
+                                                        <input type="hidden" name="action" , value="Details" />
+                                                        <input type="hidden" name="controller" value="Movie" />
+                                                        <input type="hidden" name="movieId" value="@Model.ID" />
                                                         <button type="submit" class="btn btn-danger">Delete</button>
                                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                                     </form>
@@ -171,6 +175,8 @@
                                                         <input type="hidden" name="id" value="@review.ReviewID" />
                                                         <input type="hidden" name="rate" value="@i" />
                                                         <input type="hidden" name="movieId" value="@Model.ID" />
+                                                        <input type="hidden" name="action" value="Details" />
+                                                        <input type="hidden" name="controller" value="Movie" />
                                                         <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
                                                     </form>
                                                 }
@@ -191,6 +197,8 @@
                                                         <input type="hidden" name="id" value="@review.ReviewID" />
                                                         <input type="hidden" name="rate" value="@i" />
                                                         <input type="hidden" name="movieId" value="@Model.ID" />
+                                                        <input type="hidden" name="action" value="Details" />
+                                                        <input type="hidden" name="controller" value="Movie" />
                                                         <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
                                                     </form>
                                                 }
