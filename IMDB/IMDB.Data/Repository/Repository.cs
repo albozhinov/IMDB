@@ -1,13 +1,17 @@
 ﻿using IMDB.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IMDB.Data.Repository
 {
 
-	public class Repository<T> : IRepository<T>
+	public class Repository<T> : IRepository<T> 
 		where T : class
 	{
 		private readonly IMDBContext context;

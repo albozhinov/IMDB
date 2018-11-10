@@ -1,15 +1,12 @@
 ﻿using IMDB.Data.Models;
 using IMDB.Data.Repository;
-using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Services.Providers;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IMDB.Services
@@ -53,8 +50,6 @@ namespace IMDB.Services
                     Name = name,
                     Director = directorToAdd
                 };
-                await movieRepo.AddAsync(movieToAdd);
-                await movieRepo.SaveAsync();
             }
             else
             {
@@ -71,8 +66,6 @@ namespace IMDB.Services
                         Name = name,
                         DirectorID = foundDirector.ID
                     };
-                    await movieRepo.AddAsync(movieToAdd);
-                    await movieRepo.SaveAsync();
                 }
                 else
                 {
@@ -90,6 +83,7 @@ namespace IMDB.Services
                 .Include(gr => gr.MovieGenres)
                 .Where(genre => genres.Any(genreTypes => genreTypes.ToLower() == genre.GenreType.ToLower()))
 				.ToListAsync();
+			movieToAdd.MovieGenres = new List<MovieGenre>();
             foreach (var genre in foundGenres)
             {
                 var movieGenreToAdd = new MovieGenre
@@ -97,9 +91,10 @@ namespace IMDB.Services
                     GenreID = genre.ID,
                     MovieID = movieToAdd.ID
                 };
-                await movieGenreRepo.AddAsync(movieGenreToAdd);
-                await movieGenreRepo.SaveAsync();
+				movieToAdd.MovieGenres.Add(movieGenreToAdd);
             }
+			await movieRepo.AddAsync(movieToAdd);
+			await movieRepo.SaveAsync();
 			return movieToAdd;
 		}
 		public async Task<ICollection<Genre>> GetGenresAsync()
@@ -116,15 +111,15 @@ namespace IMDB.Services
 					.ThenInclude(r => r.User)
 				.ToListAsync();
         }
-        public void DeleteMovie(int movieID)
+        public async Task DeleteMovieAsync(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
 
             //TODO delete all revies and their stuff
-            var movieToDelete = movieRepo.All()
+            var movieToDelete = await movieRepo.All()
                                          .Where(mov => mov.ID == movieID && mov.IsDeleted == false)
                                          .Include(m => m.Reviews)
-                                         .FirstOrDefault();
+                                         .FirstOrDefaultAsync();
             if (movieToDelete is null)
             {
                 throw new MovieNotFoundException("Movie not found!");
@@ -137,7 +132,7 @@ namespace IMDB.Services
                 review.IsDeleted = true;
             }
             movieRepo.Update(movieToDelete);
-            movieRepo.Save();
+            await movieRepo.SaveAsync();
         }
         public async Task<Movie> CheckMovieAsync(int movieID)
         {
@@ -160,12 +155,15 @@ namespace IMDB.Services
 
             return foundMovie;
         }
-        public void RateMovie(int movieID, double rating, string reviewText, string curentUserId)
+        public async Task RateMovieAsync(int movieID, double rating, string reviewText, string curentUserId)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var foundMovie = movieRepo.All().Include(m => m.Reviews).FirstOrDefault(mov => mov.ID == movieID && !mov.IsDeleted);
+            var foundMovie = await movieRepo.All()
+				.Include(m => m.Reviews)
+				.FirstOrDefaultAsync(mov => mov.ID == movieID && !mov.IsDeleted);
+
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
 
@@ -201,7 +199,7 @@ namespace IMDB.Services
                 foundMovie.Reviews.Add(reviewToAdd);
             }
             movieRepo.Update(foundMovie);
-            movieRepo.Save();
+            await movieRepo.SaveAsync();
         }
         public async Task<ICollection<Movie>> SearchMovieAsync(string name, string genre, string director)
         {

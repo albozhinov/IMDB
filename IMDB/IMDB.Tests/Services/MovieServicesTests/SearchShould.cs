@@ -4,9 +4,11 @@ using IMDB.Services;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MockQueryable.Moq;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IMDB.Tests.Services.MovieServicesTests
 {
@@ -77,7 +79,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
         };
 
         [TestMethod]
-        public void SearchAndFindMovie_WhenParametersAreCorrect()
+        public async Task SearchAndFindMovie_WhenParametersAreCorrect()
         {
             //Arrange
             var expectedMovie = new List<Movie>();
@@ -91,23 +93,20 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieRepoMock = new Mock<IRepository<Movie>>();
             movieRepoMock
                 .Setup(mr => mr.All())
-                .Returns(new List<Movie> { Venom, TheMovie23 }.AsQueryable());
-
-            var loginSessionMock = new Mock<ILoginSession>();
+                .Returns(new List<Movie> { Venom, TheMovie23 }.AsQueryable().BuildMock().Object);
 
             var sut = new MovieServices(reviewRepoMock.Object,
                 movieRepoMock.Object, directorRepoMock.Object,
                 genreRepoStub.Object, movieGenreRepoStub.Object);
 
             //Act
-            var result = sut.SearchMovie("Venom", "porn", "thebsetdirector");
+            var result = await sut.SearchMovieAsync("Venom", "porn", "thebsetdirector");
             //Assert
             Assert.AreEqual("Venom", result.FirstOrDefault().Name);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MovieNotFoundException))]
-        public void ThrowMovieNotFoundException_WhenMovieNameDoNotMach()
+        public async Task ReturnsEmptyList_WhenMovieNameDoNotMach()
         {
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var directorRepoMock = new Mock<IRepository<Director>>();
@@ -117,16 +116,16 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var movieRepoMock = new Mock<IRepository<Movie>>();
             movieRepoMock
                 .Setup(mr => mr.All())
-                .Returns(new List<Movie> { Venom, TheMovie23 }.AsQueryable());
-
-            var loginSessionMock = new Mock<ILoginSession>();
+                .Returns(new List<Movie> { Venom, TheMovie23 }.AsQueryable().BuildMock().Object);
 
             var sut = new MovieServices(reviewRepoMock.Object,
                 movieRepoMock.Object, directorRepoMock.Object,
                 genreRepoStub.Object, movieGenreRepoStub.Object);
 
             //Act
-            var result = sut.SearchMovie("GoshoPansa", "NemaTakivJanr", "Bay Pesho");
+            var result = await sut.SearchMovieAsync("GoshoPansa", "NemaTakivJanr", "Bay Pesho");
+			//Assert
+			Assert.IsTrue(result.Count == 0);
         }
     }
 }

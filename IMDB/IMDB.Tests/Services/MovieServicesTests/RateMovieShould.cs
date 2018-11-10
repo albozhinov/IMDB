@@ -4,10 +4,12 @@ using IMDB.Services;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IMDB.Tests.Services.MovieServicesTests
 {
@@ -19,7 +21,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
         [DataRow(0, 1)]
         [DataRow(2, -1)]
         [DataRow(2, 11)]
-        public void ThrowArgumentException_WhenArgumentsAreIncorrect(int movieID, int rating)
+        public async Task ThrowArgumentException_WhenArgumentsAreIncorrect(int movieID, int rating)
         {
             // Arrange
             var reviewRepoStub = new Mock<IRepository<Review>>();
@@ -29,16 +31,14 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
-            var loginSessionMock = new Mock<ILoginSession>();
-
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
-            Assert.ThrowsException<ArgumentException>(() => sut.RateMovie(movieID, rating, "pishki", "randomUserId"));
+            await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await sut.RateMovieAsync(movieID, rating, "pishki", "randomUserId"));
         }
         [DataTestMethod]
         [DataRow(1, true)]
         [DataRow(2, false)]
-        public void ThrowMovieNotFoundExceptionWhenMovieIsNotValid(int movieID, bool deletedFlag)
+        public async Task ThrowMovieNotFoundExceptionWhenMovieIsNotValid(int movieID, bool deletedFlag)
         {
             // Arrange
             var reviewRepoStub = new Mock<IRepository<Review>>();
@@ -52,20 +52,18 @@ namespace IMDB.Tests.Services.MovieServicesTests
             };
             movieRepoMock
                  .Setup(mr => mr.All())
-                 .Returns(new List<Movie>() { movieMock }.AsQueryable());
+                 .Returns(new List<Movie>() { movieMock }.AsQueryable().BuildMock().Object);
 
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
-            var loginSessionMock = new Mock<ILoginSession>();
-
             var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
-            Assert.ThrowsException<MovieNotFoundException>(() => sut.RateMovie(movieID, 5, "pishki", "randomUseRId"));
+            await Assert.ThrowsExceptionAsync<MovieNotFoundException>(async () => await sut.RateMovieAsync(movieID, 5, "pishki", "randomUseRId"));
         }
         [TestMethod]
-        public void UpdateMovieScoreCreatingReview_WhenParametersAreCorrect()
+        public async Task UpdateMovieScoreCreatingReview_WhenParametersAreCorrect()
         {
             // Arrange
             const int movieID = 2;
@@ -94,18 +92,16 @@ namespace IMDB.Tests.Services.MovieServicesTests
             };
             movieRepoMock
                  .Setup(mr => mr.All())
-                 .Returns(new List<Movie>() { movie }.AsQueryable());
+                 .Returns(new List<Movie>() { movie }.AsQueryable().BuildMock().Object);
 
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
-            var loginSessionMock = new Mock<ILoginSession>();
-
             var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act
-            sut.RateMovie(movieID, ratingInput, textInput, userId);
+            await sut.RateMovieAsync(movieID, ratingInput, textInput, userId);
             //Assert
             //check if movie's score is updated should be 6
             Assert.IsTrue(movie.MovieScore == (r1rating + r2rating + ratingInput) / movie.NumberOfVotes);
@@ -113,11 +109,11 @@ namespace IMDB.Tests.Services.MovieServicesTests
             Assert.IsTrue(movie.Reviews.Last().MovieRating == ratingInput);
             Assert.IsTrue(movie.Reviews.Last().Text == textInput);
             movieRepoMock.Verify(mr => mr.Update(movie));
-            movieRepoMock.Verify(mr => mr.Save(), Times.Once);
-            movieRepoMock.Verify(rrm => rrm.Save(), Times.Once);
+            movieRepoMock.Verify(mr => mr.SaveAsync(), Times.Once);
+            movieRepoMock.Verify(rrm => rrm.SaveAsync(), Times.Once);
         }
         [TestMethod]
-        public void UpdateMovieScoreUpdatingReview_WhenParametersAreCorrect()
+        public async Task UpdateMovieScoreUpdatingReview_WhenParametersAreCorrect()
         {
             // Arrange
             const int movieID = 2;
@@ -146,18 +142,16 @@ namespace IMDB.Tests.Services.MovieServicesTests
             };
             movieRepoMock
                  .Setup(mr => mr.All())
-                 .Returns(new List<Movie>() { movie }.AsQueryable());
+                 .Returns(new List<Movie>() { movie }.AsQueryable().BuildMock().Object);
 
             var reviewRepoMock = new Mock<IRepository<Review>>();
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
 
-            var loginSessionMock = new Mock<ILoginSession>();
-
             var sut = new MovieServices(reviewRepoMock.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act
-            sut.RateMovie(movieID, ratingInput, textInput, loggedUserID);
+            await sut.RateMovieAsync(movieID, ratingInput, textInput, loggedUserID);
             //Assert
             //check if movie's score is updated should be 6
             Assert.IsTrue(movie.MovieScore == (double)(r1rating - r1rating + r2rating + ratingInput) / movie.NumberOfVotes);
@@ -166,7 +160,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
             Assert.IsTrue(review1ToBeUpdated.UserID == loggedUserID);
             Assert.IsTrue(review1ToBeUpdated.Text == textInput);
             movieRepoMock.Verify(mr => mr.Update(movie));
-            movieRepoMock.Verify(mr => mr.Save(), Times.Once);
+            movieRepoMock.Verify(mr => mr.SaveAsync(), Times.Once);
         }
     }
 }
