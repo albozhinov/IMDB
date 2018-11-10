@@ -1,5 +1,6 @@
 ﻿@using X.PagedList;
 @using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Common
 
 @model IPagedList<UserViewModel>
 
@@ -27,8 +28,8 @@
 		</table>
 	</div>
 	<br />
-	<div id="contentPager">
-		Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-		@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
-	</div>
+	Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+	@Html.PagedListPager(
+		Model, page => Url.Action("Index", new { page })
+	)
 </div>

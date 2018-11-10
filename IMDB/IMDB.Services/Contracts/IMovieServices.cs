@@ -1,6 +1,7 @@
 ﻿using IMDB.Data.Models;
 using IMDB.Data.Views;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IMDB.Services.Contracts
 {
@@ -12,7 +13,7 @@ namespace IMDB.Services.Contracts
 		/// <param name="name"></param>
 		/// <param name="genre"></param>
 		/// <param name="producer"></param>
-		Movie CreateMovie(string name, ICollection<string> genre, string producer);
+		Task<Movie> CreateMovieAsync(string name, ICollection<string> genre, string producer);
 		/// <summary>
 		/// Deletes movie via its ID
 		/// </summary>
@@ -30,7 +31,7 @@ namespace IMDB.Services.Contracts
         /// </summary>
         /// <param name="movieID"></param>
         /// <returns></returns>
-		Movie CheckMovie(int movieID);
+		Task<Movie> CheckMovieAsync(int movieID);
         /// <summary>
         /// Searches for movie via name and/or genre or/and producer. Specify with null if a parameter is not included.
         /// </summary>
@@ -38,16 +39,16 @@ namespace IMDB.Services.Contracts
         /// <param name="genre"></param>
         /// <param name="producer"></param>
         /// <returns></returns>
-        ICollection<Movie> SearchMovie(string name, string genre, string producer);
+        Task<ICollection<Movie>> SearchMovieAsync(string name, string genre, string producer);
 		/// <summary>
 		/// Returns all movies.
 		/// </summary>
 		/// <returns></returns>
-		ICollection<Movie> GetAllMovies();
+		Task<ICollection<Movie>> GetAllMoviesAsync();
 		/// <summary>
 		/// Returns all movie genres
 		/// </summary>
 		/// <returns></returns>
-		ICollection<Genre> GetGenres();
+		Task<ICollection<Genre>> GetGenresAsync();
 	}
 }

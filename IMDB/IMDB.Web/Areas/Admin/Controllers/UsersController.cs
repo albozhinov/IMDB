@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace IMDB.Web.Areas.Admin.Controllers
 {
@@ -30,7 +31,7 @@ namespace IMDB.Web.Areas.Admin.Controllers
             indexViewModel.StatusMessage = StatusMessage;
             return View(indexViewModel);
         }
-        [HttpPost]
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LockUser(UserModalModelView input)
         {
