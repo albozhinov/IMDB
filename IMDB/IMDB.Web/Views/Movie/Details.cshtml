@@ -106,6 +106,8 @@
                                             <div class="modal-footer">
                                                 <form asp-area="" asp-controller="Review" asp-action="DeleteReview" method="post">
                                                     <input type="hidden" name="id" value="@review.ReviewID" />
+                                                    <input type="hidden" name="action" , value="Details" />
+                                                    <input type="hidden" name="movieId" value="@Model.ID" />
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                                 </form>
@@ -122,7 +124,7 @@
                                                 <form asp-area="" asp-controller="Review" asp-action="RateReview" method="post">
                                                     <input type="hidden" name="id" value="@review.ReviewID" />
                                                     <input type="hidden" name="rate" value="@i" />
-                                                    <input type="hidden" name="movieId" value="@Model.ID"/>
+                                                    <input type="hidden" name="movieId" value="@Model.ID" />
                                                     <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
                                                 </form>
                                             }
@@ -130,25 +132,54 @@
                                     </div>
                                 </div>
                             }
-                            else
+                            else if (this.User.Identity.IsAuthenticated)
                             {
-                                if (this.User.Identity.IsAuthenticated && review.User == this.User.Identity.Name)
+                                if (review.User == this.User.Identity.Name)
                                 {
                                     <a class="btn btn-deleteReview" data-toggle="modal" data-target="#delete">Delete</a>
+                                    <!-- Modal -->
+                                    <div id="delete" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Are you sure to delete this review?</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>You are about to delete this review, are you sure?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form asp-area="" asp-controller="Review" asp-action="DeleteReview" method="post">
+                                                        <input type="hidden" name="id" value="@review.ReviewID" />
+                                                        <input type="hidden" name="action", value="Details"/>
+                                                        <input type="hidden" name="movieId" value="@Model.ID"/>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="dropdown">
                                         <a class="btn btn-rateReview" style="margin-left: 0%">Rate Review</a>
                                         <div id="myDropdown" class="dropdown-content">
                                             @{
                                                 for (int i = 1; i <= 10; i++)
                                                 {
-                                                    <a class="fa fa-star checked" id="a">@i</a>
+                                                    <form asp-area="" asp-controller="Review" asp-action="RateReview" method="post">
+                                                        <input type="hidden" name="id" value="@review.ReviewID" />
+                                                        <input type="hidden" name="rate" value="@i" />
+                                                        <input type="hidden" name="movieId" value="@Model.ID" />
+                                                        <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
+                                                    </form>
                                                 }
                                             }
                                         </div>
                                     </div>
 
                                 }
-                                else if (this.User.Identity.IsAuthenticated)
+                                else
                                 {
                                     <div class="dropdown">
                                         <a class="btn btn-rateReview" style="margin-left: 0%">Rate Review</a>
@@ -156,16 +187,21 @@
                                             @{
                                                 for (int i = 1; i <= 10; i++)
                                                 {
-                                                    <a class="fa fa-star checked" id="a">@i</a>
+                                                    <form asp-area="" asp-controller="Review" asp-action="RateReview" method="post">
+                                                        <input type="hidden" name="id" value="@review.ReviewID" />
+                                                        <input type="hidden" name="rate" value="@i" />
+                                                        <input type="hidden" name="movieId" value="@Model.ID" />
+                                                        <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
+                                                    </form>
                                                 }
                                             }
                                         </div>
                                     </div>
                                 }
-                                else
-                                {
-                                    <a class="btn btn-rateReview" data-toggle="modal" data-target="#rateReviewModal">Rate Review</a>
-                                }
+                            }
+                            else
+                            {
+                                <a class="btn btn-rateReview" data-toggle="modal" data-target="#rateReviewModal">Rate Review</a>
                             }
                         }
                     </div>
@@ -178,7 +214,9 @@
         @{
             if (Model.More5Reviews)
             {
+
                 <a asp-area="" asp-controller="Review" asp-action="AllReviews" asp-route-id="@Model.ID" class="btn btn-showAllReviews">Show All Reviews</a>
+
             }
         }
     </div>

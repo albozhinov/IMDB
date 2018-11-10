@@ -18,7 +18,7 @@ namespace IMDB.Services.Contracts
         /// <param name="reviewID"></param>
         /// <param name="socre"></param>
         /// <returns></returns>
-        Review RateReview(int reviewID, double rating, string currentUserID);
+        Review RateReview(int reviewID, double rating, string currentUserId);
         /// <summary>
         /// Deltes a review (just a flag)
         /// </summary>
