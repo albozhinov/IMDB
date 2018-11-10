@@ -41,7 +41,16 @@ namespace IMDB.Web.Controllers
 
 			return View(cachedTopMovies);
 		}
-
+        public IActionResult Top5Movies()
+        {
+            var movies = movieServices
+                .GetAllMovies()
+                .OrderByDescending(m => m.MovieScore)
+                .Take(5)
+                .Select(m => new MovieViewModel(m))
+                .ToList();
+            return View(movies);
+        }
 		[HttpGet]
 		[Authorize(Roles = "Administrator")]
 		public async Task<IActionResult> Create()
