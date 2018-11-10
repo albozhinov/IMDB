@@ -223,10 +223,6 @@ namespace IMDB.Services
                 movies = movies.Where(mov => mov.Director.Name.ToLower().Contains(director.ToLower()));
             }
             var findedMoies = await movies.ToListAsync();
-            if (findedMoies.Count == 0)
-            {
-                throw new MovieNotFoundException("Movie not found!");
-            }
             return findedMoies;
         }
     }
