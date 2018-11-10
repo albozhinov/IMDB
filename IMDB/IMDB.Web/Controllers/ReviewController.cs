@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -43,13 +45,30 @@ namespace IMDB.Web.Controllers
                 return this.NotFound();
             }
         }
-        [HttpPost("[controller]/[action]/{id}")]
+        [HttpPost]
         [Authorize(Roles = "Administrator")]
         public IActionResult DeleteReview(int id)
-        {           
+        {
             this.reviewsServices.DeleteReview(id);
             this.TempData["Succes-Message"] = "You deleted a review with ID: " + id;
             return RedirectToAction("Index", "Movie");
         }
+        //[HttpPost]
+        //[Authorize]
+        //public IActionResult AddReview(int id)
+        //{
+        //    this.User
+        //    this.userManager.GetUserId(HttpContext.User.);
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult RateReview(int id, double rate, int movieId)
+        {
+            // TODO: How to Get User ID The FUCK!!!???
+            //this.reviewsServices.RateReview(id, rate);
+            return RedirectToAction("Details", "Movie", new { id = movieId});
+        }
+
+
     }
 }
