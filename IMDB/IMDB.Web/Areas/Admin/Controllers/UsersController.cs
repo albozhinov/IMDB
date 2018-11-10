@@ -14,7 +14,7 @@ namespace IMDB.Web.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<User> _userManager;
-        private readonly int PAGE_SIZE = 25;
+        private readonly int PAGE_SIZE = 1;
 
         [TempData]
         public string StatusMessage { get; set; }
