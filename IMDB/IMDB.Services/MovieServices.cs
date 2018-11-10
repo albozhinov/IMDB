@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace IMDB.Services
 {
@@ -35,7 +36,7 @@ namespace IMDB.Services
             this.directorRepo = directorRepo;
             this.movieRepo = movieRepo;
         }
-        public Movie CreateMovie(string name, ICollection<string> genres, string director)
+        public async Task<Movie> CreateMovieAsync(string name, ICollection<string> genres, string director)
         {
             Validator.IfNull<ArgumentNullException>(genres);
             Validator.IfNull<ArgumentNullException>(name);
@@ -43,7 +44,7 @@ namespace IMDB.Services
             Validator.IfIsNotInRangeInclusive(name.Length, 3, 50, "Movie name cannot be less than 3 and more than 50 letters.");
 
             Movie movieToAdd = null;
-            var foundDirector = directorRepo.All().FirstOrDefault(dir => dir.Name.Equals(director));
+            var foundDirector = await directorRepo.All().FirstOrDefaultAsync(dir => dir.Name.Equals(director));
             if (foundDirector is null)
             {
                 Director directorToAdd = new Director() { Name = director };
@@ -52,14 +53,14 @@ namespace IMDB.Services
                     Name = name,
                     Director = directorToAdd
                 };
-                movieRepo.Add(movieToAdd);
-                movieRepo.Save();
+                await movieRepo.AddAsync(movieToAdd);
+                await movieRepo.SaveAsync();
             }
             else
             {
-                var foundMovie = movieRepo.All()
+                var foundMovie = await movieRepo.All()
                     .Include(mov => mov.Director)
-                    .FirstOrDefault(mov =>
+                    .FirstOrDefaultAsync(mov =>
                         mov.Name.ToLower().Equals(name.ToLower())
                         && mov.Director.Name.Equals(director));
 
@@ -70,8 +71,8 @@ namespace IMDB.Services
                         Name = name,
                         DirectorID = foundDirector.ID
                     };
-                    movieRepo.Add(movieToAdd);
-                    movieRepo.Save();
+                    await movieRepo.AddAsync(movieToAdd);
+                    await movieRepo.SaveAsync();
                 }
                 else
                 {
@@ -79,15 +80,16 @@ namespace IMDB.Services
                     {
                         foundMovie.IsDeleted = false;
                         movieRepo.Update(foundMovie);
-                        movieRepo.Save();
+                        await movieRepo.SaveAsync();
                         return foundMovie;
                     }
                     else throw new MovieExistsException("Movie already exists!");
                 }
             }
-            var foundGenres = genreRepo.All()
+            var foundGenres = await genreRepo.All()
                 .Include(gr => gr.MovieGenres)
-                .Where(genre => genres.Any(genreTypes => genreTypes.ToLower() == genre.GenreType.ToLower()));
+                .Where(genre => genres.Any(genreTypes => genreTypes.ToLower() == genre.GenreType.ToLower()))
+				.ToListAsync();
             foreach (var genre in foundGenres)
             {
                 var movieGenreToAdd = new MovieGenre
@@ -95,24 +97,24 @@ namespace IMDB.Services
                     GenreID = genre.ID,
                     MovieID = movieToAdd.ID
                 };
-                movieGenreRepo.Add(movieGenreToAdd);
-                movieGenreRepo.Save();
+                await movieGenreRepo.AddAsync(movieGenreToAdd);
+                await movieGenreRepo.SaveAsync();
             }
 			return movieToAdd;
 		}
-		public ICollection<Genre> GetGenres()
+		public async Task<ICollection<Genre>> GetGenresAsync()
 		{
-			return genreRepo.All().ToList();
+			return await genreRepo.All().ToListAsync();
 		}
-		public ICollection<Movie> GetAllMovies()
+		public async Task<ICollection<Movie>> GetAllMoviesAsync()
 		{
-			return movieRepo.All()
+			return await movieRepo.All()
 				.Include(m => m.Director)
 				.Include(m => m.MovieGenres)
 					.ThenInclude(mg => mg.Genre)
 				.Include(m => m.Reviews)
 					.ThenInclude(r => r.User)
-				.ToList();
+				.ToListAsync();
         }
         public void DeleteMovie(int movieID)
         {
@@ -137,21 +139,21 @@ namespace IMDB.Services
             movieRepo.Update(movieToDelete);
             movieRepo.Save();
         }
-        public Movie CheckMovie(int movieID)
+        public async Task<Movie> CheckMovieAsync(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "MovieID cannot be negative or 0.");
 
             /// <summary>
             /// This piece of code can be optimized! 
             /// </summary>
-            Movie foundMovie = movieRepo.All()
+            var foundMovie = await movieRepo.All()
                 .Where(mov => mov.ID == movieID && !mov.IsDeleted)
                 .Include(movG => movG.MovieGenres)
                     .ThenInclude(g => g.Genre)
                 .Include(movR => movR.Reviews)
                     .ThenInclude(rev => rev.User)
                 .Include(movD => movD.Director)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
 
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
@@ -201,7 +203,7 @@ namespace IMDB.Services
             movieRepo.Update(foundMovie);
             movieRepo.Save();
         }
-        public ICollection<Movie> SearchMovie(string name, string genre, string director)
+        public async Task<ICollection<Movie>> SearchMovieAsync(string name, string genre, string director)
         {
             IQueryable<Movie> movies = movieRepo.All()
                 .Where(mov => !mov.IsDeleted)
@@ -222,7 +224,7 @@ namespace IMDB.Services
             {
                 movies = movies.Where(mov => mov.Director.Name.ToLower().Contains(director.ToLower()));
             }
-            var findedMoies = movies.ToList();
+            var findedMoies = await movies.ToListAsync();
             if (findedMoies.Count == 0)
             {
                 throw new MovieNotFoundException("Movie not found!");

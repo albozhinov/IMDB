@@ -48,6 +48,7 @@ namespace IMDB.Web
             services.AddScoped<IMovieServices, MovieServices>();
             services.AddScoped<IReviewsServices, ReviewsService>();
 
+			services.AddMemoryCache();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
 
