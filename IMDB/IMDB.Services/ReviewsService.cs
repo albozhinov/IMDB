@@ -45,7 +45,7 @@ namespace IMDB.Services
             return reviewsQuery;
         }
 
-        public Review RateReview(int reviewID, double rating, string currentUserID)
+        public Review RateReview(int reviewID, double rating, string currentUserId)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
@@ -60,10 +60,11 @@ namespace IMDB.Services
             if (foundReview is null)
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} not found.");
-            }
+            }           
+
             // Check logic!!!
             var reviewRatingToUpdate = foundReview.ReviewRatings
-                                                  .FirstOrDefault(r => r.UserId == currentUserID
+                                                  .FirstOrDefault(r => r.UserId == currentUserId
                                                                     && r.ReviewId == foundReview.ID);
 
             if (reviewRatingToUpdate is null)
@@ -71,7 +72,7 @@ namespace IMDB.Services
                 var reviewRatingToAdd = new ReviewRatings()
                 {
                     ReviewId = foundReview.ID,
-                    UserId = currentUserID,
+                    UserId = currentUserId,
                     ReviewRating = rating,
                 };
 
@@ -87,7 +88,15 @@ namespace IMDB.Services
                 }
                 else
                 {
-                    foundReview.ReviewScore = ((foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating) / (foundReview.NumberOfVotes - 1);
+                    if (foundReview.NumberOfVotes <= 1)
+                    {
+                        foundReview.ReviewScore = ((foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating);
+                    }
+                    else
+                    {
+                        foundReview.ReviewScore = ((foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating) / (foundReview.NumberOfVotes - 1);
+                    }
+                    
                     foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
                 }
                 reviewRatingToUpdate.ReviewRating = rating;
@@ -115,8 +124,22 @@ namespace IMDB.Services
             }
 
             findReview.IsDeleted = true;
-            findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
-            findReview.Movie.NumberOfVotes--;
+
+            // TODO: Modified this function
+            if (findReview.Movie.NumberOfVotes == 1)
+            {
+                findReview.Movie.MovieScore = (findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating;
+                findReview.Movie.NumberOfVotes--;
+            }
+            else if (findReview.Movie.NumberOfVotes == 0)
+            {
+                findReview.Movie.MovieScore = 0;
+            }
+            else
+            {
+                findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
+                findReview.Movie.NumberOfVotes--;
+            }
             reviewRepo.Update(findReview);
 
             reviewRepo.Save();
