@@ -29,6 +29,7 @@ namespace IMDB.Web.Controllers
 				.ToList();
 			return View(movies);
 		}
+
 		[HttpGet]
 		[Authorize(Roles = "Administrator")]
 		public IActionResult Create()

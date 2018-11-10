@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IMDB.Data\IMDB.Data.csproj" />
     <ProjectReference Include="..\IMDB.Services\IMDB.Services.csproj" />
+    <ProjectReference Include="..\IMDB.Web\IMDB.Web.csproj" />
   </ItemGroup>
 
 </Project>
