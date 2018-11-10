@@ -13,57 +13,61 @@ using System.Threading.Tasks;
 namespace IMDB.Tests.Data.ControllerTests.MovieControllerTests
 {
     [TestClass]
-    public class CreateActionShould
+    class SearchActionShould
     {
         [TestMethod]
         public async Task CallCorrectServiceMethod()
         {
             //Arrange
+            var model = new SearchViewModel();
             var serviceMock = this.SetupMockService();
             var movieCachMock = new Mock<IMemoryCache>();
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(serviceMock.Object, movieCachMock.Object, userManagerMock.Object);
             //Act
-            var result = await sut.Create() as ViewResult;
+            var result = await sut.Search(model) as ViewResult;
             //Assert
-            serviceMock.Verify(s => s.CreateMovieAsync("movieName", new List<string> { "Action" }, "Tosho"));
+            serviceMock.Verify(s => s.SearchMovieAsync("Venom", "", ""));
         }
 
         [TestMethod]
         public async Task ReturnCorrectViewModel()
         {
             //Arrange
+            var model = new SearchViewModel();
             var serviceMock = this.SetupMockService();
             var movieCachMock = new Mock<IMemoryCache>();
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(serviceMock.Object, movieCachMock.Object, userManagerMock.Object);
             //Act
-            var result = await sut.Create() as ViewResult;
+            var result = await sut.Search(model) as ViewResult;
             //Assert
-            Assert.IsInstanceOfType(result.Model, typeof(MovieViewModel));
+            Assert.IsInstanceOfType(result.Model, typeof(SearchViewModel));
         }
 
         [TestMethod]
         public async Task ReturnsCorrectViewResult()
         {
             //Arrange
+            var model = new SearchViewModel();
             var serviceMock = this.SetupMockService();
             var movieCachMock = new Mock<IMemoryCache>();
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(serviceMock.Object, movieCachMock.Object, userManagerMock.Object);
             //Act
-            var result = await sut.Create() as ViewResult;
+            var result = await sut.Search(model) as ViewResult;
             //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
+
 
         private Mock<IMovieServices> SetupMockService()
         {
             var genres = new List<string> { "Action" };
             var movieServiceMock = new Mock<IMovieServices>();
             movieServiceMock
-                .Setup(ms => ms.CreateMovieAsync("movieName", genres, "Tosho"))
-                .ReturnsAsync(new Movie());
+                .Setup(ms => ms.SearchMovieAsync("Venom", "", ""))
+                .ReturnsAsync(new List<Movie>());
 
             return movieServiceMock;
         }
