@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IMDB.Data.Models;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Web.Models;
@@ -16,10 +17,12 @@ namespace IMDB.Web.Controllers
     public class ReviewController : Controller
     {
         private readonly IReviewsServices reviewsServices;
+        private readonly UserManager<User> _userManager;
 
-        public ReviewController(IReviewsServices reviewsServices)
+        public ReviewController(IReviewsServices reviewsServices, UserManager<User> userManager)
         {
             this.reviewsServices = reviewsServices;
+            this._userManager = userManager;
         }
 
         [HttpGet("[controller]/[action]/{id}")]
@@ -33,6 +36,7 @@ namespace IMDB.Web.Controllers
                               .OrderByDescending(rev => rev.ReviewScore)
                               .Select(r => new ReviewViewModel(r))
                               .ToList();
+                reviews.Select(rev => rev.MovieId == id);
 
                 return View(reviews);
             }
@@ -47,11 +51,10 @@ namespace IMDB.Web.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Administrator")]
-        public IActionResult DeleteReview(int id)
+        public IActionResult DeleteReview(int id, string action, int movieId)
         {
             this.reviewsServices.DeleteReview(id);
-            this.TempData["Succes-Message"] = "You deleted a review with ID: " + id;
-            return RedirectToAction("Index", "Movie");
+            return RedirectToAction(action, "Movie", new { id = movieId});
         }
         //[HttpPost]
         //[Authorize]
@@ -59,16 +62,15 @@ namespace IMDB.Web.Controllers
         //{
         //    this.User
         //    this.userManager.GetUserId(HttpContext.User.);
+        //}
 
         [HttpPost]
         [Authorize]
-        public IActionResult RateReview(int id, double rate, int movieId)
+        public async Task<IActionResult> RateReview(int id, double rate, int movieId)
         {
-            // TODO: How to Get User ID The FUCK!!!???
-            //this.reviewsServices.RateReview(id, rate);
+            var userId = await _userManager.GetUserIdAsync(await _userManager.GetUserAsync(HttpContext.User));
+            this.reviewsServices.RateReview(id, rate, userId);
             return RedirectToAction("Details", "Movie", new { id = movieId});
         }
-
-
     }
 }

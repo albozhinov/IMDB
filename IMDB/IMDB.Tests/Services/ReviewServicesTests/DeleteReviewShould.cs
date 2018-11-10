@@ -54,8 +54,8 @@
 //            var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentNullException>(() => reviewServices.DeleteReview(12, id, role));
-        }
+        //    Assert.ThrowsException<ArgumentNullException>(() => reviewServices.DeleteReview(12, id, role));
+        //}
 
 //        [DataTestMethod]
 //        [DataRow(1, true)]

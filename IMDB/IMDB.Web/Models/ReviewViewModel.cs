@@ -13,6 +13,7 @@ namespace IMDB.Web.Models
 			this.User = review.User.Email;
 			this.UserID = review.User.Id;
 			this.MovieName = review.Movie.Name;
+            this.MovieId = review.MovieID;
 			this.NumberOfVotes = review.NumberOfVotes;
             this.User = review.User.UserName;
 		}
@@ -23,6 +24,7 @@ namespace IMDB.Web.Models
 		public string User { get; set; }
 		public string UserID { get; set; }
 		public string MovieName { get; set; }
-		public int NumberOfVotes { get; set; }
+        public int MovieId { get; set; }
+        public int NumberOfVotes { get; set; }
 	}
 }
