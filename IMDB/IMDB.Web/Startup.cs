@@ -36,7 +36,9 @@ namespace IMDB.Web
 			});
 
 			services.AddDbContext<IMDBContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+				options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+
+            services.BuildServiceProvider().GetService<IMDBContext>().Database.Migrate();
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IMDBContext>();
