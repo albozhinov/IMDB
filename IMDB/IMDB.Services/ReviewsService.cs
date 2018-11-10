@@ -1,14 +1,12 @@
-﻿using IMDB.Data.Context;
-using IMDB.Data.Models;
+﻿using IMDB.Data.Models;
 using IMDB.Data.Repository;
-using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Services.Providers;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IMDB.Services
 {
@@ -29,33 +27,34 @@ namespace IMDB.Services
             this.reviewRepo = reviewRepo;
         }
 
-        public ICollection<Review> ListMovieReviews(int movieID)
+        public async Task<ICollection<Review>> ListMovieReviewsAsync(int movieID)
         {
             Validator.IfIsNotPositive(movieID, "Movie ID cannot be negative or 0.");
-            var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID && m.IsDeleted == false);
+            var foundMovie = await movieRepo.All()
+									.FirstOrDefaultAsync(m => m.ID == movieID && m.IsDeleted == false);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
             {
                 throw new MovieNotFoundException("Movie not found.");
             }
-            var reviewsQuery = reviewRepo.All()
+            var reviewsQuery = await reviewRepo.All()
                                     .Where(r => r.MovieID == movieID && r.IsDeleted == false)
                                     .Include(revUser => revUser.User)
-                                    .ToList();
+                                    .ToListAsync();
             return reviewsQuery;
         }
 
-        public Review RateReview(int reviewID, double rating, string currentUserId)
+        public async Task<Review> RateReviewAsync(int reviewID, double rating, string currentUserId)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var foundReview = reviewRepo.All()
+            var foundReview = await reviewRepo.All()
                                         .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                         .Include(r => r.User)
                                         .Include(r => r.Movie)
                                         .Include(r => r.ReviewRatings)
-                                        .FirstOrDefault();
+                                        .FirstOrDefaultAsync();
 
             if (foundReview is null)
             {
@@ -103,20 +102,20 @@ namespace IMDB.Services
             }
 
             reviewRepo.Update(foundReview);
-            reviewRepo.Save();
+            await reviewRepo.SaveAsync();
 
             return foundReview;
         }
 
-        public void DeleteReview(int reviewID)
+        public async Task DeleteReviewAsync(int reviewID)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
 
-            var findReview = reviewRepo.All()
+            var findReview = await reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                        .Include(r => r.User)
                                        .Include(r => r.Movie)
-                                       .FirstOrDefault();
+                                       .FirstOrDefaultAsync();
 
             if (findReview is null)
             {
@@ -142,7 +141,7 @@ namespace IMDB.Services
             }
             reviewRepo.Update(findReview);
 
-            reviewRepo.Save();
+            await reviewRepo.SaveAsync();
         }
     }
 }

@@ -4,11 +4,13 @@ using IMDB.Services;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace IMDB.Tests.Services.ReviewServicesTests
 {
@@ -20,7 +22,7 @@ namespace IMDB.Tests.Services.ReviewServicesTests
         [DataRow(null, 9.00)]
         [DataRow(2, -1.00)]
         [DataRow(2, 11.00)]
-        public void ThrowArgumentException_WhenParametersAreIncorrect(int reviewId, double rating)
+        public async Task ThrowArgumentException_WhenParametersAreIncorrect(int reviewId, double rating)
         {
             // Arrange            
             var movieRepoStub = new Mock<IRepository<Movie>>();
@@ -34,19 +36,19 @@ namespace IMDB.Tests.Services.ReviewServicesTests
                 Text = "Text",
             };
 
-            var allReviews = new List<Review>() { reviewMock }.AsQueryable();
+            var allReviews = new List<Review>() { reviewMock }.AsQueryable().BuildMock().Object;
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
             var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => reviewServices.RateReview(reviewId, rating, "randomUserId"));
+            await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await reviewServices.RateReviewAsync(reviewId, rating, "randomUserId"));
         }
 
         [DataTestMethod]
         [DataRow(5, false)]
         [DataRow(1, true)]
-        public void ThrowReviewNotFoundException_WhenReviewIDIsIncorrect(int reviewId, bool flag)
+        public async Task ThrowReviewNotFoundException_WhenReviewIDIsIncorrect(int reviewId, bool flag)
         {
             // Arrange            
             var movieRepoStub = new Mock<IRepository<Movie>>();
@@ -60,17 +62,17 @@ namespace IMDB.Tests.Services.ReviewServicesTests
                 Text = "Text",
             };
 
-            var allReviews = new List<Review>() { reviewMock }.AsQueryable();
+            var allReviews = new List<Review>() { reviewMock }.AsQueryable().BuildMock().Object;
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
             var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act and Assert
-            Assert.ThrowsException<ReviewNotFoundException>(() => reviewServices.RateReview(reviewId, 9D, "randomUserId"));
+            await Assert.ThrowsExceptionAsync<ReviewNotFoundException>(async () => await reviewServices.RateReviewAsync(reviewId, 9D, "randomUserId"));
         }
 
         [TestMethod]
-        public void UpdateReviewScoreUpdatingReview_WhenParametersAreCorrect()
+        public async Task UpdateReviewScoreUpdatingReview_WhenParametersAreCorrect()
         {
             // Arrange    
             const int reviewID = 1;
@@ -86,16 +88,16 @@ namespace IMDB.Tests.Services.ReviewServicesTests
 
             var reviewMock = new Review() { ID = 1, IsDeleted = false, Text = "Text", Movie = movie, User = user, UserID = user.Id, MovieID = movie.ID, ReviewRatings = new List<ReviewRatings>() { reviewRating, reviewRating2 }, NumberOfVotes = 2, MovieRating = 9.95, ReviewScore = 5 }; //The review score is 5 = (6 + 4)/ 2
 
-            var allReviews = new List<Review>() { reviewMock }.AsQueryable();
+            var allReviews = new List<Review>() { reviewMock }.AsQueryable().BuildMock().Object;
             reviewRepoMock.Setup(m => m.All()).Returns(allReviews);
 
             var reviewServices = new ReviewsService(reviewRepoMock.Object, movieRepoStub.Object, reviewRatingsStub.Object);
 
             // Act
-            var result = reviewServices.RateReview(reviewID, rating, "1");
+            var result = await reviewServices.RateReviewAsync(reviewID, rating, "1");
 
             // Assert
-            reviewRepoMock.Verify(revRepo => revRepo.Save(), Times.Once);
+            reviewRepoMock.Verify(revRepo => revRepo.SaveAsync(), Times.Once);
             reviewRepoMock.Verify(revRepo => revRepo.Update(reviewMock), Times.Once);
             Assert.AreSame(result, reviewMock);
             Assert.IsTrue(reviewMock.ReviewScore == 4.5); //the rating for userID 1 has changed from 6 to 5, hence now the score should be (4 + 5) / 2 = 4.5

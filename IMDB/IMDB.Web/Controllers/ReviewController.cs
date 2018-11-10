@@ -26,19 +26,18 @@ namespace IMDB.Web.Controllers
         }
 
         [HttpGet("[controller]/[action]/{id}")]
-        public IActionResult AllReviews(int id)
+        public async Task<IActionResult> AllReviews(int id)
         {
             try
             {
-                var reviews = this.reviewsServices
-                              .ListMovieReviews(id)
-                              .Take(50)
+				var reviewsRaw = await this.reviewsServices.ListMovieReviewsAsync(id);
+                var reviewsViewModels = reviewsRaw
                               .OrderByDescending(rev => rev.ReviewScore)
                               .Select(r => new ReviewViewModel(r))
                               .ToList();
-                reviews.Select(rev => rev.MovieId == id);
+                reviewsViewModels.Select(rev => rev.MovieId == id);
 
-                return View(reviews);
+                return View(reviewsViewModels);
             }
             catch (MovieNotFoundException)
             {
@@ -51,26 +50,19 @@ namespace IMDB.Web.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Administrator")]
-        public IActionResult DeleteReview(int id, int movieId, string action, string controller)
+        public async Task<IActionResult> DeleteReview(int id, string action, int movieId)
         {
-            this.reviewsServices.DeleteReview(id);
-            return RedirectToAction(action, controller, new { id = movieId});
+            await this.reviewsServices.DeleteReviewAsync(id);
+            return RedirectToAction(action, "Movie", new { id = movieId});
         }
-        //[HttpPost]
-        //[Authorize]
-        //public IActionResult AddReview(int id)
-        //{
-        //    this.User
-        //    this.userManager.GetUserId(HttpContext.User.);
-        //}
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> RateReview(int id, double rate, int movieId, string action, string controller)
         {
             var userId = await _userManager.GetUserIdAsync(await _userManager.GetUserAsync(HttpContext.User));
-            this.reviewsServices.RateReview(id, rate, userId);
-            return RedirectToAction(action, controller, new { id = movieId});
+            await this.reviewsServices.RateReviewAsync(id, rate, userId);
+            return RedirectToAction("Details", "Movie", new { id = movieId});
         }
     }
 }

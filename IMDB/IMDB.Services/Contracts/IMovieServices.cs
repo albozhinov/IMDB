@@ -18,14 +18,14 @@ namespace IMDB.Services.Contracts
 		/// Deletes movie via its ID
 		/// </summary>
 		/// <param name="movieID"></param>
-		void DeleteMovie(int movieID);
+		Task DeleteMovieAsync(int movieID);
         /// <summary>
         /// Rates a movie or updates its rating for the logged user
         /// </summary>
         /// <param name="movieID"></param>
         /// <param name="rating"></param>
         /// <param name="reviewText"></param>
-        void RateMovie(int movieID, double rating, string reviewText, string curentUserId);
+        Task RateMovieAsync(int movieID, double rating, string reviewText, string curentUserId);
         /// <summary>
         /// Returns the movie with all of its info, including the top 5 rating reviews, returning the movie's name
         /// </summary>
