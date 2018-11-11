@@ -1,10 +1,10 @@
-﻿@model ICollection<MovieViewModel>
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core
+
+@model IPagedList<MovieViewModel>
 @{
     ViewData["Title"] = "SearchResult";
 }
-<table>
-    <tr></tr>
-</table>
 @{
     int separeteCounter = 0;
     foreach (var movie in Model)
@@ -67,3 +67,9 @@
         separeteCounter++;
     }
 }
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+<div id="contentPager">
+    @Html.PagedListPager(
+        Model, page => Url.Action("Search", new { page })
+    )
+</div>

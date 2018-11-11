@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IMDB.Data.Models;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
+using X.PagedList;
 
 namespace IMDB.Web.Controllers
 {
@@ -19,6 +19,7 @@ namespace IMDB.Web.Controllers
         private readonly IUserManager<User> _userManager;
         private readonly IMemoryCache _memoryCache;
 		private readonly IMovieServices movieServices;
+        private string StatusMessage { get; set; }
 
 		public MovieController(IMovieServices movieServices, IMemoryCache memoryCache, IUserManager<User> userManager)
 		{
@@ -72,6 +73,7 @@ namespace IMDB.Web.Controllers
 		}
 		[HttpPost]
 		[Authorize(Roles = "Administrator")]
+        [ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(MovieViewModel movieViewModel)
 		{
 			if (!this.ModelState.IsValid)
@@ -107,22 +109,33 @@ namespace IMDB.Web.Controllers
 			return View();
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> Search(SearchViewModel searchView)
+        [HttpPost]
+		public async Task<IActionResult> Search(SearchViewModel searchView, int? page)
 		{
             var movieName = searchView.Name;
             var movieGenre = searchView.Genres;
             var movieDirector = searchView.Director;
 			var moviesAwaited = await movieServices
 				.SearchMovieAsync(movieName, movieGenre, movieDirector);
-            return View("SearchResult", moviesAwaited
-								.Select(m => new MovieViewModel(m))
-								.ToList());
+            return PartialView("_SearchResult", moviesAwaited
+                                .Select(m => new MovieViewModel(m))
+                                .Take(50)
+                                .ToPagedList(page ?? 1, (int)searchView.ItemsPerPage));
 		}
 
-        public IActionResult Search()
+        public async Task<IActionResult> Search()
         {
-            return View();
+            var cachedSelectListGenres = await _memoryCache.GetOrCreateAsync("Genres", async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(4);
+                var movieGenres = await movieServices.GetGenresAsync();
+                return movieGenres.Select(g => new SelectListItem(g.GenreType, g.GenreType));
+            });
+            var searchVM = new SearchViewModel
+            {
+                GenreList = cachedSelectListGenres
+            };
+            return View(searchVM);
         }
 
         [HttpGet("[controller]/{id}/[action]")]

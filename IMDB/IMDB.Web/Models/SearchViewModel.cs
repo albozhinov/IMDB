@@ -10,8 +10,9 @@ namespace IMDB.Web.Models
     {
         public string Name { get; set; }
         public string Director { get; set; }
-        public string Genres { get; set; }
+        public uint ItemsPerPage { get; set; }
+        public ICollection<string> Genres { get; set; }
+
         public IEnumerable<SelectListItem> GenreList { get; set; }
     }
-    
 }

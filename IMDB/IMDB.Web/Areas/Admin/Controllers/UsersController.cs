@@ -25,13 +25,21 @@ namespace IMDB.Web.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int? page)
+        public IActionResult Index()
         {
-            var indexViewModel = new IndexViewModel(_userManager.Users, (page ?? 1), PAGE_SIZE);
+            var indexViewModel = new IndexViewModel(_userManager.Users, 1, PAGE_SIZE);
             indexViewModel.StatusMessage = StatusMessage;
+
             return View(indexViewModel);
         }
-		[HttpPost]
+        public IActionResult UserGrid(int? page)
+        {
+            var pagedUsers = _userManager.Users
+                                         .Select(u => new UserViewModel(u))
+                                         .ToPagedList(page ?? 1, PAGE_SIZE);
+            return PartialView("_UserGrid", pagedUsers);
+        }
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LockUser(UserModalModelView input)
         {

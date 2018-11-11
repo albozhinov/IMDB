@@ -60,11 +60,11 @@ namespace IMDB.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RateReview(int id, double rate, int movieId, string action, string controller)
+        public async Task<IActionResult> RateReview(int id, double rate, string action, string controller)
         {            
             var userId = await _userManager.GetUserIdAsync(await _userManager.GetUserAsync(HttpContext.User));
-            await this.reviewsServices.RateReviewAsync(id, rate, userId);
-            return RedirectToAction(action, controller, new { id = movieId});
+            var ratedReview = await this.reviewsServices.RateReviewAsync(id, rate, userId);
+            return RedirectToAction(action, controller, new { id = ratedReview.MovieID});
         }
     }
 }
