@@ -50,19 +50,21 @@ namespace IMDB.Web.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> DeleteReview(int id, string action, int movieId)
-        {
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteReview(int id, int movieId, string action, string controller)
+        {           
             await this.reviewsServices.DeleteReviewAsync(id);
-            return RedirectToAction(action, "Movie", new { id = movieId});
+            return RedirectToAction(action, controller, new { id = movieId});
         }
 
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RateReview(int id, double rate, int movieId, string action, string controller)
-        {
+        {            
             var userId = await _userManager.GetUserIdAsync(await _userManager.GetUserAsync(HttpContext.User));
             await this.reviewsServices.RateReviewAsync(id, rate, userId);
-            return RedirectToAction("Details", "Movie", new { id = movieId});
+            return RedirectToAction(action, controller, new { id = movieId});
         }
     }
 }
