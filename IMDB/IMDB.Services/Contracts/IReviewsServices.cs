@@ -24,7 +24,7 @@ namespace IMDB.Services.Contracts
 		/// Deltes a review (just a flag)
 		/// </summary>
 		/// <param name="reviewID"></param>
-		Task DeleteReviewAsync(int reviewID);
+		Task<Review> DeleteReviewAsync(int reviewID);
 
 	}
 }

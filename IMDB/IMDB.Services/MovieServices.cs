@@ -171,7 +171,7 @@ namespace IMDB.Services
             if (reviewToAdd != null)
             {
                 foundMovie.Reviews.Remove(reviewToAdd);
-                if (foundMovie.NumberOfVotes == 1)
+                if (foundMovie.NumberOfVotes == 0)
                 {
                     foundMovie.MovieScore = rating;
                 }

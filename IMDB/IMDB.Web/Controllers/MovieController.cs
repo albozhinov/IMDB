@@ -11,16 +11,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace IMDB.Web.Controllers
 {
 	public class MovieController : Controller
 	{
-        private readonly IUserManager<User> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IMemoryCache _memoryCache;
 		private readonly IMovieServices movieServices;
 
-		public MovieController(IMovieServices movieServices, IMemoryCache memoryCache, IUserManager<User> userManager)
+		public MovieController(IMovieServices movieServices, IMemoryCache memoryCache, UserManager<User> userManager)
 		{
             this._userManager = userManager;
 			this._memoryCache = memoryCache;
@@ -125,11 +127,39 @@ namespace IMDB.Web.Controllers
             return View();
         }
 
-        [HttpGet("[controller]/{id}/[action]")]
-		public IActionResult Rate(int id)
+        [HttpGet]
+        [Authorize]
+		public IActionResult RateAndAddReview(int movieId, string movieName, string currentController, string currentAction)
 		{
-			return View();
+            var reviewToAdd = new ReviewViewModel()
+            {
+                MovieId = movieId,
+                MovieName = movieName,
+                CurrentController = currentController,
+                CurrentAction = currentAction
+            };
+
+            return View(reviewToAdd);
 		}
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RateAndAddReview(ReviewViewModel reviewView)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var isParse = double.TryParse(reviewView.Rating, out double movieRating);
+
+            var userId = await _userManager.GetUserIdAsync(await _userManager.GetUserAsync(HttpContext.User));
+
+            await this.movieServices.RateMovieAsync(reviewView.MovieId, movieRating, reviewView.Text, userId);
+
+            return RedirectToAction(reviewView.CurrentAction, reviewView.CurrentController, new { id = reviewView.MovieId });
+
+        }
 		[Route("[controller]/{id}/reviews")]
 		public IActionResult Reviews(int id)
 		{

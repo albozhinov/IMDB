@@ -1,6 +1,7 @@
 ﻿@model MovieViewModel
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
+@using IMDB.Web.Models
 
 @{
     ViewData["Title"] = "Details";}
@@ -26,18 +27,18 @@
                 }
             }
         }
-        <span class="ratingSlash">/</span>
+        @*<span class="ratingSlash">/</span>*@
 
-        @{
-            if (this.User.Identity.IsAuthenticated)
-            {
-                <a class="btn btn-rateMovie"><span class="fa fa-star">Rate</span></a>
-            }
-            else
-            {
-                <a class="btn btn-rateMovie" data-toggle="modal" data-target="#rateMovieModal"><span class="fa fa-star">Rate</span></a>
-            }
-        }
+        @*@{
+                if (this.User.Identity.IsAuthenticated)
+                {
+                    <a class="btn btn-rateMovie"><span class="fa fa-star">Rate</span></a>
+                }
+                else
+                {
+                    <a class="btn btn-rateMovie" data-toggle="modal" data-target="#rateMovieModal"><span class="fa fa-star">Rate</span></a>
+                }
+            }*@
     </p>
     <p class="ratingText"><span class="avgMovieScor">@Model.Score</span>/10 average based on @Model.NumberOfVotes reviews</p>
 </div>
@@ -67,149 +68,33 @@
 <div class="clearfix">
 
     <div class="row col-md-6">
-        <h2 class="reviewTitle">
+        <div class="reviewTitle">
             Reviews
             @{
                 if (this.User.Identity.IsAuthenticated)
-                {
-                    <a class="btn btn-addReview">Add Review</a>
+                {                    
+                    <form asp-area="" asp-controller="Movie" asp-action="RateAndAddReview" method="get">
+                        <input type="hidden" name="movieId" value="@Model.ID" />
+                        <input type="hidden" name="movieName" value="@Model.Name" />
+                        <input type="hidden" name="currentAction" value="Details" />
+                        <input type="hidden" name="currentController" value="Movie" />
+                        <button type="submit" class="btn btn-addReview">Add Review</button>
+                    </form>
                 }
                 else
                 {
-                    <a class="btn btn-addReview" data-toggle="modal" data-target="#addReviewModal">Add Review</a>
+                    <a class="btn btn-addReview" data-toggle="modal" data-target="#addReviewModalError">Add Review</a>
                 }
             }
-        </h2>
-
+        </div>
 
         @{ foreach (var review in Model.Top5Reviews)
             {
                 <div>
-                    <div class="reviewUser">
-                        User: @review.User | Review Rating: @review.Score (@review.NumberOfVotes votes)
-                        @{
-                            if (User.IsInRole("Administrator"))
-                            {
-                                <a class="btn btn-deleteReview" data-toggle="modal" data-target="#delete">Delete</a>
-                                <!-- Modal -->
-                                <div id="delete" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                <h4 class="modal-title">Are you sure to delete this review?</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>You are about to delete this review, are you sure?</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <form asp-area="" asp-controller="Review" asp-action="DeleteReview" method="post">
-                                                    <input type="hidden" name="id" value="@review.ReviewID" />
-                                                    <input type="hidden" name="movieId" value="@Model.ID" />
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="dropdown">
-                                    <a class="btn btn-rateReview" style="margin-left: 0%">Rate Review</a>
-                                    <div id="myDropdown" class="dropdown-content">
-                                        @{
-                                            for (int i = 1; i <= 10; i++)
-                                            {
-                                                <form asp-area="" asp-controller="Review" asp-action="RateReview" method="post">
-                                                    <input type="hidden" name="id" value="@review.ReviewID" />
-                                                    <input type="hidden" name="rate" value="@i" />
-                                                    <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
-                                                </form>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                            }
-                            else if (this.User.Identity.IsAuthenticated)
-                            {
-                                if (review.User == this.User.Identity.Name)
-                                {
-                                    <a class="btn btn-deleteReview" data-toggle="modal" data-target="#delete">Delete</a>
-                                    <!-- Modal -->
-                                    <div id="delete" class="modal fade" role="dialog">
-                                        <div class="modal-dialog">
-                                            <!-- Modal content-->
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Are you sure to delete this review?</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>You are about to delete this review, are you sure?</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <form asp-area="" asp-controller="Review" asp-action="DeleteReview" method="post">
-                                                        <input type="hidden" name="id" value="@review.ReviewID" />
-                                                        <input type="hidden" name="action" , value="Details" />
-                                                        <input type="hidden" name="controller" value="Movie" />
-                                                        <input type="hidden" name="movieId" value="@Model.ID" />
-                                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                        <a class="btn btn-rateReview" style="margin-left: 0%">Rate Review</a>
-                                        <div id="myDropdown" class="dropdown-content">
-                                            @{
-                                                for (int i = 1; i <= 10; i++)
-                                                {
-                                                    <form asp-area="" asp-controller="Review" asp-action="RateReview" method="post">
-                                                        <input type="hidden" name="id" value="@review.ReviewID" />
-                                                        <input type="hidden" name="rate" value="@i" />
-                                                        <input type="hidden" name="movieId" value="@Model.ID" />
-                                                        <input type="hidden" name="action" value="Details" />
-                                                        <input type="hidden" name="controller" value="Movie" />
-                                                        <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
-                                                    </form>
-                                                }
-                                            }
-                                        </div>
-                                    </div>
-
-                                }
-                                else
-                                {
-                                    <div class="dropdown">
-                                        <a class="btn btn-rateReview" style="margin-left: 0%">Rate Review</a>
-                                        <div id="myDropdown" class="dropdown-content">
-                                            @{
-                                                for (int i = 1; i <= 10; i++)
-                                                {
-                                                    <form asp-area="" asp-controller="Review" asp-action="RateReview" method="post">
-                                                        <input type="hidden" name="id" value="@review.ReviewID" />
-                                                        <input type="hidden" name="rate" value="@i" />
-                                                        <input type="hidden" name="movieId" value="@Model.ID" />
-                                                        <input type="hidden" name="action" value="Details" />
-                                                        <input type="hidden" name="controller" value="Movie" />
-                                                        <button type="submit" class="rateSubmitButton"><span class="fa fa-star checked" id="a">@i</span></button>
-                                                    </form>
-                                                }
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <a class="btn btn-rateReview" data-toggle="modal" data-target="#rateReviewModal">Rate Review</a>
-                            }
-                        }
-                    </div>
-                    <p></p>
-                    <p class="font-italic">@review.Text</p>
+                    @{ review.CurrentController = "Movie";
+                        review.CurrentAction = "Details";
+                    }
+                    <partial name="_ReviewPartial" for="@review" />
                 </div>
                 <hr />
             }
@@ -217,16 +102,14 @@
         @{
             if (Model.More5Reviews)
             {
-
                 <a asp-area="" asp-controller="Review" asp-action="AllReviews" asp-route-id="@Model.ID" class="btn btn-showAllReviews">Show All Reviews</a>
-
             }
         }
     </div>
 </div>
 
 <!-- Modal -->
-<div id="addReviewModal" class="modal fade" role="dialog">
+<div id="addReviewModalError" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
