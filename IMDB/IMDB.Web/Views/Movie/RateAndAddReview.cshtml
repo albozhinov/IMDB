@@ -1,0 +1,46 @@
+﻿@model ReviewViewModel
+
+@{
+    ViewData["Title"] = "RateAndAddReview";
+}
+<div class="col-md-4">
+    <h1 class="movieName">@Model.MovieName</h1>
+</div>
+<div class="clearfix"></div>
+<div class="container">
+    <div class="row">
+        <h2 class="directorTextType" style="padding-left: 1%">Add your review</h2>
+    </div>
+    <form asp-controller="Movie" asp-action="RateAndAddReview" method="post">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Rate This Movie</label>
+                    <input asp-for="@Model.Rating" class="form-control" />
+                    <span asp-validation-for="@Model.Rating" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <label>Review</label>
+                <textarea asp-for="@Model.Text" class="form-control"></textarea>
+                <span asp-validation-for="@Model.Text" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-xs-3">
+                <input type="hidden" asp-for="MovieId" value="@Model.MovieId"/>
+                <input type="hidden" asp-for="CurrentAction" value="@Model.CurrentAction"/>
+                <input type="hidden" asp-for="CurrentController" value="@Model.CurrentController"/>
+                <button type="submit" class="btn btn-addReview">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts  {
+    @Html.Partial("_ValidationScriptsPartial")
+}
+

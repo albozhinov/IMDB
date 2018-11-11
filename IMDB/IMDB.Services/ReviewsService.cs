@@ -107,41 +107,37 @@ namespace IMDB.Services
             return foundReview;
         }
 
-        public async Task DeleteReviewAsync(int reviewID)
+        public async Task<Review> DeleteReviewAsync(int reviewID)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
 
-            var findReview = await reviewRepo.All()
+            var foundReview = await reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                        .Include(r => r.User)
                                        .Include(r => r.Movie)
                                        .FirstOrDefaultAsync();
 
-            if (findReview is null)
+            if (foundReview is null)
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
             }
 
-            findReview.IsDeleted = true;
+            foundReview.IsDeleted = true;
 
             // TODO: Modified this function
-            if (findReview.Movie.NumberOfVotes == 1)
+            if (foundReview.Movie.NumberOfVotes == 1)
             {
-                findReview.Movie.MovieScore = (findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating;
-                findReview.Movie.NumberOfVotes--;
-            }
-            else if (findReview.Movie.NumberOfVotes == 0)
-            {
-                findReview.Movie.MovieScore = 0;
-            }
+                foundReview.Movie.MovieScore = (foundReview.Movie.MovieScore * foundReview.Movie.NumberOfVotes) - foundReview.MovieRating;                
+            }            
             else
             {
-                findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
-                findReview.Movie.NumberOfVotes--;
+                foundReview.Movie.MovieScore = ((foundReview.Movie.MovieScore * foundReview.Movie.NumberOfVotes) - foundReview.MovieRating) / (foundReview.Movie.NumberOfVotes - 1);
             }
-            reviewRepo.Update(findReview);
+            foundReview.Movie.NumberOfVotes--;
+            reviewRepo.Update(foundReview);
 
             await reviewRepo.SaveAsync();
+            return foundReview;
         }
     }
 }
