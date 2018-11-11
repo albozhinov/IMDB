@@ -2,21 +2,18 @@
 using IMDB.Services.Contracts;
 using IMDB.Web.Areas.Admin.Models;
 using IMDB.Web.Controllers;
-using IMDB.Web.Models;
 using IMDB.Web.Providers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace IMDB.Tests.Data.ControllerTests.MovieControllerTests
+namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
 {
     [TestClass]
-    class DetailsActionShould
+    public class IndexActionShould
     {
         [TestMethod]
         public async Task CallCorrectServiceMethod()
@@ -27,9 +24,9 @@ namespace IMDB.Tests.Data.ControllerTests.MovieControllerTests
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(serviceMock.Object, movieCachMock.Object, userManagerMock.Object);
             //Act
-            var result = await sut.Details(3) as ViewResult;
+            var result = await sut.Index() as ViewResult;
             //Assert
-            serviceMock.Verify(s => s.CheckMovieAsync(3), Times.Once);
+            serviceMock.Verify(s => s.GetAllMoviesAsync(), Times.Once);
 
         }
 
@@ -42,9 +39,9 @@ namespace IMDB.Tests.Data.ControllerTests.MovieControllerTests
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(serviceMock.Object, movieCachMock.Object, userManagerMock.Object);
             //Act
-            var result = await sut.Details(3) as ViewResult;
+            var result = await sut.Index() as ViewResult;
             //Assert
-            Assert.IsInstanceOfType(result.Model, typeof(MovieViewModel));
+            Assert.IsInstanceOfType(result.Model, typeof(IndexViewModel));
 
         }
 
@@ -57,17 +54,17 @@ namespace IMDB.Tests.Data.ControllerTests.MovieControllerTests
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(serviceMock.Object, movieCachMock.Object, userManagerMock.Object);
             //Act
-            var result = await sut.Details(3) as ViewResult;
+            var result = await sut.Index() as ViewResult;
             //Assert
-            Assert.IsInstanceOfType(result, typeof(MovieViewModel));
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
         private Mock<IMovieServices> SetupMockService()
         {
             var movieServiceMock = new Mock<IMovieServices>();
             movieServiceMock
-                .Setup(ms => ms.CheckMovieAsync(3))
-                .ReturnsAsync(new Movie());
+                .Setup(ms => ms.GetAllMoviesAsync())
+                .ReturnsAsync(new List<Movie>());
 
             return movieServiceMock;
         }

@@ -73,6 +73,7 @@ namespace IMDB.Data.Context
                 .HasMaxLength(50);
             modelBuilder.Entity<Movie>().Property(mov => mov.DirectorID)
                 .IsRequired();
+
             modelBuilder.Entity<Director>().Property(d => d.Name)
                 .IsRequired()
                 .HasMaxLength(25);
