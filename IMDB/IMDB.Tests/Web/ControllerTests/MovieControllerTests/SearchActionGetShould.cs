@@ -67,7 +67,7 @@ namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(movieServiceMock.Object, cache, userManagerMock.Object);
             //Act
-            var result = await sut.Search() as ViewResult;
+            var result = await sut.Search();
             //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
