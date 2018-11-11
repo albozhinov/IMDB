@@ -100,7 +100,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
                 genreRepoStub.Object, movieGenreRepoStub.Object);
 
             //Act
-            var result = await sut.SearchMovieAsync("Venom", "porn", "thebsetdirector");
+            var result = await sut.SearchMovieAsync("Venom", new List<string> { "porn" }, "thebsetdirector");
             //Assert
             Assert.AreEqual("Venom", result.FirstOrDefault().Name);
         }
@@ -123,7 +123,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
                 genreRepoStub.Object, movieGenreRepoStub.Object);
 
             //Act
-            var result = await sut.SearchMovieAsync("GoshoPansa", "NemaTakivJanr", "Bay Pesho");
+            var result = await sut.SearchMovieAsync("GoshoPansa", new List<string> { "NemaTakivJanr" }, "Bay Pesho");
 			//Assert
 			Assert.IsTrue(result.Count == 0);
         }
