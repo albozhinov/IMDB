@@ -1,5 +1,6 @@
 ﻿using IMDB.Data.Models;
 using IMDB.Web.Areas.Admin.Models;
+using IMDB.Web.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,13 @@ namespace IMDB.Web.Areas.Admin.Controllers
     [Authorize(Roles = "Administrator")]
     public class UsersController : Controller
     {
-        private readonly UserManager<User> _userManager;
+        private readonly IUserManager<User> _userManager;
         private readonly int PAGE_SIZE = 1;
 
         [TempData]
         public string StatusMessage { get; set; }
 
-        public UsersController(UserManager<User> userManager)
+        public UsersController(IUserManager<User> userManager)
         {
             _userManager = userManager;
         }
@@ -98,7 +99,7 @@ namespace IMDB.Web.Areas.Admin.Controllers
 
             foreach (var validator in _userManager.PasswordValidators)
             {
-                var result = await validator.ValidateAsync(_userManager, user, input.ConfirmPassword);
+                var result = await validator.ValidateAsync(_userManager.Instance, user, input.ConfirmPassword);
                 if (!result.Succeeded)
                 {
                     this.StatusMessage = $"Error: {string.Join(" ", result.Errors.Select(e => e.Description)).Replace(".", "!")}";

@@ -29,7 +29,6 @@ namespace IMDB.Web.Controllers
 		}
 		public async Task<IActionResult> Index()
 		{
-			//to be cached
 			var cachedTopMovies = await _memoryCache.GetOrCreateAsync("TopMovies", async entry =>
 			{
 				entry.SlidingExpiration = TimeSpan.FromHours(2);

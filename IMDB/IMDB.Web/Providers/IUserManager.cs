@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace IMDB.Web.Providers
 {
-    public interface IUserManager<T>
+    public interface IUserManager<T> where T : class
     {
         Task<IdentityResult> SetLockoutEndDateAsync(T usrer, DateTimeOffset? lockoutEnd);
+        Task<IdentityResult> SetLockoutEnabledAsync(T user, bool enabled);
         Task<IdentityResult> AddPasswordAsync(T user, string password);
         Task<IdentityResult> RemovePasswordAsync(T user);
-
+        IQueryable<T> Users { get; }
+        IList<IPasswordValidator<T>> PasswordValidators { get; }
+        UserManager<T> Instance { get; }
     }
 }
