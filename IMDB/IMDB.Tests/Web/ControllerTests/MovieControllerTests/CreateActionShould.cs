@@ -24,8 +24,8 @@ namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
                 .Setup(msm => msm.GetGenresAsync())
                 .ReturnsAsync(new List<Genre>());
 
-            var cache = new MemoryCache(new MemoryCacheOptions());
-            var userManagerMock = new Mock<IUserManager<User>>();
+                var cache = new MemoryCache(new MemoryCacheOptions());
+                var userManagerMock = new Mock<IUserManager<User>>();
 
             var sut = new MovieController(movieServiceMock.Object, cache, userManagerMock.Object);
             //Act
