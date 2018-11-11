@@ -180,6 +180,7 @@ namespace IMDB.Services
                     foundMovie.MovieScore = ((double)(foundMovie.MovieScore * foundMovie.NumberOfVotes) - reviewToAdd.MovieRating) / (double)(foundMovie.NumberOfVotes - 1);
                     foundMovie.MovieScore += (rating - foundMovie.MovieScore) / foundMovie.NumberOfVotes;
                 }
+                foundMovie.NumberOfVotes++;
                 reviewToAdd.IsDeleted = false;
                 reviewToAdd.Text = reviewText;
                 reviewToAdd.MovieRating = rating;
