@@ -28,9 +28,9 @@ namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
                 .Setup(ms => ms.SearchMovieAsync(movieName, genreList, null))
                 .ReturnsAsync(new List<Movie>());
 
-            var movieCachMock = new Mock<IMemoryCache>();
+            var movieCacheMock = new Mock<IMemoryCache>();
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new MovieController(movieServiceMock.Object, movieCachMock.Object, userManagerMock.Object);
+            var sut = new MovieController(movieServiceMock.Object, movieCacheMock.Object, userManagerMock.Object);
             //Act
             var result = await sut.Search(model, null) as ViewResult;
             //Assert
@@ -46,9 +46,9 @@ namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
             movieServiceMock
                 .Setup(ms => ms.SearchMovieAsync(null, null, null))
                 .ReturnsAsync(new List<Movie>());
-            var movieCachMock = new Mock<IMemoryCache>();
+            var movieCacheMock = new Mock<IMemoryCache>();
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new MovieController(movieServiceMock.Object, movieCachMock.Object, userManagerMock.Object);
+            var sut = new MovieController(movieServiceMock.Object, movieCacheMock.Object, userManagerMock.Object);
             //Act
             var result = await sut.Search(model, null) as PartialViewResult;
             //Assert
@@ -65,9 +65,9 @@ namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
                 .Setup(ms => ms.SearchMovieAsync(null, null, null))
                 .ReturnsAsync(new List<Movie>());
 
-            var movieCachMock = new Mock<IMemoryCache>();
+            var movieCacheMock = new Mock<IMemoryCache>();
             var userManagerMock = new Mock<IUserManager<User>>();
-            var sut = new MovieController(movieServiceMock.Object, movieCachMock.Object, userManagerMock.Object);
+            var sut = new MovieController(movieServiceMock.Object, movieCacheMock.Object, userManagerMock.Object);
             //Act
             var result = await sut.Search(model, null) as PartialViewResult;
             //Assert
