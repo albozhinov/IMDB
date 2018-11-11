@@ -24,5 +24,18 @@
 			$(e.currentTarget).find('input[name="ID"]').val(userId);
 		})
 	</script>
+    <script>
+        $(document).on("click", "#contentPager a", function () {
+            $.ajax({
+                url: $(this).attr("href"),
+                type: 'GET',
+                cache: false,
+                success: function (result) {
+                    $('#content').html(result);
+                }
+            });
+            return false;
+        });
+    </script>
 	<partial name="_ValidationScriptsPartial" />
 }

@@ -1,13 +1,14 @@
 ﻿using IMDB.Data.Models;
 using IMDB.Services.Contracts;
-using IMDB.Web.Areas.Admin.Models;
 using IMDB.Web.Controllers;
 using IMDB.Web.Models;
 using IMDB.Web.Providers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -15,40 +16,43 @@ using X.PagedList;
 namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
 {
     [TestClass]
-    public class IndexActionShould
+    public class SearchActionGetShould
     {
         [TestMethod]
-        public async Task CallCorrectServiceMethod()
+        public async Task CallCorrectServiceMethodWithCorrectParams()
         {
             //Arrange
             var movieServiceMock = new Mock<IMovieServices>();
             movieServiceMock
-                .Setup(ms => ms.GetAllMoviesAsync())
-                .ReturnsAsync(new List<Movie>());
+                .Setup(msm => msm.GetGenresAsync())
+                .ReturnsAsync(new List<Genre>());
+
             var cache = new MemoryCache(new MemoryCacheOptions());
             var userManagerMock = new Mock<IUserManager<User>>();
+
             var sut = new MovieController(movieServiceMock.Object, cache, userManagerMock.Object);
             //Act
-            var result = await sut.Index() as ViewResult;
+            await sut.Search();
+            await sut.Search();
             //Assert
-            movieServiceMock.Verify(s => s.GetAllMoviesAsync());
+            movieServiceMock.Verify(msm => msm.GetGenresAsync(), Times.Once);
         }
 
         [TestMethod]
         public async Task ReturnCorrectViewModel()
-        { 
+        {
             //Arrange
             var movieServiceMock = new Mock<IMovieServices>();
             movieServiceMock
-                .Setup(ms => ms.GetAllMoviesAsync())
-                .ReturnsAsync(new List<Movie>());
+               .Setup(msm => msm.GetGenresAsync())
+               .ReturnsAsync(new List<Genre>());
             var cache = new MemoryCache(new MemoryCacheOptions());
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(movieServiceMock.Object, cache, userManagerMock.Object);
             //Act
-            var result = await sut.Index() as ViewResult;
+            var result = await sut.Search() as ViewResult;
             //Assert
-            Assert.IsInstanceOfType(result.Model, typeof(List<MovieViewModel>));
+            Assert.IsInstanceOfType(result.Model, typeof(SearchViewModel));
         }
 
         [TestMethod]
@@ -57,25 +61,15 @@ namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
             //Arrange
             var movieServiceMock = new Mock<IMovieServices>();
             movieServiceMock
-                .Setup(ms => ms.GetAllMoviesAsync())
-                .ReturnsAsync(new List<Movie>());
+               .Setup(msm => msm.GetGenresAsync())
+               .ReturnsAsync(new List<Genre>());
             var cache = new MemoryCache(new MemoryCacheOptions());
             var userManagerMock = new Mock<IUserManager<User>>();
             var sut = new MovieController(movieServiceMock.Object, cache, userManagerMock.Object);
             //Act
-            var result = await sut.Index() as ViewResult;
+            var result = await sut.Search();
             //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-        }
-
-        private Mock<IMovieServices> SetupMockService()
-        {
-            var movieServiceMock = new Mock<IMovieServices>();
-            movieServiceMock
-                .Setup(ms => ms.GetAllMoviesAsync())
-                .ReturnsAsync(new List<Movie>());
-
-            return movieServiceMock;
         }
     }
 }

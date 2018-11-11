@@ -39,7 +39,7 @@ namespace IMDB.Services.Contracts
         /// <param name="genre"></param>
         /// <param name="producer"></param>
         /// <returns></returns>
-        Task<ICollection<Movie>> SearchMovieAsync(string name, string genre, string producer);
+        Task<ICollection<Movie>> SearchMovieAsync(string name, ICollection<string> genres, string producer);
 		/// <summary>
 		/// Returns all movies.
 		/// </summary>

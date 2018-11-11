@@ -82,8 +82,8 @@ namespace IMDB.Services
             var foundGenres = await genreRepo.All()
                 .Include(gr => gr.MovieGenres)
                 .Where(genre => genres.Any(genreTypes => genreTypes.ToLower() == genre.GenreType.ToLower()))
-				.ToListAsync();
-			movieToAdd.MovieGenres = new List<MovieGenre>();
+                .ToListAsync();
+            movieToAdd.MovieGenres = new List<MovieGenre>();
             foreach (var genre in foundGenres)
             {
                 var movieGenreToAdd = new MovieGenre
@@ -91,25 +91,25 @@ namespace IMDB.Services
                     GenreID = genre.ID,
                     MovieID = movieToAdd.ID
                 };
-				movieToAdd.MovieGenres.Add(movieGenreToAdd);
+                movieToAdd.MovieGenres.Add(movieGenreToAdd);
             }
-			await movieRepo.AddAsync(movieToAdd);
-			await movieRepo.SaveAsync();
-			return movieToAdd;
-		}
-		public async Task<ICollection<Genre>> GetGenresAsync()
-		{
-			return await genreRepo.All().ToListAsync();
-		}
-		public async Task<ICollection<Movie>> GetAllMoviesAsync()
-		{
-			return await movieRepo.All()
-				.Include(m => m.Director)
-				.Include(m => m.MovieGenres)
-					.ThenInclude(mg => mg.Genre)
-				.Include(m => m.Reviews)
-					.ThenInclude(r => r.User)
-				.ToListAsync();
+            await movieRepo.AddAsync(movieToAdd);
+            await movieRepo.SaveAsync();
+            return movieToAdd;
+        }
+        public async Task<ICollection<Genre>> GetGenresAsync()
+        {
+            return await genreRepo.All().ToListAsync();
+        }
+        public async Task<ICollection<Movie>> GetAllMoviesAsync()
+        {
+            return await movieRepo.All()
+                .Include(m => m.Director)
+                .Include(m => m.MovieGenres)
+                    .ThenInclude(mg => mg.Genre)
+                .Include(m => m.Reviews)
+                    .ThenInclude(r => r.User)
+                .ToListAsync();
         }
         public async Task DeleteMovieAsync(int movieID)
         {
@@ -161,8 +161,8 @@ namespace IMDB.Services
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
             var foundMovie = await movieRepo.All()
-				.Include(m => m.Reviews)
-				.FirstOrDefaultAsync(mov => mov.ID == movieID && !mov.IsDeleted);
+                .Include(m => m.Reviews)
+                .FirstOrDefaultAsync(mov => mov.ID == movieID && !mov.IsDeleted);
 
             if (foundMovie is null)
                 throw new MovieNotFoundException("Movie not found!");
@@ -201,7 +201,7 @@ namespace IMDB.Services
             movieRepo.Update(foundMovie);
             await movieRepo.SaveAsync();
         }
-        public async Task<ICollection<Movie>> SearchMovieAsync(string name, string genre, string director)
+        public async Task<ICollection<Movie>> SearchMovieAsync(string name, ICollection<string> genres, string director)
         {
             IQueryable<Movie> movies = movieRepo.All()
                 .Where(mov => !mov.IsDeleted)
@@ -213,11 +213,13 @@ namespace IMDB.Services
             {
                 movies = movies.Where(mov => mov.Name.Contains(name));
             }
-            if (!string.IsNullOrEmpty(genre))
+
+            if (!(genres.First() is null))
             {
                 movies = movies
-                    .Where(mov => mov.MovieGenres.Select(g => g.Genre.GenreType.ToLower()).Contains(genre));
+                    .Where(mov => mov.MovieGenres.Any(g => genres.Any(genre => g.Genre.GenreType.ToLower().Contains(genre.ToLower()))));
             }
+
             if (!string.IsNullOrEmpty(director))
             {
                 movies = movies.Where(mov => mov.Director.Name.ToLower().Contains(director.ToLower()));
