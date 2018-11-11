@@ -113,7 +113,12 @@ namespace IMDB.Web.Areas.Admin.Controllers
                 return this.RedirectToAction(nameof(Index));
             }
 
-            var resetToken = await _userManager.RemovePasswordAsync(user);
+            var removeResult = await _userManager.RemovePasswordAsync(user);
+            if (!removeResult.Succeeded)
+            {
+                this.StatusMessage = "Error: Could not remove the old password!";
+                return this.RedirectToAction(nameof(Index));
+            }
             var addPasswordResult = await _userManager.AddPasswordAsync(user, input.NewPassword);
             if (!addPasswordResult.Succeeded)
             {

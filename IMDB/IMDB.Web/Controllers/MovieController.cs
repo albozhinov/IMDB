@@ -43,19 +43,6 @@ namespace IMDB.Web.Controllers
 
 			return View(cachedTopMovies);
 		}
-        public async Task<IActionResult> Top5Movies()
-        {
-            var cachedTop5Movies = await _memoryCache.GetOrCreateAsync("TopMovies", async entry =>
-            {
-                entry.SlidingExpiration = TimeSpan.FromHours(2);
-                var movies = await movieServices.GetAllMoviesAsync();
-                return movies.OrderByDescending(m => m.MovieScore)
-                                    .Take(5)
-                                    .Select(m => new MovieViewModel(m))
-                                    .ToList();
-            });
-            return View(cachedTop5Movies);
-        }
 		[HttpGet]
 		[Authorize(Roles = "Administrator")]
 		public async Task<IActionResult> Create()
@@ -173,11 +160,5 @@ namespace IMDB.Web.Controllers
             return RedirectToAction(reviewView.CurrentAction, reviewView.CurrentController, new { id = reviewView.MovieId });
 
         }
-		[Route("[controller]/{id}/reviews")]
-		public IActionResult Reviews(int id)
-		{
-			return View();
-		}
-        
     }
 }
