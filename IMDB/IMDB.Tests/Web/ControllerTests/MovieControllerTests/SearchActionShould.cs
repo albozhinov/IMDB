@@ -10,7 +10,7 @@ using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IMDB.Tests.Data.ControllerTests.MovieControllerTests
+namespace IMDB.Tests.Web.ControllerTests.MovieControllerTests
 {
     [TestClass]
     class SearchActionShould
