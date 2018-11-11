@@ -37,7 +37,8 @@
 
 @section Scripts{
     <script>
-        function search() {
+        function search()
+        {
             $.ajax({
                 url: $(this).attr("href"),
                 type: 'POST',
@@ -46,7 +47,8 @@
                     name: document.getElementById("Name").value,
                     genres: document.getElementById("Genres").value,
                     director: document.getElementById("Director").value,
-                    itemsPerPage: document.getElementById("ItemsPerPage").value
+                    itemsPerPage: document.getElementById("ItemsPerPage").value,
+                    __RequestVerificationToken: gettoken()
                 }),
                 success: function (result) {
                     $('#content').html(result);
@@ -54,7 +56,12 @@
             });
             return false;
         }
-
+        function gettoken()
+        {
+            var token = '@Html.AntiForgeryToken()';
+            token = $(token).val();
+            return token;
+        }
         $(document).on("click", "#myButton", search);
         $(document).on("click", "#contentPager a", search);
     </script>

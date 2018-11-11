@@ -110,6 +110,7 @@ namespace IMDB.Web.Controllers
 		}
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
 		public async Task<IActionResult> Search(SearchViewModel searchView, int? page)
 		{
             var movieName = searchView.Name;
