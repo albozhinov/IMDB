@@ -18,12 +18,12 @@ namespace IMDB.Web.Controllers
 {
 	public class MovieController : Controller
 	{
-        private readonly UserManager<User> _userManager;
+        private readonly IUserManager<User> _userManager;
         private readonly IMemoryCache _memoryCache;
 		private readonly IMovieServices movieServices;
         private string StatusMessage { get; set; }
 
-		public MovieController(IMovieServices movieServices, IMemoryCache memoryCache, UserManager<User> userManager)
+		public MovieController(IMovieServices movieServices, IMemoryCache memoryCache, IUserManager<User> userManager)
 		{
             this._userManager = userManager;
 			this._memoryCache = memoryCache;

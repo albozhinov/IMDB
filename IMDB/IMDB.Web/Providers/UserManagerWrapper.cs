@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IMDB.Data.Models;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 namespace IMDB.Web.Providers
 {
 
-    public class UserManagerWrapper<T> : IUserManager<T> where T: class
+    public class UserManagerWrapper<T> : IUserManager<T> where T : class
     {
         private UserManager<T> _userManager;
 
@@ -37,6 +38,15 @@ namespace IMDB.Web.Providers
         public async Task<IdentityResult> AddPasswordAsync(T user, string password)
         {
             return await _userManager.AddPasswordAsync(user, password);
+        }
+
+        public async Task<string> GetUserIdAsync(T user)
+        {
+            return await _userManager.GetUserIdAsync(user);
+        }
+        public async Task<T> GetUserAsync(ClaimsPrincipal claimsPrincipal)
+        {
+            return await _userManager.GetUserAsync(claimsPrincipal);
         }
     }
 }
