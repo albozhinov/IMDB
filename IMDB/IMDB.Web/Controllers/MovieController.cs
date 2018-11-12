@@ -69,7 +69,7 @@ namespace IMDB.Web.Controllers
 				return this.View();
 			}
 			var newMovie = await movieServices.CreateMovieAsync(movieViewModel.Name, movieViewModel.Genres, movieViewModel.Director);
-			return this.RedirectToAction("Details", "Players", new { id = newMovie.ID });
+			return this.RedirectToAction("Details", "Movie", new { id = newMovie.ID });
 		}
         [HttpGet("[controller]/[action]/{id}")]        
         public async Task<IActionResult> Details(int id)
