@@ -87,9 +87,9 @@ namespace IMDB.Services
                 }
                 else
                 {
-                    if (foundReview.NumberOfVotes <= 1)
+                    if (foundReview.NumberOfVotes == 0)
                     {
-                        foundReview.ReviewScore = ((foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating);
+                        foundReview.ReviewScore = 0;
                     }
                     else
                     {
@@ -123,9 +123,14 @@ namespace IMDB.Services
             }
 
             foundReview.IsDeleted = true;
+            foundReview.Movie.NumberOfVotes--;
 
             // TODO: Modified this function
-            if (foundReview.Movie.NumberOfVotes == 1)
+            if (foundReview.Movie.NumberOfVotes == 0)
+            {
+                foundReview.Movie.MovieScore = 0;
+            }
+            else if (foundReview.Movie.NumberOfVotes == 1)
             {
                 foundReview.Movie.MovieScore = (foundReview.Movie.MovieScore * foundReview.Movie.NumberOfVotes) - foundReview.MovieRating;                
             }            
@@ -133,7 +138,6 @@ namespace IMDB.Services
             {
                 foundReview.Movie.MovieScore = ((foundReview.Movie.MovieScore * foundReview.Movie.NumberOfVotes) - foundReview.MovieRating) / (foundReview.Movie.NumberOfVotes - 1);
             }
-            foundReview.Movie.NumberOfVotes--;
             reviewRepo.Update(foundReview);
 
             await reviewRepo.SaveAsync();

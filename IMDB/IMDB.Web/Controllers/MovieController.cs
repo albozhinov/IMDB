@@ -39,7 +39,7 @@ namespace IMDB.Web.Controllers
 									.Take(10)
 									.Select(m => new MovieViewModel(m))
 									.ToList();
-			});
+			});            
 
 			return View(cachedTopMovies);
 		}
@@ -88,14 +88,7 @@ namespace IMDB.Web.Controllers
             {
                 return this.NotFound();
             }
-        }
-        [HttpDelete("[controller]/Details/{id}")]
-		[Authorize(Roles = "Administrator")]
-		public IActionResult DeleteMovie(int id)
-		{
-			//return single detailed movie view
-			return View();
-		}
+        }       
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -158,7 +151,16 @@ namespace IMDB.Web.Controllers
             await this.movieServices.RateMovieAsync(reviewView.MovieId, movieRating, reviewView.Text, userId);
 
             return RedirectToAction(reviewView.CurrentAction, reviewView.CurrentController, new { id = reviewView.MovieId });
+        }
 
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMovie(int movieId)
+        {
+            await this.movieServices.DeleteMovieAsync(movieId);
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

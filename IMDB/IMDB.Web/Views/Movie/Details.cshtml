@@ -72,7 +72,7 @@
             Reviews
             @{
                 if (this.User.Identity.IsAuthenticated)
-                {                    
+                {
                     <form asp-area="" asp-controller="Movie" asp-action="RateAndAddReview" method="get">
                         <input type="hidden" name="movieId" value="@Model.ID" />
                         <input type="hidden" name="movieName" value="@Model.Name" />
