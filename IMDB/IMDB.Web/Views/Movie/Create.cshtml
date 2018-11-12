@@ -1,0 +1,32 @@
+﻿@model MovieViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+<h2>Create a new movie</h2>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Movie" asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Director"></label>
+                <input asp-for="Director" class="form-control" />
+                <span asp-validation-for="Director" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Genres"></label>
+                <select asp-for="Genres" class="selectpicker" multiple="multiple" name="Genres" asp-items="@Model.GenreList"></select>
+            </div>
+            <button type="submit" class="btn btn-default">Create</button>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+	<partial name="_ValidationScriptsPartial" /> 
+}

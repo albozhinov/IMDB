@@ -2,7 +2,6 @@
 using IMDB.Data.Repository;
 using IMDB.Data.Views;
 using IMDB.Services.Contracts;
-using IMDB.Services.Exceptions;
 using SautinSoft.Document;
 using System.Linq;
 
@@ -12,14 +11,11 @@ namespace IMDB.Services
 	{
 
 		private IRepository<Movie> movieRepo;
-		private ILoginSession loginSession;
 
 		public ExportingServices(
-			IRepository<Movie> movieRepo,
-			ILoginSession loginSession)
+			IRepository<Movie> movieRepo)
 		{
 			this.movieRepo = movieRepo;
-			this.loginSession = loginSession;
 		}
 		public void ListMoviesToPDF()
 		{
@@ -57,7 +53,6 @@ namespace IMDB.Services
 			// Save a document to a file in PDF format.
 			string filePath = @"Result.pdf";
 			dc.Save(filePath);
-
 			// Open the result for demonstation purposes.
 			System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath) { UseShellExecute = true });
 		}

@@ -3,11 +3,17 @@ using IMDB.Data.Repository;
 using IMDB.Services;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace IMDB.Tests.Services.MovieServicesTests
 {
@@ -17,7 +23,7 @@ namespace IMDB.Tests.Services.MovieServicesTests
         [DataTestMethod]
         [DataRow(0)]
         [DataRow(-1)]
-        public void ThrowArgumentException_WhenArgumentsAreIncorrect(int movieID)
+        public async Task ThrowArgumentException_WhenArgumentsAreIncorrect(int movieID)
         {
             // Arrange
             var reviewRepoStub = new Mock<IRepository<Review>>();
@@ -26,14 +32,13 @@ namespace IMDB.Tests.Services.MovieServicesTests
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
-            var loginSessionStub = new Mock<ILoginSession>();
 
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             // Act & Assert
-            Assert.ThrowsException<ArgumentException>(() => sut.CheckMovie(movieID));
+            await Assert.ThrowsExceptionAsync<ArgumentException>(async () => await sut.CheckMovieAsync(movieID));
         }
         [TestMethod]
-        public void ReturnMoiewViewOfFoundMovie_WhenSuchIsValid()
+        public async Task ReturnMoiewViewOfFoundMovie_WhenSuchIsValid()
         {
             //Arrange
             const string movieName = "MovieName";
@@ -73,33 +78,19 @@ namespace IMDB.Tests.Services.MovieServicesTests
             review2.Movie = movieToBeChecked;
             movieRepoMock
                  .Setup(mr => mr.All())
-                 .Returns(new List<Movie>() { movieToBeChecked }.AsQueryable());
+                 .Returns(new List<Movie>() { movieToBeChecked }.AsQueryable().BuildMock().Object);
 
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
-            var loginSessionStub = new Mock<ILoginSession>();
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             //Act
-            var result = sut.CheckMovie(1);
+            var result = await sut.CheckMovieAsync(1);
             //Assert
-            Assert.IsTrue(result.Director == directorName);
-            Assert.IsTrue(result.Name == movieName);
-            Assert.IsTrue(result.Top5Reviews.ToList()[0].ByUser == user2);
-            Assert.IsTrue(result.Top5Reviews.ToList()[0].Rating == movieRating2);
-            Assert.IsTrue(result.Top5Reviews.ToList()[0].MovieName == movieName);
-            Assert.IsTrue(result.Top5Reviews.ToList()[0].ReviewID == rID2);
-            Assert.IsTrue(result.Top5Reviews.ToList()[0].Score == score2);
-            Assert.IsTrue(result.Top5Reviews.ToList()[0].Text == text2);
-            Assert.IsTrue(result.Top5Reviews.ToList()[1].ByUser == user1);
-            Assert.IsTrue(result.Top5Reviews.ToList()[1].Rating == movieRating1);
-            Assert.IsTrue(result.Top5Reviews.ToList()[1].MovieName == movieName);
-            Assert.IsTrue(result.Top5Reviews.ToList()[1].ReviewID == rID1);
-            Assert.IsTrue(result.Top5Reviews.ToList()[1].Score == score1);
-            Assert.IsTrue(result.Top5Reviews.ToList()[1].Text == text1);
+            Assert.AreSame(result, movieToBeChecked);
         }
         [TestMethod]
-        public void ThrowMovieNotFoundException_WhenMovieIsNotFound()
+        public async Task ThrowMovieNotFoundException_WhenMovieIsNotFound()
         {
             //Arrange
             var reviewRepoStub = new Mock<IRepository<Review>>();
@@ -113,18 +104,17 @@ namespace IMDB.Tests.Services.MovieServicesTests
             };
             movieRepoMock
                  .Setup(mr => mr.All())
-                 .Returns(new List<Movie>() { movieToBeChecked }.AsQueryable());
+                 .Returns(new List<Movie>() { movieToBeChecked }.AsQueryable().BuildMock().Object);
 
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
-            var loginSessionStub = new Mock<ILoginSession>();
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             //Act & Assert
-            Assert.ThrowsException<MovieNotFoundException>(() => sut.CheckMovie(52));
+            await Assert.ThrowsExceptionAsync<MovieNotFoundException>(async () => await sut.CheckMovieAsync(52));
         }
         [TestMethod]
-        public void ThrowMovieNotFoundException_WhenMovieIsDeleted()
+        public async Task ThrowMovieNotFoundException_WhenMovieIsDeleted()
         {
             //Arrange
             var reviewRepoStub = new Mock<IRepository<Review>>();
@@ -138,15 +128,14 @@ namespace IMDB.Tests.Services.MovieServicesTests
             };
             movieRepoMock
                  .Setup(mr => mr.All())
-                 .Returns(new List<Movie>() { movieToBeChecked }.AsQueryable());
+                 .Returns(new List<Movie>() { movieToBeChecked }.AsQueryable().BuildMock().Object);
 
             var directorRepoStub = new Mock<IRepository<Director>>();
             var genreRepoStub = new Mock<IRepository<Genre>>();
             var movieGenreRepoStub = new Mock<IRepository<MovieGenre>>();
-            var loginSessionStub = new Mock<ILoginSession>();
-            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object, loginSessionStub.Object);
+            var sut = new MovieServices(reviewRepoStub.Object, movieRepoMock.Object, directorRepoStub.Object, genreRepoStub.Object, movieGenreRepoStub.Object);
             //Act & Assert
-            Assert.ThrowsException<MovieNotFoundException>(() => sut.CheckMovie(1));
+            await Assert.ThrowsExceptionAsync<MovieNotFoundException>(async () => await sut.CheckMovieAsync(1));
         }
     }
 }

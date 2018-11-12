@@ -1,0 +1,93 @@
+﻿@model ICollection<MovieViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@{
+    int separeteCounter = 0;
+    foreach (var movie in Model.OrderByDescending(m => m.Score))
+    {
+        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-8">
+                    <div class="col-md-6" id="rateArea">
+                        <h3 class="movieName">@movie.Name</h3>
+                        <h6><span class="indexDirector">By @movie.Director</span></h6>
+                        <p>
+                            <span class="heading">User Rating</span>
+                            @{
+                                double colorStars = Math.Round(movie.Score / 2);
+
+                                for (int i = 1; i <= 5; i++)
+                                {
+                                    if (colorStars >= i)
+                                    {
+                                        <span class="fa fa-star checked" id="filledStar"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fa fa-star" id="emptyStar"></span>
+                                    }
+                                }
+                            }
+                            <br />
+                            <span class="ratingText"><span class="avgMovieScor">@movie.Score</span>/10 average based on @movie.NumberOfVotes reviews</span>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    <p>
+                        <br />
+                        <span style="font-weight: bold">Genres:</span>
+                        <br />
+                        @{
+                            int ganresCounter = 0;
+                            foreach (var genre in movie.Genres)
+                            {
+                                <span class="badge badge-primary">@genre</span>
+                                ganresCounter++;
+                                if (ganresCounter % 3 == 0)
+                                {
+                                    <br />
+                                }
+                            }}
+                    </p>
+                </div>
+                <div class="col-6 col-md-4">
+                    <a asp-area="" asp-controller="Movie" asp-action="Details" asp-route-id="@movie.ID" class="btn btn-movieDetails">Details</a>
+                    @{ if (this.User.IsInRole("Administrator"))
+                        {
+                            <a class="btn btn-deleteMovie" data-toggle="modal" data-target="#@movie.ID">Delete</a>
+                            <!-- Modal -->
+                            <div id="@movie.ID" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Are you sure to delete "@movie.Name"?</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>You are about to delete this movie, are you sure?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form asp-area="" asp-controller="Movie" asp-action="DeleteMovie" method="post">
+                                                <input type="hidden" name="movieId" value="@movie.ID" />
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }}
+                </div>
+            </div>
+            @if (separeteCounter != Model.Count - 1)
+            {
+                <hr />
+            }
+        </div>
+        separeteCounter++;
+    }
+}

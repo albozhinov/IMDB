@@ -1,14 +1,12 @@
-﻿using IMDB.Data.Context;
-using IMDB.Data.Models;
+﻿using IMDB.Data.Models;
 using IMDB.Data.Repository;
-using IMDB.Data.Views;
 using IMDB.Services.Contracts;
 using IMDB.Services.Exceptions;
 using IMDB.Services.Providers;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IMDB.Services
 {
@@ -17,81 +15,70 @@ namespace IMDB.Services
         private IRepository<ReviewRatings> reviewRatingsRepo;
         private IRepository<Movie> movieRepo;
         private IRepository<Review> reviewRepo;
-        private ILoginSession loginSession;
-        private const int adminRank = 2;
+        private const string adminRole = "Administrator";
 
         public ReviewsService(
-            IRepository<Review> reviewRepo, 
+            IRepository<Review> reviewRepo,
             IRepository<Movie> movieRepo,
-            IRepository<ReviewRatings> reviewRatingsRepo,
-            ILoginSession login)
+            IRepository<ReviewRatings> reviewRatingsRepo)
         {
             this.reviewRatingsRepo = reviewRatingsRepo;
             this.movieRepo = movieRepo;
             this.reviewRepo = reviewRepo;
-            loginSession = login;
         }
 
-        public IEnumerable<ReviewView> ListMovieReviews(int movieID)
+        public async Task<ICollection<Review>> ListMovieReviewsAsync(int movieID)
         {
-            var foundMovie = movieRepo.All().FirstOrDefault(m => m.ID == movieID && m.IsDeleted == false);
+            Validator.IfIsNotPositive(movieID, "Movie ID cannot be negative or 0.");
+            var foundMovie = await movieRepo.All()
+									.FirstOrDefaultAsync(m => m.ID == movieID && m.IsDeleted == false);
 
             if (foundMovie is null || foundMovie.IsDeleted == true)
             {
                 throw new MovieNotFoundException("Movie not found.");
             }
-            var reviewsQuery = reviewRepo.All()
+            var reviewsQuery = await reviewRepo.All()
                                     .Where(r => r.MovieID == movieID && r.IsDeleted == false)
-                                    .Select(rev => new ReviewView()
-                                    {
-                                        ReviewID = rev.ID,
-                                        Rating = rev.MovieRating,
-                                        Score = rev.ReviewScore,
-                                        Text = rev.Text,
-                                        ByUser = rev.User.UserName,
-                                        MovieName = rev.Movie.Name,
-										NumberOfVotes = rev.NumberOfVotes
-                                    })
-                                    .OrderByDescending(rev => rev.Score)
-                                    .ToList();
-
+                                    .Include(revUser => revUser.User)
+                                    .ToListAsync();
             return reviewsQuery;
         }
 
-        public ReviewView RateReview(int reviewID, double rating)
+        public async Task<Review> RateReviewAsync(int reviewID, double rating, string currentUserId)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
             Validator.IfIsNotInRangeInclusive(rating, 0D, 10D, "Score is in incorrect range.");
 
-            var foundReview = reviewRepo.All()
+            var foundReview = await reviewRepo.All()
                                         .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                         .Include(r => r.User)
                                         .Include(r => r.Movie)
                                         .Include(r => r.ReviewRatings)
-                                        .FirstOrDefault();
+                                        .FirstOrDefaultAsync();
 
             if (foundReview is null)
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} not found.");
-            }
+            }           
+
             // Check logic!!!
             var reviewRatingToUpdate = foundReview.ReviewRatings
-                                                  .FirstOrDefault(r => r.UserId == loginSession.LoggedUserID 
+                                                  .FirstOrDefault(r => r.UserId == currentUserId
                                                                     && r.ReviewId == foundReview.ID);
 
-            if(reviewRatingToUpdate is null)
+            if (reviewRatingToUpdate is null)
             {
                 var reviewRatingToAdd = new ReviewRatings()
                 {
                     ReviewId = foundReview.ID,
-                    UserId = loginSession.LoggedUserID,
+                    UserId = currentUserId,
                     ReviewRating = rating,
                 };
 
-				foundReview.NumberOfVotes++;
-				foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
+                foundReview.NumberOfVotes++;
+                foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
                 foundReview.ReviewRatings.Add(reviewRatingToAdd);
-			}
+            }
             else
             {
                 if (foundReview.NumberOfVotes == 1)
@@ -100,57 +87,61 @@ namespace IMDB.Services
                 }
                 else
                 {
-                    foundReview.ReviewScore = ((foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating) / (foundReview.NumberOfVotes - 1);
+                    if (foundReview.NumberOfVotes == 0)
+                    {
+                        foundReview.ReviewScore = 0;
+                    }
+                    else
+                    {
+                        foundReview.ReviewScore = ((foundReview.ReviewScore * foundReview.NumberOfVotes) - reviewRatingToUpdate.ReviewRating) / (foundReview.NumberOfVotes - 1);
+                    }
+                    
                     foundReview.ReviewScore += (rating - foundReview.ReviewScore) / foundReview.NumberOfVotes;
                 }
                 reviewRatingToUpdate.ReviewRating = rating;
-			}
+            }
 
             reviewRepo.Update(foundReview);
-            reviewRepo.Save();
+            await reviewRepo.SaveAsync();
 
-            var revView = new ReviewView()
-            {
-                ReviewID = foundReview.ID,
-                Rating = foundReview.MovieRating,
-                Score = foundReview.ReviewScore,
-                ByUser = foundReview.User.UserName,
-                MovieName = foundReview.Movie.Name,
-                Text = foundReview.Text,
-				NumberOfVotes = foundReview.NumberOfVotes
-            };
-
-            return revView;
+            return foundReview;
         }
 
-        public void DeleteReview(int reviewID)
+        public async Task<Review> DeleteReviewAsync(int reviewID)
         {
             Validator.IfIsNotPositive(reviewID, "ReviewID cannot be negative or 0.");
 
-            var findReview = reviewRepo.All()
+            var foundReview = await reviewRepo.All()
                                        .Where(rev => rev.ID == reviewID && rev.IsDeleted == false)
                                        .Include(r => r.User)
-									   .Include(r => r.Movie)
-                                       .FirstOrDefault();
+                                       .Include(r => r.Movie)
+                                       .FirstOrDefaultAsync();
 
-            if (findReview is null)
+            if (foundReview is null)
             {
                 throw new ReviewNotFoundException($"Review with ID: {reviewID} cannot be deleted. ID is invalid.");
             }
 
-            if (findReview.User.Id == loginSession.LoggedUserID || (int)loginSession.LoggedUserRole == adminRank)
+            foundReview.IsDeleted = true;
+            foundReview.Movie.NumberOfVotes--;
+
+            // TODO: Modified this function
+            if (foundReview.Movie.NumberOfVotes == 0)
             {
-                findReview.IsDeleted = true;
-                findReview.Movie.MovieScore = ((findReview.Movie.MovieScore * findReview.Movie.NumberOfVotes) - findReview.MovieRating) / (findReview.Movie.NumberOfVotes - 1);
-                findReview.Movie.NumberOfVotes--;
-                reviewRepo.Update(findReview);
+                foundReview.Movie.MovieScore = 0;
             }
+            else if (foundReview.Movie.NumberOfVotes == 1)
+            {
+                foundReview.Movie.MovieScore = (foundReview.Movie.MovieScore * foundReview.Movie.NumberOfVotes) - foundReview.MovieRating;                
+            }            
             else
             {
-                throw new NotEnoughPermissionException("Not enough permission bro.");
+                foundReview.Movie.MovieScore = ((foundReview.Movie.MovieScore * foundReview.Movie.NumberOfVotes) - foundReview.MovieRating) / (foundReview.Movie.NumberOfVotes - 1);
             }
+            reviewRepo.Update(foundReview);
 
-            reviewRepo.Save();
+            await reviewRepo.SaveAsync();
+            return foundReview;
         }
     }
 }

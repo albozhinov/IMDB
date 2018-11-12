@@ -1,14 +1,22 @@
 [
-	{
-		"Id": 1,
-		"Username": "admin",
-		"PasswordHash": "8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918",
-		"Rank": 2
-	},
-	{
-		"Id": 2,
-		"Username": "pesho",
-		"PasswordHash": "325E7C598DE838FD1438C818A75E703FDDF7BA91C922EB68F2E0239705DFFA79",
-		"Rank": 1
-	}
+  {
+    "Id": "676ce4b1-6641-4909-a478-11b173180b3c",
+    "Username": "admin@porn.bg",
+    "NormalizedUsername": "ADMIN@PORN.BG",
+    "Email": "admin@porn.bg",
+    "NormalizedEmail": "ADMIN@PORN.BG",
+    "PasswordHash": "AQAAAAEAACcQAAAAELA1iavMGFwvWsLgwRbMIKvkYmxTxUxJEWgQKTJnyYaSyDidI9/FVdDg3mbqXB++Fg==",
+    "SecurityStamp": "NL3NHSV53KAQ25IHMAR6B42WGI53HKCY",
+    "ConcurrencyStamp": "13e8f9aa-0f6b-46e8-acd1-65dd9ceffe17"
+  },
+  {
+    "Id": "3ccbce59-fa31-4292-900c-b9f927c3bae6",
+    "Username": "pesho@porn.bg",
+    "NormalizedUsername": "PESHO@PORN.BG",
+    "Email": "pesho@porn.bg",
+    "NormalizedEmail": "PESHO@PORN.BG",
+    "PasswordHash": "AQAAAAEAACcQAAAAEJt8CwoO+qkgaaa/l+VY1EVz+CH0be0kXBHROfTYZQ38MHV5JMTl25QhQwYoc4CpeQ==",
+    "SecurityStamp": "MR4D3LBVUTWTFR567JX6IVOKN37YDNIX",
+    "ConcurrencyStamp": "8e38f2f1-5f7a-465c-9bab-9a552ce12cd3"
+  }
 ]

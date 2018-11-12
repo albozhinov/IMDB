@@ -1,41 +1,41 @@
 [
-	{
-		"ID": 1,
-		"MovieID": 1,
-		"UserID": 1,
-		"IsDeleted": false,
-		"MovieRating": 10,
-		"ReviewScore": 8.00,
-		"NumberOfVotes": 2,
-		"Text": "Mn qko piche"
-	},
-	{
-		"ID": 2,
-		"MovieID": 1,
-		"UserID": 2,
-		"IsDeleted": false,
-		"MovieRating": 9.8,
-		"ReviewScore": 9.00,
-		"NumberOfVotes": 1,
-		"Text": "ba i qkiq film, a sym samo user"
-	},
-	{
-		"ID": 3,
-		"MovieID": 5,
-		"UserID": 1,
-		"IsDeleted": false,
-		"MovieRating": 8.00,
-		"ReviewScore": 0.00,
-		"NumberOfVotes": 2,
-		"Text": "mn sex"
-	},
-	{
-		"ID": 4,
-		"MovieID": 4,
-		"UserID": 1,
-		"IsDeleted": false,
-		"MovieRating": 9.00,
-		"ReviewScore": 5.00,
-		"Text": "evalata"
-	}
+  {
+    "ID": 1,
+    "MovieID": 1,
+    "UserID": "676ce4b1-6641-4909-a478-11b173180b3c",
+    "IsDeleted": false,
+    "MovieRating": 10,
+    "ReviewScore": 8.00,
+    "NumberOfVotes": 2,
+    "Text": "Mn qko piche"
+  },
+  {
+    "ID": 2,
+    "MovieID": 1,
+    "UserID": "3ccbce59-fa31-4292-900c-b9f927c3bae6",
+    "IsDeleted": false,
+    "MovieRating": 9.8,
+    "ReviewScore": 9.00,
+    "NumberOfVotes": 1,
+    "Text": "ba i qkiq film, a sym samo user"
+  },
+  {
+    "ID": 3,
+    "MovieID": 5,
+    "UserID": "676ce4b1-6641-4909-a478-11b173180b3c",
+    "IsDeleted": false,
+    "MovieRating": 8.00,
+    "ReviewScore": 0.00,
+    "NumberOfVotes": 2,
+    "Text": "mn sex"
+  },
+  {
+    "ID": 4,
+    "MovieID": 4,
+    "UserID": "676ce4b1-6641-4909-a478-11b173180b3c",
+    "IsDeleted": false,
+    "MovieRating": 9.00,
+    "ReviewScore": 5.00,
+    "Text": "evalata"
+  }
 ]

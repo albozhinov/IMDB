@@ -9,6 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using IMDB.Data.Context;
 using IMDB.Data.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using IMDB.Data.Repository;
+using IMDB.Services;
+using IMDB.Services.Contracts;
+using System;
+using IMDB.Web.Providers;
 
 namespace IMDB.Web
 {
@@ -32,12 +37,21 @@ namespace IMDB.Web
 			});
 
 			services.AddDbContext<IMDBContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+				options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+
+            services.BuildServiceProvider().GetService<IMDBContext>().Database.Migrate();
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IMDBContext>();
 
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));  
+            services.AddScoped(typeof(IUserManager<>), typeof(UserManagerWrapper<>));
 
+
+            services.AddScoped<IMovieServices, MovieServices>();
+            services.AddScoped<IReviewsServices, ReviewsService>();
+
+			services.AddMemoryCache();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
 
@@ -61,12 +75,16 @@ namespace IMDB.Web
 
 			app.UseAuthentication();
 
-			app.UseMvc(routes =>
+            app.UseMvc(routes =>
 			{
-				routes.MapRoute(
+                routes.MapRoute(
+                    name: "adminArea",
+                    template: "{area:exists}/{controller=Users}/{action=Index}/{id?}");
+
+                routes.MapRoute(
 					name: "default",
 					template: "{controller=Home}/{action=Index}/{id?}");
-			});
+            });
 		}
 	}
 }

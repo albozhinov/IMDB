@@ -10,6 +10,5 @@ namespace IMDB.Data.Models
         [Required]
         public String GenreType { get; set; }
         public ICollection<MovieGenre> MovieGenres { get; set; }
-
     }
 }

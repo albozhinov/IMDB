@@ -27,7 +27,7 @@ namespace IMDB.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(78);
+                        .HasMaxLength(25);
 
                     b.HasKey("ID");
 
@@ -182,10 +182,10 @@ namespace IMDB.Data.Migrations
                     b.ToTable("Reviews");
 
                     b.HasData(
-                        new { ID = 1, IsDeleted = false, MovieID = 1, MovieRating = 10.0, NumberOfVotes = 2, ReviewScore = 8.0, Text = "Mn qko piche", UserID = "1" },
-                        new { ID = 2, IsDeleted = false, MovieID = 1, MovieRating = 9.8, NumberOfVotes = 1, ReviewScore = 9.0, Text = "ba i qkiq film, a sym samo user", UserID = "2" },
-                        new { ID = 3, IsDeleted = false, MovieID = 5, MovieRating = 8.0, NumberOfVotes = 2, ReviewScore = 0.0, Text = "mn sex", UserID = "1" },
-                        new { ID = 4, IsDeleted = false, MovieID = 4, MovieRating = 9.0, NumberOfVotes = 0, ReviewScore = 5.0, Text = "evalata", UserID = "1" }
+                        new { ID = 1, IsDeleted = false, MovieID = 1, MovieRating = 10.0, NumberOfVotes = 2, ReviewScore = 8.0, Text = "Mn qko piche", UserID = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 2, IsDeleted = false, MovieID = 1, MovieRating = 9.8, NumberOfVotes = 1, ReviewScore = 9.0, Text = "ba i qkiq film, a sym samo user", UserID = "3ccbce59-fa31-4292-900c-b9f927c3bae6" },
+                        new { ID = 3, IsDeleted = false, MovieID = 5, MovieRating = 8.0, NumberOfVotes = 2, ReviewScore = 0.0, Text = "mn sex", UserID = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 4, IsDeleted = false, MovieID = 4, MovieRating = 9.0, NumberOfVotes = 0, ReviewScore = 5.0, Text = "evalata", UserID = "676ce4b1-6641-4909-a478-11b173180b3c" }
                     );
                 });
 
@@ -210,11 +210,11 @@ namespace IMDB.Data.Migrations
                     b.ToTable("ReviewRatings");
 
                     b.HasData(
-                        new { ID = 1, ReviewId = 1, ReviewRating = 10.0, UserId = "1" },
-                        new { ID = 2, ReviewId = 1, ReviewRating = 6.0, UserId = "2" },
-                        new { ID = 3, ReviewId = 2, ReviewRating = 9.0, UserId = "1" },
-                        new { ID = 4, ReviewId = 3, ReviewRating = 5.0, UserId = "1" },
-                        new { ID = 5, ReviewId = 3, ReviewRating = 5.0, UserId = "2" }
+                        new { ID = 1, ReviewId = 1, ReviewRating = 10.0, UserId = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 2, ReviewId = 1, ReviewRating = 6.0, UserId = "3ccbce59-fa31-4292-900c-b9f927c3bae6" },
+                        new { ID = 3, ReviewId = 2, ReviewRating = 9.0, UserId = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 4, ReviewId = 3, ReviewRating = 5.0, UserId = "676ce4b1-6641-4909-a478-11b173180b3c" },
+                        new { ID = 5, ReviewId = 3, ReviewRating = 5.0, UserId = "3ccbce59-fa31-4292-900c-b9f927c3bae6" }
                     );
                 });
 
@@ -229,6 +229,7 @@ namespace IMDB.Data.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
@@ -249,13 +250,12 @@ namespace IMDB.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<int>("Rank");
-
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -271,8 +271,8 @@ namespace IMDB.Data.Migrations
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
-                        new { Id = "1", AccessFailedCount = 0, ConcurrencyStamp = "d7e696ff-861f-4eb6-a335-9958ccd27f33", EmailConfirmed = false, LockoutEnabled = false, PhoneNumberConfirmed = false, Rank = 2, TwoFactorEnabled = false, UserName = "admin" },
-                        new { Id = "2", AccessFailedCount = 0, ConcurrencyStamp = "929d4903-c343-4e61-813f-511d20069299", EmailConfirmed = false, LockoutEnabled = false, PhoneNumberConfirmed = false, Rank = 1, TwoFactorEnabled = false, UserName = "pesho" }
+                        new { Id = "676ce4b1-6641-4909-a478-11b173180b3c", AccessFailedCount = 0, ConcurrencyStamp = "13e8f9aa-0f6b-46e8-acd1-65dd9ceffe17", Email = "admin@porn.bg", EmailConfirmed = false, LockoutEnabled = false, NormalizedEmail = "ADMIN@PORN.BG", NormalizedUserName = "ADMIN@PORN.BG", PasswordHash = "AQAAAAEAACcQAAAAELA1iavMGFwvWsLgwRbMIKvkYmxTxUxJEWgQKTJnyYaSyDidI9/FVdDg3mbqXB++Fg==", PhoneNumberConfirmed = false, SecurityStamp = "NL3NHSV53KAQ25IHMAR6B42WGI53HKCY", TwoFactorEnabled = false, UserName = "admin@porn.bg" },
+                        new { Id = "3ccbce59-fa31-4292-900c-b9f927c3bae6", AccessFailedCount = 0, ConcurrencyStamp = "8e38f2f1-5f7a-465c-9bab-9a552ce12cd3", Email = "pesho@porn.bg", EmailConfirmed = false, LockoutEnabled = false, NormalizedEmail = "PESHO@PORN.BG", NormalizedUserName = "PESHO@PORN.BG", PasswordHash = "AQAAAAEAACcQAAAAEJt8CwoO+qkgaaa/l+VY1EVz+CH0be0kXBHROfTYZQ38MHV5JMTl25QhQwYoc4CpeQ==", PhoneNumberConfirmed = false, SecurityStamp = "MR4D3LBVUTWTFR567JX6IVOKN37YDNIX", TwoFactorEnabled = false, UserName = "pesho@porn.bg" }
                     );
                 });
 
@@ -298,6 +298,11 @@ namespace IMDB.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new { Id = "959596e5-93e4-4272-8cfb-6e71a4254370", ConcurrencyStamp = "20d35162-b35c-4b2e-80c1-81a15bc1b2f3", Name = "Administrator", NormalizedName = "ADMINISTRATOR" },
+                        new { Id = "5197310d-5d42-4337-bb59-2fd06e6a8fcd", ConcurrencyStamp = "a3bc9d45-276b-442f-bc6b-b1a5763df30d", Name = "User", NormalizedName = "USER" }
+                    );
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -369,6 +374,11 @@ namespace IMDB.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new { UserId = "676ce4b1-6641-4909-a478-11b173180b3c", RoleId = "959596e5-93e4-4272-8cfb-6e71a4254370" },
+                        new { UserId = "3ccbce59-fa31-4292-900c-b9f927c3bae6", RoleId = "5197310d-5d42-4337-bb59-2fd06e6a8fcd" }
+                    );
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

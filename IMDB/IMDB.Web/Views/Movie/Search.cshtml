@@ -1,0 +1,69 @@
+﻿@model SearchViewModel
+@{
+    ViewData["Title"] = "Search";
+}
+<h2>Search</h2>
+<form asp-controller="Movie" asp-action="Search" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Genres"></label>
+        <select asp-for="Genres" class="selectpicker" multiple="multiple" name="Genres" asp-items="@Model.GenreList"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Director"></label>
+        <input asp-for="Director" class="form-control" />
+        <span asp-validation-for="Director" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ItemsPerPage">Items per page</label>
+        <select asp-for="ItemsPerPage" class="selectpicker">
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <button id="myButton" type="button" class="btn btn-default" style="float: right;">Search </button>
+        <br>
+    </div>
+</form>
+
+<div id="content">
+</div>
+
+@section Scripts{
+    <script>
+        function search()
+        {
+            $.ajax({
+                url: $(this).attr("href"),
+                type: 'POST',
+                cache: false,
+                data: jQuery.param({
+                    name: document.getElementById("Name").value,
+                    genres: document.getElementById("Genres").value,
+                    director: document.getElementById("Director").value,
+                    itemsPerPage: document.getElementById("ItemsPerPage").value,
+                    __RequestVerificationToken: gettoken()
+                }),
+                success: function (result) {
+                    $('#content').html(result);
+                }
+            });
+            return false;
+        }
+        function gettoken()
+        {
+            var token = '@Html.AntiForgeryToken()';
+            token = $(token).val();
+            return token;
+        }
+        $(document).on("click", "#myButton", search);
+        $(document).on("click", "#contentPager a", search);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+}

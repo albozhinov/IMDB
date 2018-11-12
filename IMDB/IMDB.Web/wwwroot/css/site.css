@@ -35,3 +35,286 @@ body {
         display: none;
     }
 }
+/* Movie details */
+.movieName {
+    padding-left: 5px;
+    color: white;
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+    background-color: #363636;
+}
+
+.badge-primary {
+    background-color: #007bff;
+}
+
+.font-italic {
+    border: 1px solid lightgray;
+    border-radius: 25px 25px;
+    padding: 5px 15px;
+    background-color: #f1f1f1;
+    font-size: 16px;
+    color: black;
+    font-family: Courier New, Courier, monospace;
+}
+
+#filledStar {
+    font-size: 20px;
+    color: orange;
+}
+
+#emptyStar {
+    font-size: 20px;
+    color: #D1D1D1;
+}
+
+.heading {
+    font-weight: bold;
+    color: white;
+}
+
+#rateArea {
+    background-color: #363636;
+}
+
+.ratingSlash {
+    font-size: 25px;
+    color: white;
+}
+
+.btn-rateMovie {
+    background-color: #363636;
+    padding: 0px 0px;
+    color: #D2D2D2;
+    font-size: 25px;
+    margin-bottom: 10px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+}
+
+    .btn-rateMovie:hover {
+        color: #FEA32C;
+    }
+
+.movieDetailsDirector {
+    font-weight: bold;
+}
+
+.directorTextType {
+    text-shadow: 1px 1px gray;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.genreTitle {
+    font-weight: bold;
+}
+
+.reviewTitle {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.ratingArea {
+    background-color: #363636;
+}
+
+.ratingText {
+    color: white;
+    font-weight: bold;
+}
+
+.avgMovieScor {
+    font-weight: normal;
+    font-size: 25px;
+}
+
+.btn-showAllReviews {
+    background-color: lightgray;
+    color: black;
+    border: 1px solid #f1f1f1;
+    font-size: 14px;
+    padding: 10px 10px;
+    border-radius: 25px 25px;
+    font-weight: bold;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+}
+
+    .btn-showAllReviews:hover {
+        background-color: #f1f1f1;
+        color: black;
+        border-color: grey;
+    }
+
+
+.btn-deleteReview {
+    border: 1px solid white;
+    color: white;
+    background-color: orangered;
+    border-radius: 25px 25px;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    padding: 1px 10px;
+    margin-left: 8%;
+}
+
+    .btn-deleteReview:hover {
+        background-color: red;
+        color: darkred;
+        border-color: darkred;
+    }
+
+.btn-rateReview {
+    border: 1px solid #f1f1f1;
+    color: black;
+    background-color: lightgray;
+    border-radius: 25px 25px;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    padding: 1px 10px;
+    margin-left: 20%;
+}
+
+    .btn-rateReview:hover {
+        background-color: #f1f1f1;
+        color: black;
+        border-color: grey;
+    }
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #F0F0F0;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+    .dropdown-content a {
+        color: orange;
+        padding: 2px 2px;
+        text-decoration: none;
+        display: block;
+    }
+
+
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.rateSubmitButton {
+    background: none;
+    border: none;
+    width: 100px;
+}
+
+    .rateSubmitButton:hover {
+        background-color: #ddd;
+        font-size: 22px;
+    }
+
+    .rateSubmitButton #a {
+        color: orange;
+    }
+
+.btn-addReview {
+    font-size: 16px;
+    border: 1px solid #f1f1f1;
+    color: black;
+    background-color: lightgray;
+    border-radius: 25px 25px;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    padding: 1px 10px;
+}
+
+    .btn-addReview:hover {
+        background-color: #f1f1f1;
+        color: black;
+        border-color: grey;
+    }
+
+.modal-header {
+    background-color: #393939;
+    color: white;
+}
+
+
+/*Movie index*/
+.indexDirector {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+}
+
+
+.btn-movieDetails {
+    margin-left: 200px;
+    margin-top: 70px;
+    font-size: 16px;
+    width: 40%;
+    height: 35px;
+    border-radius: 30px 30px;
+    padding: 5px 5px;
+    background-color: limegreen;
+    color: white;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    font-weight: bold;
+}
+
+    .btn-movieDetails:hover {
+        background-color: white;
+        color: limegreen;
+        border-color: limegreen;
+    }
+
+.btn-deleteMovie {
+    margin-left: 200px;
+    margin-top: 70px;
+    font-size: 16px;
+    width: 40%;
+    height: 35px;
+    border-radius: 30px 30px;
+    padding: 5px 5px;
+    background-color: red;
+    color: white;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    font-weight: bold;
+}
+
+    .btn-deleteMovie:hover {
+        background-color: red;
+        color: darkred;
+        border-color: darkred
+    }
+
+#detailsDeleteMovieButton {
+    font-size: 16px;
+    width: 40%;
+    height: 35px;
+    border-radius: 30px 30px;
+    padding: 5px 5px;
+    background-color: red;
+    color: white;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    font-weight: bold;
+}
+
+    #detailsDeleteMovieButton:hover {
+        background-color: red;
+        color: darkred;
+        border-color: darkred
+    }
